@@ -1,0 +1,71 @@
+name: Wi-Fi validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      openpilot_sha:
+        description: Full commit SHA in andiradulescu/openpilot
+        required: true
+        type: string
+      suite:
+        description: Validation tier
+        required: true
+        default: unit
+        type: choice
+        options: [unit, hwsim]
+      filter:
+        description: Optional test-name filter
+        default: ''
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      TARGET_SHA: ${{ inputs.openpilot_sha }}
+      SUITE: ${{ inputs.suite }}
+      TEST_FILTER: ${{ inputs.filter }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+          path: validation
+      - name: Validate revision
+        run: '[[ "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]]'
+      - uses: actions/checkout@v7
+        with:
+          repository: andiradulescu/openpilot
+          ref: ${{ inputs.openpilot_sha }}
+          persist-credentials: false
+          path: openpilot
+      - name: Prepare openpilot environment
+        working-directory: openpilot
+        run: ./tools/op.sh setup
+      - name: Install virtual Wi-Fi prerequisites
+        if: inputs.suite == 'hwsim'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends iproute2 iw kmod util-linux hostapd wpasupplicant udhcpc dnsmasq-base network-manager netplan.io dbus iptables curl
+          if ! modinfo mac80211_hwsim >/dev/null 2>&1; then
+            sudo apt-get install -y "linux-modules-extra-$(uname -r)"
+          fi
+          getent group netdev || sudo groupadd netdev
+          uv pip install --python openpilot/.venv/bin/python -r validation/requirements.txt
+      - name: Run validation
+        run: |
+          args=(--checkout "$PWD/openpilot" --sha "$TARGET_SHA" --suite "$SUITE" --results "$PWD/results")
+          if [[ -n "$TEST_FILTER" ]]; then args+=(--filter "$TEST_FILTER"); fi
+          if [[ "$SUITE" == hwsim ]]; then
+            sudo env PATH="$PATH" WIFI_E2E_VM=1 python3 validation/run.py "${args[@]}"
+          else
+            python3 validation/run.py "${args[@]}"
+          fi
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: wifi-${{ inputs.suite }}-${{ inputs.openpilot_sha }}
+          path: results/
