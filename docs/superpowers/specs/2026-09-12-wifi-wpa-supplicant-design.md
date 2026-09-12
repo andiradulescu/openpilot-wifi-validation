@@ -147,22 +147,40 @@ SSID (upstream behaviour), adds the network, remembers it as pending, and `SELEC
 sets CONNECTING and `SELECT_NETWORK`s the saved network's id. `SELECT_NETWORK` disables the others, so every terminal
 event ends with `ENABLE_NETWORK all` to restore autoconnect.
 
+`ConnectStatus.CONNECTED` means the station has an IPv4 address, which is what NetworkManager's ACTIVATED meant and
+what setup uses to decide the device is online. A completed WPA handshake without an address is still CONNECTING.
+The manager remembers the SSID the user selected until a terminal outcome, so status refreshes never clear a
+selection that the supplicant has not acted on yet. This replaces upstream's epoch counter.
+
 The monitor thread handles:
 
-- `CTRL-EVENT-CONNECTED`: read `STATUS`, set `WifiState(ssid, CONNECTED)`, write the pending profile if it matches,
-  renew udhcpc, `ENABLE_NETWORK all`, queue `activated`, refresh IP and metering.
-- `CTRL-EVENT-SSID-TEMP-DISABLED ... reason=WRONG_KEY` for the pending or connecting SSID: `REMOVE_NETWORK` it, set
-  DISCONNECTED, `ENABLE_NETWORK all`, queue `need_auth(ssid)`.
-- `CTRL-EVENT-DISCONNECTED` while CONNECTED: set DISCONNECTED, clear IP and metering, queue `disconnected`.
-  While CONNECTING the supplicant keeps retrying, so state is kept, matching upstream's open TODO for SSID-not-found.
-- `Trying to associate with ... SSID '<ssid>'` while DISCONNECTED: set CONNECTING for the supplicant's own autoconnect.
+- `CTRL-EVENT-CONNECTED`: renew or start udhcpc, `ENABLE_NETWORK all`, then poll `STATUS` every 0.5 s for
+  `ip_address=`. On an address: set `WifiState(ssid, CONNECTED)`, write the pending profile if it matches, refresh
+  metering, queue `activated`. If the association drops during the wait, return and let the next event decide. After
+  `DHCP_TIMEOUT_SECONDS = 45` (NetworkManager's `ipv4.dhcp-timeout` default) without an address: `DISABLE_NETWORK`
+  that id so the supplicant stops looping on it, set DISCONNECTED, queue `disconnected`.
+- `CTRL-EVENT-SSID-TEMP-DISABLED ... reason=WRONG_KEY` for the SSID in the current state: `REMOVE_NETWORK` it so the
+  supplicant stops retrying and the UI is asked once, set DISCONNECTED, `ENABLE_NETWORK all`, queue `need_auth(ssid)`.
+  A saved profile stays on disk; activating it later re-adds the network from the profile.
+- `CTRL-EVENT-DISCONNECTED`: refresh from `STATUS`. If the state was CONNECTED and no selection is pending, set
+  DISCONNECTED, clear IP and metering, queue `disconnected`. While a selection is pending the supplicant keeps
+  retrying, so state is kept, matching upstream's open TODO for SSID-not-found.
 - `CTRL-EVENT-SCAN-RESULTS`: refresh networks.
+- Receive timeout (every second): health check. If `PING` gets no `PONG`, run the start sequence again, which respawns
+  a crashed supplicant and reloads saved networks. If the state is a station state and udhcpc is dead, start it.
+
+The supplicant's own autoconnect to a saved network is picked up by the status refresh: the associating states map to
+CONNECTING with the supplicant's SSID, so no "Trying to associate" text parsing is needed.
 
 The scan thread issues `SCAN` every 5 seconds while active. `_update_networks` parses `SCAN_RESULTS`, keeps the
-strongest BSS per SSID, converts dBm to percent, maps flags to `SecurityType` (`[ESS]` only is OPEN, PSK is WPA,
-EAP/802.1X or SAE-only is UNSUPPORTED, matching upstream's three outcomes), marks the hotspot SSID, then re-reads
-`STATUS` to self-heal state, IP (`ip_address=`) and metering, and queues `networks_updated`. `set_active(True)`
-triggers an immediate refresh as upstream does.
+strongest BSS per SSID, converts dBm to percent with NetworkManager's formula (-40 dBm is 100 %, -100 dBm is 0 %),
+maps flags to `SecurityType` (PSK is WPA, no WPA or WEP token is OPEN, anything else is UNSUPPORTED, matching
+upstream's three outcomes), marks the hotspot SSID, then re-reads `STATUS` to self-heal state, IP (`ip_address=`) and
+metering, and queues `networks_updated`. `set_active(True)` triggers an immediate refresh as upstream does.
+
+Passphrases are never quoted on the control socket. A WPA passphrase is converted to the raw 256-bit PSK with
+`hashlib.pbkdf2_hmac("sha1", passphrase, ssid, 4096, 32)` (IEEE 802.11i) and sent as 64 hex characters; a keyfile
+`psk` that is already 64 hex characters is sent as is. The keyfile keeps the passphrase for NetworkManager rollback.
 
 ## Tethering
 
@@ -182,6 +200,9 @@ own and the normal CONNECTED path runs.
 
 Adopt with `mode=AP`: state CONNECTED to the hotspot SSID, IP 192.168.43.1, dnsmasq and the NAT rule ensured
 (`iptables-legacy -C` before `-A`).
+
+`set_ipv4_forward(enabled)` stores the flag and, when tethering is active, applies the sysctl immediately. The prime
+type can change while the hotspot is up, and the harness exercises that path.
 
 ## Error handling
 
