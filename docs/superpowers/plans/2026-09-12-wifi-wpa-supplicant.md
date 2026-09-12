@@ -243,7 +243,6 @@ Write `openpilot/system/ui/lib/tests/test_wifi_manager.py`:
 
 ```python
 import os
-import re
 import socket
 import tempfile
 import threading
@@ -428,6 +427,7 @@ id=openpilot connection Café
 type=wifi
 uuid=22222222-2222-2222-2222-222222222222
 interface-name=wlan0
+metered=1
 
 [wifi]
 ssid=67;97;102;195;169;
@@ -436,9 +436,6 @@ hidden=true
 [wifi-security]
 key-mgmt=wpa-psk
 psk=cafepass1
-
-[connection]
-metered=1
 """
 
 OPEN_KEYFILE = """[connection]
@@ -507,7 +504,7 @@ class TestProfiles(OpenpilotTestCase):
   def test_read_profiles_from_both_dirs(self, profile_dirs):
     write(os.path.join(profile_dirs["persistent"], "Home.nmconnection"), KEYFILE_A)
     write(os.path.join(profile_dirs["persistent"], "Hotspot.nmconnection"), HOTSPOT_KEYFILE)
-    write(os.path.join(profile_dirs["runtime"], "netplan-NM-22222222-2222-2222-2222-222222222222-Caf.nmconnection"), NETPLAN_KEYFILE.replace("[connection]\nmetered=1\n", "").replace("type=wifi\n", "type=wifi\nmetered=1\n"))
+    write(os.path.join(profile_dirs["runtime"], "netplan-NM-22222222-2222-2222-2222-222222222222-Caf.nmconnection"), NETPLAN_KEYFILE)
     write(os.path.join(profile_dirs["runtime"], "lo.nmconnection"), "[connection]\nid=lo\nuuid=5\ntype=loopback\n")
     write(os.path.join(profile_dirs["runtime"], "broken.nmconnection"), "[connection\nid=x")
     profiles = {p.ssid: p for p in wifi_manager.read_profiles()}
@@ -699,7 +696,7 @@ def write_profile(profile: Profile) -> Profile:
 - [ ] **Step 4: Run the tests, expect them to pass**
 
 Run: `python tools/test_runner.py openpilot/system/ui/lib/tests/test_wifi_manager.py -v`
-Expected: all `TestParsers`, `TestWpaCtrl`, `TestProfiles` pass. `test_read_profiles_from_both_dirs` writes the netplan keyfile with `metered=1` moved into the first `[connection]` section because `configparser` rejects duplicate sections; that mirrors real files, which have one section.
+Expected: all `TestParsers`, `TestWpaCtrl`, `TestProfiles` pass. `read_profiles` uses `strict=False` so a keyfile with a repeated section still parses.
 
 - [ ] **Step 5: Commit**
 
@@ -788,7 +785,7 @@ class TestLifecycle(OpenpilotTestCase):
     write(os.path.join(manager_env.dirs["persistent"], "Home.nmconnection"), KEYFILE_A)
     write(os.path.join(manager_env.dirs["persistent"], "Open.nmconnection"), OPEN_KEYFILE)
     write(os.path.join(manager_env.dirs["persistent"], "Hotspot.nmconnection"), HOTSPOT_KEYFILE)
-    write(os.path.join(manager_env.dirs["runtime"], "netplan-NM-2222-Caf.nmconnection"), NETPLAN_KEYFILE.replace("[connection]\nmetered=1\n", ""))
+    write(os.path.join(manager_env.dirs["runtime"], "netplan-NM-2222-Caf.nmconnection"), NETPLAN_KEYFILE)
     wm = start_manager(manager_env)
     self.assertEqual(manager_env.sudo[:2], [["nmcli", "dev", "set", "wlan0", "managed", "no"],
                                              ["wpa_supplicant", "-B", "-i", "wlan0", "-D", "nl80211", "-c", wifi_manager.WPA_CONF_PATH, "-P", manager_env.wpa_pid]])
@@ -812,8 +809,7 @@ class TestLifecycle(OpenpilotTestCase):
     manager_env.fake.networks = {0: {"ssid": "Home".encode().hex()}}
     manager_env.alive(manager_env.udhcpc_pid)
     wm = start_manager(manager_env)
-    self.assertEqual([c[0] for c in manager_env.sudo], ["kill"])
-    self.assertEqual(manager_env.sudo[0][:2], ["kill", "-USR1"])
+    self.assertEqual([c for c in manager_env.sudo if c[0] != "install"], [["kill", "-USR1", str(os.getpid())]])  # install is the hotspot keyfile
     self.assertEqual(manager_env.popen, [])
     self.assertEqual(wm.wifi_state, wifi_manager.WifiState("Home", wifi_manager.ConnectStatus.CONNECTED))
     self.assertEqual(wm.connected_ssid, "Home")
@@ -839,7 +835,7 @@ class TestLifecycle(OpenpilotTestCase):
     wait_for(lambda: "SCAN" in manager_env.fake.requests)
     manager_env.fake.emit("CTRL-EVENT-SCAN-RESULTS")
     wait_for(lambda: drain(wm, updates))
-    self.assertEqual(updates[-1], [wifi_manager.Network("Home", 83, SecurityType.WPA, False), wifi_manager.Network("weedle", 100, SecurityType.WPA, True),
+    self.assertEqual(updates[-1], [wifi_manager.Network("weedle", 100, SecurityType.WPA, True), wifi_manager.Network("Home", 83, SecurityType.WPA, False),
                                    wifi_manager.Network("Coffee", 100, SecurityType.OPEN, False), wifi_manager.Network("Office", 66, SecurityType.UNSUPPORTED, False)])
     self.assertEqual(updates[-1], wm.networks)
 
@@ -1205,7 +1201,7 @@ class WifiManager:
 - [ ] **Step 4: Run the tests, expect them to pass**
 
 Run: `python tools/test_runner.py openpilot/system/ui/lib/tests/test_wifi_manager.py -v`
-Expected: all pass. In `test_scan_results_update_sorted_networks` the strengths are `dbm_to_percent(-50) = 83`, `-60 = 66`, the tethering SSID is forced to 100, the empty SSID is dropped, and the saved `Home` sorts first because nothing is connected and it is the only saved network.
+Expected: all pass. In `test_scan_results_update_sorted_networks` the strengths are `dbm_to_percent(-50) = 83`, `-60 = 66`, the tethering SSID is forced to 100, the empty SSID is dropped, and the two saved networks (`weedle` from the hotspot keyfile, then `Home`) sort before the unsaved ones by strength.
 
 - [ ] **Step 5: Commit**
 
@@ -1232,7 +1228,8 @@ Append to `test_wifi_manager.py`:
 
 ```python
 def profile_files(env):
-  return sorted(os.listdir(env.dirs["persistent"]))
+  # station profiles only; the hotspot keyfile is created on every first start
+  return sorted(f for f in os.listdir(env.dirs["persistent"]) if f != "weedle.nmconnection")
 
 
 class TestStation(OpenpilotTestCase):
@@ -1261,7 +1258,7 @@ class TestStation(OpenpilotTestCase):
     self.assertEqual(wm.ipv4_address, "10.0.0.9")
     self.assertEqual(profile_files(manager_env), ["Home.nmconnection"])
     self.assertTrue(wm.is_connection_saved("Home"))
-    self.assertEqual(wifi_manager.read_profiles()[0].psk, "password123")
+    self.assertEqual(next(p.psk for p in wifi_manager.read_profiles() if p.ssid == "Home"), "password123")
     self.assertEqual(forgotten, ["Home"])  # connect clears any previous profile first, as upstream did
 
   def test_wrong_password_asks_once_and_saves_nothing(self, manager_env):
@@ -1271,12 +1268,13 @@ class TestStation(OpenpilotTestCase):
     wm.connect_to_network("Home", "wrongpass")
     wait_for(lambda: any(r.startswith("SELECT_NETWORK") for r in manager_env.fake.requests))
     (nid,) = manager_env.fake.networks
+    n = len(manager_env.fake.requests)
     manager_env.fake.emit(f'CTRL-EVENT-SSID-TEMP-DISABLED id={nid} ssid="Home" auth_failures=1 duration=10 reason=WRONG_KEY')
     wait_for(lambda: drain(wm, need_auth) == ["Home"])
     self.assertEqual(wm.wifi_state, wifi_manager.WifiState())
     self.assertEqual(manager_env.fake.networks, {})
     self.assertEqual(profile_files(manager_env), [])
-    self.assertIn("ENABLE_NETWORK all", manager_env.fake.requests[-2:])
+    self.assertEqual([r for r in manager_env.fake.requests[n:] if not r.startswith(("SCAN", "STATUS"))], [f"REMOVE_NETWORK {nid}", "ENABLE_NETWORK all"])
 
   def test_activate_saved_network_selects_it(self, manager_env):
     write(os.path.join(manager_env.dirs["persistent"], "Home.nmconnection"), KEYFILE_A)
@@ -1291,7 +1289,7 @@ class TestStation(OpenpilotTestCase):
 
   def test_forget_removes_every_source(self, manager_env):
     write(os.path.join(manager_env.dirs["persistent"], "Home.nmconnection"), KEYFILE_A)
-    write(os.path.join(manager_env.dirs["runtime"], "netplan-NM-22222222-2222-2222-2222-222222222222-Caf.nmconnection"), NETPLAN_KEYFILE.replace("[connection]\nmetered=1\n", ""))
+    write(os.path.join(manager_env.dirs["runtime"], "netplan-NM-22222222-2222-2222-2222-222222222222-Caf.nmconnection"), NETPLAN_KEYFILE)
     yaml = os.path.join(manager_env.dirs["netplan"], "90-NM-22222222-2222-2222-2222-222222222222.yaml")
     write(yaml, "network: {}\n")
     wm = start_manager(manager_env)
@@ -1551,7 +1549,7 @@ def ap_on_select(fake):
 class TestTethering(OpenpilotTestCase):
   def test_hotspot_profile_is_created_on_first_start(self, manager_env):
     wm = start_manager(manager_env)
-    self.assertEqual(profile_files(manager_env), ["weedle.nmconnection"])
+    self.assertEqual(os.listdir(manager_env.dirs["persistent"]), ["weedle.nmconnection"])
     self.assertEqual(wm.tethering_password, "swagswagcomma")
     self.assertTrue(wifi_manager.read_profiles()[0].is_ap)
     self.assertEqual(manager_env.fake.networks, {})  # the hotspot is not a station network
@@ -1589,6 +1587,7 @@ class TestTethering(OpenpilotTestCase):
     manager_env.alive(manager_env.dnsmasq_pid)
     del manager_env.sudo[:]
     manager_env.fake.replies.pop("SELECT_NETWORK")
+    n = len(manager_env.fake.requests)
     wm.set_tethering_active(False)
     wait_for(lambda: drain(wm, disconnected), timeout=10)
     self.assertEqual(wm.wifi_state, wifi_manager.WifiState())
@@ -1596,9 +1595,9 @@ class TestTethering(OpenpilotTestCase):
     self.assertEqual(manager_env.sudo[0], ["kill", str(os.getpid())])  # dnsmasq
     self.assertIn(["iptables-legacy", "-t", "nat", "-D", *wifi_manager.TETHERING_NAT_RULE], manager_env.sudo)
     self.assertIn(["ip", "addr", "flush", "dev", "wlan0"], manager_env.sudo)
-    self.assertNotIn("2", [n.get("mode") for n in manager_env.fake.networks.values()])
-    self.assertEqual(manager_env.fake.requests[-1], "ENABLE_NETWORK all") if not manager_env.popen else None
-    self.assertTrue(["kill", "-USR1", str(os.getpid())] in manager_env.sudo or manager_env.popen)
+    self.assertNotIn("2", [net.get("mode") for net in manager_env.fake.networks.values()])
+    self.assertIn("ENABLE_NETWORK all", manager_env.fake.requests[n:])
+    self.assertTrue(["kill", "-USR1", str(os.getpid())] in manager_env.sudo or manager_env.popen)  # udhcpc renewed or respawned
 
   def test_adopts_running_hotspot(self, manager_env):
     write(os.path.join(manager_env.dirs["persistent"], "Hotspot.nmconnection"), HOTSPOT_KEYFILE)
@@ -1632,8 +1631,9 @@ class TestTethering(OpenpilotTestCase):
     wm = start_manager(manager_env)
     wm.set_tethering_active(True)  # the fake never switches to AP mode
     wait_for(lambda: wm.connecting_to_ssid == "weedle")
-    wait_for(lambda: wm.connected_ssid == "Home", timeout=10)
-    self.assertFalse(wm.is_tethering_active())
+    wait_for(lambda: not wm.is_tethering_active(), timeout=10)
+    wm.set_active(True)  # status refresh, as the UI does when the panel opens
+    wait_for(lambda: wm.connected_ssid == "Home")
 
 
 class TestMetering(OpenpilotTestCase):
@@ -1652,7 +1652,7 @@ class TestMetering(OpenpilotTestCase):
 
   def test_metered_migrates_netplan_profile(self, manager_env):
     runtime = os.path.join(manager_env.dirs["runtime"], "netplan-NM-22222222-2222-2222-2222-222222222222-Caf.nmconnection")
-    write(runtime, NETPLAN_KEYFILE.replace("[connection]\nmetered=1\n", ""))
+    write(runtime, NETPLAN_KEYFILE)
     yaml = os.path.join(manager_env.dirs["netplan"], "90-NM-22222222-2222-2222-2222-222222222222.yaml")
     write(yaml, "network: {}\n")
     manager_env.spawn_status = {"wpa_state": "COMPLETED", "ssid": "Caf\\xc3\\xa9", "mode": "station", "ip_address": "10.0.0.7", "id": "0"}
@@ -1663,7 +1663,7 @@ class TestMetering(OpenpilotTestCase):
     wait_for(lambda: wm.current_network_metered == wifi_manager.MeteredType.NO)
     self.assertFalse(os.path.exists(runtime))
     self.assertFalse(os.path.exists(yaml))
-    (profile,) = wifi_manager.read_profiles()
+    (profile,) = [p for p in wifi_manager.read_profiles() if not p.is_ap]
     self.assertEqual((profile.ssid, profile.psk, profile.hidden, profile.metered, profile.uuid),
                      ("Café", "cafepass1", True, wifi_manager.MeteredType.NO, "22222222-2222-2222-2222-222222222222"))
 
@@ -1842,7 +1842,7 @@ Add to `WifiManager`:
 - [ ] **Step 4: Run the tests, expect them to pass**
 
 Run: `python tools/test_runner.py openpilot/system/ui/lib/tests/test_wifi_manager.py -v`
-Expected: all pass. `test_tethering_on_then_off` and the password test take a few seconds because `_stop_dhcp` waits for a pid that is the test process itself; that is the 2 s `CTRL_TIMEOUT_SECONDS` wait, not a hang. In `test_tethering_start_failure_resets_state` the `except` in `set_tethering_active` runs `_stop_tethering`, which returns the manager to the still-associated station and the next status refresh (scan tick) reports `Home` connected again.
+Expected: all pass. `test_tethering_on_then_off` and the password test take a few seconds because `_stop_dhcp` waits for a pid that is the test process itself; that is the 2 s `CTRL_TIMEOUT_SECONDS` wait, not a hang. In `test_tethering_start_failure_resets_state` the `except` in `set_tethering_active` runs `_stop_tethering`, which returns the manager to the still-associated station and the next status refresh (`set_active(True)` or a scan result) reports `Home` connected again.
 
 - [ ] **Step 5: Commit**
 
