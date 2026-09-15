@@ -1,6 +1,6 @@
 # openpilot Wi-Fi validation
 
-External qualification for `andiradulescu/openpilot` PR #26. The small regression and file-backed integration tests live with openpilot; this repository owns the disposable-VM setup and virtual-radio scenarios.
+External qualification for the `wifi-wpa-supplicant` branch of `andiradulescu/openpilot`. The small regression and file-backed integration tests live with openpilot; this repository owns the disposable-VM setup and virtual-radio scenarios.
 
 The runner takes an existing checkout and a full SHA. It does not checkout, patch, commit, or push openpilot. Dirty checkouts are rejected unless `--allow-dirty` is explicitly supplied; those results are development evidence, not a clean-commit signoff.
 
@@ -43,6 +43,8 @@ Keep results with both revisions; a PR number alone does not identify the tested
 ## Acceptance boundaries
 
 The virtual-radio matrix covers connection and credential retry, saved-network switching, forget and profile regeneration, metering, station/AP transitions, hotspot password changes, forwarding, and service/UI-process recovery. The tests intentionally keep unmet requirements failing.
+
+v3 hands `wlan0` to `wpa_supplicant` once per boot and never hands it back; the hand-back test performs the rollback procedure itself.
 
 A regression that reports a refused deletion honestly does **not** establish that runtime-only or Netplan-backed profiles can be deleted. Persistent-source support still needs validation against the actual device layout. Likewise, a unit pass does not establish DHCP, RF, firmware, actual LTE, reboot, or NetworkManager rollback behavior on comma hardware.
 

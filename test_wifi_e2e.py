@@ -1,6 +1,5 @@
 import os
 import signal
-import sys
 from pathlib import Path
 
 import pytest
@@ -36,7 +35,7 @@ def assert_forgotten(lab, ssid):
   state = lab.wait(lambda _: ['forgotten', ssid] in lab.events)
   assert not state['saved'][ssid], 'UI received forgotten, but the manager still considers the network saved'
   assert ssid not in [profile[1] for profile in keyfile_profiles().values()], 'A persistent/runtime keyfile survived Forget'
-  assert ssid not in run('wpa_cli', '-p', '/run/openpilot-wpa', '-i', 'wlan0', 'list_networks', ns=lab.names['dut']).stdout
+  assert ssid not in run('wpa_cli', '-p', '/run/wpa_supplicant', '-i', 'wlan0', 'list_networks', ns=lab.names['dut']).stdout
 
 
 def test_empty_scan(lab):
@@ -170,8 +169,6 @@ def test_metering_persists_and_matches_runtime_identity(lab, metered):
   identifier = start_connected(lab)
   lab.call('set_current_network_metered', metered)
   lab.wait(lambda s: s['metered'] == metered)
-  active = Path('/run/openpilot-wifi/active_profile')
-  lab.wait_external(lambda: active.exists() and active.read_text().split() == [identifier, str(metered)])
   run('nmcli', 'connection', 'reload', ns=lab.names['dut'])
   value = run('nmcli', '-g', 'connection.metered', 'connection', 'show', identifier, ns=lab.names['dut']).stdout.strip()
   assert value in ({'unknown', '0'}, {'yes', '1'}, {'no', '2'})[metered]
@@ -195,7 +192,7 @@ def test_failed_metering_preserves_saved_policy(lab):
 
 def test_navigation_does_not_disconnect(lab):
   start_connected(lab)
-  pid_file = Path('/run/openpilot-wpa/wpa_supplicant.pid')
+  pid_file = Path('/run/wpa_supplicant/wlan0.pid')
   pid = pid_file.read_text()
   for active in (False, True, False, True):
     lab.call('set_active', active)
@@ -217,7 +214,7 @@ def test_dhcp_timeout_then_another_selection(lab):
 @pytest.mark.parametrize('crash', [False, True])
 def test_manager_restart_preserves_working_station(lab, crash):
   start_connected(lab)
-  files = [Path('/run/openpilot-wpa/wpa_supplicant.pid'), Path('/run/openpilot-wifi/udhcpc-wlan0.pid')]
+  files = [Path('/run/wpa_supplicant/wlan0.pid'), Path('/run/udhcpc.wlan0.pid')]
   pids = [path.read_text() for path in files]
   lab.stop_manager(crash=crash)
   lab.http('dut', 'wlan0')
@@ -239,7 +236,7 @@ def test_wifi_lte_priority_and_ap_loss(lab):
   assert 'dev wlan0' in run('ip', 'route', 'get', SERVER, ns=lab.names['dut']).stdout
 
 
-@pytest.mark.parametrize('pid_path', ['/run/openpilot-wpa/wpa_supplicant.pid', '/run/openpilot-wifi/udhcpc-wlan0.pid'])
+@pytest.mark.parametrize('pid_path', ['/run/wpa_supplicant/wlan0.pid', '/run/udhcpc.wlan0.pid'])
 def test_connected_service_failure_recovers(lab, pid_path):
   start_connected(lab)
   path = Path(pid_path)
@@ -268,8 +265,8 @@ def test_station_tethering_station_and_forwarding(lab):
   lab.wait(lambda s: s['tethering'])
   lab.call('set_tethering_active', False)
   lab.connected('Test A')
-  assert not Path('/run/openpilot-wifi/dnsmasq.pid').exists()
-  assert 'OPENPILOT_TETHERING' not in run('iptables-legacy-save', ns=lab.names['dut']).stdout
+  assert not Path('/run/dnsmasq.wlan0.pid').exists()
+  assert 'openpilot-tethering' not in run('iptables-legacy-save', ns=lab.names['dut']).stdout
 
 
 @pytest.mark.parametrize('active', [False, True])
@@ -414,12 +411,25 @@ def test_networkmanager_works_before_ui_and_after_explicit_handoff(lab):
   lab.call('set_current_network_metered', 1)
   lab.wait(lambda s: s['metered'] == 1)
   lab.stop_manager()
-  # Exercise the real handoff primitives, not a checkout/reboot of the old UI.
-  run(sys.executable, '-c',
-      'from openpilot.system.ui.lib import wpa_supplicant as w; '
-      + 'from openpilot.system.ui.lib.dhcp_client import DhcpClient; '
-      + 'assert DhcpClient().stop(); assert w.stop(w.WPA_SUPPLICANT_CONF); assert w.restore_networkmanager()',
-      ns=lab.names['dut'])
+  # v3 never hands wlan0 back by itself; this is the documented rollback: stop the daemons, let NetworkManager manage wlan0 again
+  pids = []
+  for pid_file in ('/run/dnsmasq.wlan0.pid', '/run/udhcpc.wlan0.pid', '/run/wpa_supplicant/wlan0.pid'):
+    path = Path(pid_file)
+    if path.exists():
+      pid = int(path.read_text())
+      os.kill(pid, signal.SIGTERM)
+      pids.append(pid)
+
+  def stopped(pid):
+    try:
+      state = Path(f'/proc/{pid}/stat').read_text().rpartition(') ')[2].split(maxsplit=1)[0]
+    except FileNotFoundError:
+      return True
+    return state == 'Z'
+
+  lab.wait_external(lambda: all(stopped(pid) for pid in pids))
+  lab.wait_external(lambda: not Path('/run/wpa_supplicant/wlan0').exists())
+  run('nmcli', 'device', 'set', 'wlan0', 'managed', 'yes', ns=lab.names['dut'])
   run('nmcli', '--wait', '20', 'connection', 'up', identifier, ns=lab.names['dut'])
   lab.http('dut', 'wlan0')
   value = run('nmcli', '-g', 'connection.metered', 'connection', 'show', identifier, ns=lab.names['dut']).stdout.strip()

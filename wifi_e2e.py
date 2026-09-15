@@ -136,11 +136,13 @@ class WifiLab:
     return proc
 
   def setup(self):
-    for path in (PROFILE_DIR, RUNTIME_PROFILE_DIR, Path('/run/openpilot-wpa'), Path('/run/openpilot-wifi'),
+    for path in (PROFILE_DIR, RUNTIME_PROFILE_DIR, Path('/run/wpa_supplicant'),
                  Path('/etc/netplan'), Path('/var/lib/NetworkManager')):
       path.mkdir(parents=True, exist_ok=True)
       for child in path.iterdir():
         shutil.rmtree(child) if child.is_dir() else child.unlink()
+    for path in (Path('/run/udhcpc.wlan0.pid'), Path('/run/dnsmasq.wlan0.pid')):
+      path.unlink(missing_ok=True)
     for path in (Path('/run/dbus/system_bus_socket'), Path('/run/dbus/pid')):
       path.unlink(missing_ok=True)
     radios = []
@@ -301,7 +303,7 @@ class WifiLab:
 
   def connected(self, ssid):
     state = self.wait(lambda s: s['connected'] == ssid and bool(s['ip']))
-    assert 'wpa_state=COMPLETED' in run('wpa_cli', '-p', '/run/openpilot-wpa', '-i', 'wlan0', 'status', ns=self.names['dut']).stdout
+    assert 'wpa_state=COMPLETED' in run('wpa_cli', '-p', '/run/wpa_supplicant', '-i', 'wlan0', 'status', ns=self.names['dut']).stdout
     assert 'metric 600' in run('ip', '-4', 'route', 'show', 'default', 'dev', 'wlan0', ns=self.names['dut']).stdout
     resolver = run('cat', '/etc/resolv.conf', ns=self.names['dut']).stdout
     assert f'nameserver {SERVER}' in resolver, 'The Wi-Fi DHCP DNS server was not installed'
@@ -354,7 +356,7 @@ class WifiLab:
         continue
       commands = [('ip', '-br', 'addr'), ('ip', 'route'), ('iw', 'dev')]
       if role == 'dut':
-        commands += [('nmcli', 'device'), ('wpa_cli', '-p', '/run/openpilot-wpa', '-i', 'wlan0', 'status')]
+        commands += [('nmcli', 'device'), ('wpa_cli', '-p', '/run/wpa_supplicant', '-i', 'wlan0', 'status')]
       with (self.directory / f'{role}-state.log').open('w') as log:
         for command in commands:
           try:
