@@ -4,6 +4,7 @@ from pathlib import Path
 
 import pytest
 
+from openpilot.system.ui.lib.wifi_manager import UDHCPC_SCRIPT_PATH
 from wifi_e2e import PROFILE_DIR, SERVER, WifiLab, keyfile_profiles, run
 
 
@@ -221,6 +222,45 @@ def test_manager_restart_preserves_working_station(lab, crash):
   lab.start_manager()
   lab.connected('Test A')
   assert [path.read_text() for path in files] == pids
+
+
+def test_udhcpc_connected_prefix_loses_to_wired_shared_subnet(lab):
+  dut, wan = lab.names['dut'], lab.names['wan']
+  run('ip', 'route', 'del', 'default', 'via', '10.200.1.1', 'dev', 'wwan0', 'metric', '700', ns=dut)
+  run('ip', 'addr', 'del', '10.200.1.2/24', 'dev', 'wwan0', ns=dut)
+  run('ip', 'addr', 'del', '10.200.1.1/24', 'dev', 'wan1', ns=wan)
+  run('ip', 'addr', 'add', '192.168.1.2/24', 'dev', 'wwan0', ns=dut)
+  run('ip', 'addr', 'add', '192.168.1.1/24', 'dev', 'wan1', ns=wan)
+  run('ip', 'route', 'del', '192.168.1.0/24', 'dev', 'wwan0', ns=dut)
+  run('ip', 'route', 'add', '192.168.1.0/24', 'dev', 'wwan0', 'metric', '100', ns=dut)
+  run('ip', 'route', 'add', 'default', 'via', '192.168.1.1', 'dev', 'wwan0', 'metric', '100', ns=dut)
+  wired_prefix = run('busybox', 'ip', '-4', 'route', 'show', 'dev', 'wwan0', 'proto', 'kernel', 'scope', 'link', ns=dut).stdout.splitlines()
+  assert [line.split() for line in wired_prefix] == [['192.168.1.0/24', 'dev', 'wwan0', 'metric', '100']]
+
+  hook_env = ('UDHCPC_DEFAULT_SCRIPT=/etc/udhcpc/default.script', 'interface=wlan0', 'ip=192.168.1.3',
+              'subnet=255.255.255.0', 'router=192.168.1.1', 'dns=198.18.0.2')
+  run('env', *hook_env, UDHCPC_SCRIPT_PATH, 'bound', ns=dut)
+
+  lookup = run('ip', '-4', 'route', 'get', '192.168.1.1', 'from', '192.168.1.2', ns=dut).stdout
+  assert 'dev wwan0' in lookup, lookup
+  wlan_prefix = run('busybox', 'ip', '-4', 'route', 'show', 'dev', 'wlan0', 'proto', 'kernel', 'scope', 'link', ns=dut).stdout.splitlines()
+  assert [line.split() for line in wlan_prefix] == [['192.168.1.0/24', 'dev', 'wlan0', 'src', '192.168.1.3', 'metric', '600']]
+  assert run('busybox', 'ip', '-4', 'route', 'show', 'dev', 'wwan0', 'proto', 'kernel', 'scope', 'link', ns=dut).stdout.splitlines() == wired_prefix
+  defaults = [line.split() for line in run('busybox', 'ip', '-4', 'route', 'show', 'default', ns=dut).stdout.splitlines()]
+  assert defaults == [['default', 'via', '192.168.1.1', 'dev', 'wwan0', 'metric', '100'],
+                      ['default', 'via', '192.168.1.1', 'dev', 'wlan0', 'metric', '600']]
+
+  run('ip', 'route', 'add', '203.0.113.0/24', 'via', '192.168.1.1', 'dev', 'wlan0', ns=dut)
+  run('env', *hook_env, UDHCPC_SCRIPT_PATH, 'renew', ns=dut)
+  assert run('busybox', 'ip', '-4', 'route', 'show', '203.0.113.0/24', ns=dut).stdout.split() == [
+    '203.0.113.0/24', 'via', '192.168.1.1', 'dev', 'wlan0']
+  assert run('busybox', 'ip', '-4', 'route', 'show', 'dev', 'wlan0', 'proto', 'kernel', 'scope', 'link', ns=dut).stdout.splitlines() == wlan_prefix
+  assert [line.split() for line in run('busybox', 'ip', '-4', 'route', 'show', 'default', ns=dut).stdout.splitlines()] == defaults
+  assert run('busybox', 'ip', '-4', 'route', 'show', 'dev', 'wwan0', 'proto', 'kernel', 'scope', 'link', ns=dut).stdout.splitlines() == wired_prefix
+
+  run('ip', 'link', 'set', 'wlan0', 'down', ns=dut)
+  down_lookup = run('ip', '-4', 'route', 'get', '192.168.1.1', 'from', '192.168.1.2', ns=dut).stdout
+  assert 'dev wwan0' in down_lookup, down_lookup
 
 
 def test_wifi_lte_priority_and_ap_loss(lab):

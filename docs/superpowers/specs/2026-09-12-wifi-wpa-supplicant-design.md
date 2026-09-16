@@ -67,7 +67,7 @@ harness. They use exactly:
 | --- | --- |
 | `system/ui/lib/wifi_manager.py` | Rewritten. Target about 600 lines. |
 | `system/ui/lib/wpa_supplicant.conf` | New, static: `ctrl_interface=DIR=/run/wpa_supplicant GROUP=netdev` and `update_config=0`. No secrets. |
-| `system/ui/lib/udhcpc.script` | New, executable. Runs `/etc/udhcpc/default.script "$1"`, then on `bound`/`renew` replaces the wlan0 default route with metric 600. |
+| `system/ui/lib/udhcpc.script` | New, executable. Runs `/etc/udhcpc/default.script "$1"`, then on `bound`/`renew` sets the wlan0 default route and its current-IP kernel/link connected route to metric 600. |
 | `system/ui/lib/tests/test_wifi_manager.py` | New. Replaces `test_handle_state_change.py`. |
 | `system/ui/lib/networkmanager.py` | Deleted. |
 | `system/ui/lib/tests/test_handle_state_change.py` | Deleted. |
@@ -245,7 +245,7 @@ In `andiradulescu/openpilot-wifi-validation` (this repository, branch `wifi-v3`)
   removed `restore_networkmanager` snippet and instead kills the v3 daemons and runs `nmcli dev set wlan0 managed yes`
   itself, which is the documented rollback procedure.
 - Build a disposable QEMU Ubuntu 24.04 arm64 VM with `linux-modules-extra` for `mac80211_hwsim` (OrbStack's kernel
-  lacks it). Run `--suite unit` and the full `--suite hwsim` matrix against the v3 SHA; record manifests.
+  lacks it). Run `--suite unit` and the full `--suite hwsim` matrix against the v3 SHA; record manifests. The hwsim suite invokes the real stock DHCP hook through the repository hook with wwan0 and wlan0 both on 192.168.1.0/24, confirms wlan0's connected prefix is metric 600, and confirms a source-bound lookup from the wired address chooses wwan0 before and after wlan0 is down.
 - Device pass on the comma three at 192.168.1.105 (currently on PR #26 code, so install v3, reboot, verify adoption,
   station, hotspot with a real client, UI kill survival, reboot autoconnect) and on a comma four for the LTE/ppp0
   priority and tethering over cellular. The comma four host is still to be named by Andi.

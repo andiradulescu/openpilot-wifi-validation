@@ -1972,21 +1972,38 @@ class TestShippedFiles(OpenpilotTestCase):
       fake_bin = os.path.join(d, "bin")
       os.makedirs(fake_bin)
       log = os.path.join(d, "calls")
-      write(os.path.join(fake_bin, "busybox"), f'#!/bin/sh\necho "$@" >> {log}\n')
+      write(os.path.join(fake_bin, "busybox"), f'''#!/bin/sh
+if [ "$1" = ip ] && [ "$2" = -4 ] && [ "$3" = route ] && [ "$4" = show ]; then
+  echo "$@" >> {log}
+  if [ "$subnet" != 255.255.255.255 ]; then
+    printf '%s\\n' '10.0.0.0/25 proto kernel scope link src 10.0.0.20' '10.0.0.0/24 proto kernel scope link src 10.0.0.2'
+  fi
+elif [ "$1" = awk ]; then
+  shift
+  awk "$@"
+else
+  echo "$@" >> {log}
+fi
+''')
       os.chmod(os.path.join(fake_bin, "busybox"), 0o755)
       write(os.path.join(d, "default.script"), f'#!/bin/sh\necho "default $1" >> {log}\n')
       os.chmod(os.path.join(d, "default.script"), 0o755)
       env = {"PATH": f"{fake_bin}:/usr/bin:/bin", "UDHCPC_DEFAULT_SCRIPT": os.path.join(d, "default.script"),
-             "interface": "wlan0", "router": "10.0.0.1 10.0.0.2", "subnet": "255.255.255.0"}
+             "interface": "wlan0", "ip": "10.0.0.2", "router": "10.0.0.1 10.0.0.2", "subnet": "255.255.255.0"}
       subprocess.run([wifi_manager.UDHCPC_SCRIPT_PATH, "bound"], check=True, env=env)
       subprocess.run([wifi_manager.UDHCPC_SCRIPT_PATH, "deconfig"], check=True, env=env)
       with open(log) as f:
-        self.assertEqual(f.read().splitlines(), ["default bound", "ip -4 route flush exact 0.0.0.0/0 dev wlan0",
+        self.assertEqual(f.read().splitlines(), ["default bound", "ip -4 route show dev wlan0 proto kernel scope link",
+                                                 "ip -4 route del 10.0.0.0/24 dev wlan0",
+                                                 "ip -4 route add 10.0.0.0/24 dev wlan0 proto kernel scope link src 10.0.0.2 metric 600",
+                                                 "ip -4 route flush exact 0.0.0.0/0 dev wlan0",
                                                  "ip -4 route add default via 10.0.0.1 dev wlan0 metric 600", "default deconfig"])
       env["subnet"] = "255.255.255.255"
       subprocess.run([wifi_manager.UDHCPC_SCRIPT_PATH, "renew"], check=True, env=env)
       with open(log) as f:
-        self.assertEqual(f.read().splitlines()[-1], "ip -4 route add default via 10.0.0.1 dev wlan0 onlink metric 600")
+        self.assertEqual(f.read().splitlines()[-4:], ["default renew", "ip -4 route show dev wlan0 proto kernel scope link",
+                                                       "ip -4 route flush exact 0.0.0.0/0 dev wlan0",
+                                                       "ip -4 route add default via 10.0.0.1 dev wlan0 onlink metric 600"])
 ```
 
 - [ ] **Step 2: Run the tests, expect failures**
@@ -2012,6 +2029,12 @@ update_config=0
 
 case "$1" in
   bound|renew)
+    prefix=$(busybox ip -4 route show dev "$interface" proto kernel scope link |
+      busybox awk -v ip="$ip" '$1 != "default" { for (i = 1; i < NF; i++) if ($i == "src" && $(i + 1) == ip) { print $1; exit } }')
+    if [ -n "$prefix" ]; then
+      busybox ip -4 route del "$prefix" dev "$interface"
+      busybox ip -4 route add "$prefix" dev "$interface" proto kernel scope link src "$ip" metric 600
+    fi
     if [ -n "$router" ]; then
       [ ".$subnet" = .255.255.255.255 ] && onlink=onlink || onlink=
       busybox ip -4 route flush exact 0.0.0.0/0 dev "$interface"
@@ -2064,6 +2087,40 @@ git log --oneline 0cf294d85..HEAD
 ```
 
 Expected: exactly two commits. Re-run the test command once more on the squashed tree.
+
+---
+
+
+### Amendment: connected-prefix Wi-Fi route priority
+
+The DHCP hook must keep the current-IP kernel/link connected route at metric 600 as well as the Wi-Fi default route. A default-route-only policy leaves the stock metric-0 wlan0 prefix preferred over Ethernet's metric-100 prefix whenever both interfaces use the same subnet.
+
+**Files:**
+- Modify openpilot/system/ui/lib/udhcpc.script
+- Modify openpilot/system/ui/lib/tests/test_wifi_manager.py
+- Modify this repository's test_wifi_e2e.py
+
+- [ ] **Step 1: Add the regression tests and establish red evidence**
+
+Extend TestShippedFiles.test_udhcpc_script_sets_wifi_metric so its fake BusyBox emits a nonmatching src 10.0.0.20 route followed by current-IP kernel/link route 10.0.0.0/24 src 10.0.0.2 for ip -4 route show dev wlan0 proto kernel scope link. The exact normal bound list adds the show, delete, and metric-600 add before the existing default operations. The exact /32 renew list has no connected-prefix operations and retains the existing onlink default assertion. The Task 7 code block contains the exact amended method. Normal renew idempotence is proved by the real Linux FIB test below.
+
+Add one hwsim test using the existing WifiLab isolated DUT/WAN namespaces without an AP or WifiManager. Readdress DUT wwan0 and WAN wan1 to 192.168.1.2/24 and 192.168.1.1/24. Remove only the automatic wired connected route and add the same prefix at metric 100 plus a wired default at metric 100. Invoke the actual repository hook with the real stock script, interface=wlan0, ip=192.168.1.3, subnet=255.255.255.0, and router=192.168.1.1.
+
+Before the hook change, preserve raw ip -4 route get 192.168.1.1 from 192.168.1.2 output and fail because dev wlan0 proves the stock WLAN connected prefix at metric 0 wins over the wired metric-100 prefix. This is route-policy evidence only: WLAN association is unused and setting its link down is not physical disconnect acceptance.
+
+- [ ] **Step 2: Implement the connected-prefix route priority**
+
+After the stock-hook call, derive only the current-IP kernel/link route with the exact field-equality block in Task 7. Do not match or alter classless routes. A /32 lease has no matching connected route, so it retains only the existing onlink default handling.
+
+- [ ] **Step 3: Prove the real hook and Linux FIB behavior in QEMU**
+
+On green, assert exactly one WLAN current-IP kernel/link prefix at metric 600 with src and scope link, the WLAN default at metric 600, the wired metric-100 prefix/default unchanged, and a source-bound route to the actual wired peer remains dev wwan0. Add a classless WLAN route, invoke renew, and assert that route survives and the WLAN prefix/default remain one metric-600 route. Set WLAN down and assert the same source-bound lookup remains dev wwan0.
+
+Orb's Ubuntu VM is unavailable. Synchronize exact candidate hook, in-tree test, and harness test to QEMU, record host and guest SHA256 values plus QEMU git HEAD and status, then run /workspace/openpilot/.venv/bin/python /workspace/openpilot/tools/test_runner.py /workspace/openpilot/openpilot/system/ui/lib/tests/test_wifi_manager.py -v, followed by the direct isolated hwsim filter. Run /workspace/openpilot/.venv/bin/ruff check /workspace/openpilot/openpilot/system/ui/lib and /workspace/openpilot/.venv/bin/ty check /workspace/openpilot/openpilot/system/ui/lib/wifi_manager.py /workspace/openpilot/openpilot/system/ui/lib/tests/test_wifi_manager.py after green. Do not use --allow-dirty, and do not present --sha as validation of dirty candidate bytes; hashes establish candidate provenance.
+
+- [ ] **Step 4: Preserve the approved source history shape**
+
+After validation and separate review, retain Task 7's exact two-commit squash: udhcpc.script belongs in wifi: replace NetworkManager with wpa_supplicant, and additions to test_wifi_manager.py belong in wifi: test WifiManager against a fake wpa_supplicant.
 
 ---
 
@@ -2248,7 +2305,7 @@ Wait for the device, then confirm the clean state before the UI has touched Wi-F
 ssh comma@192.168.1.199 'sleep 60; nmcli -g GENERAL.STATE dev show wlan0; cat /run/wpa_supplicant/wlan0.pid; ps -o pid,args -p $(cat /run/wpa_supplicant/wlan0.pid) $(cat /run/udhcpc.wlan0.pid); ip -4 route; wpa_cli -i wlan0 status | grep -E "wpa_state|ssid|ip_address"; resolvectl status wlan0 | grep "DNS Servers"'
 ```
 
-Expected: `10 (unmanaged)`, our supplicant with `-c .../wpa_supplicant.conf`, udhcpc with the repo script, wlan0 default route at metric 600 below eth0 at 100, `COMPLETED` on the saved network, DNS servers set.
+Expected: `10 (unmanaged)`, our supplicant with `-c .../wpa_supplicant.conf`, udhcpc with the repo script, wlan0 default route and current-IP kernel/link connected prefix at metric 600 below eth0 at 100, `COMPLETED` on the saved network, DNS servers set. Before Wi-Fi-disconnect UI tests, run a source-bound route lookup to the actual SSH client from eth0's management address and confirm it selects eth0; an internet/default-route lookup alone does not cover this shared-subnet case.
 
 - [ ] **Step 3: UI flows on the touchscreen (Andi drives, agent verifies over SSH)**
 
