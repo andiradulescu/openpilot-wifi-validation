@@ -55,3 +55,9 @@ Before any hotspot retry, the source-bound management lookup unexpectedly select
 No hotspot retry was requested after discovering this failed Ethernet-routing prerequisite, and no route correction was applied. Physical password-change acceptance remains unverified. Proposed temporary correction: `sudo ip -4 route replace 192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100`, followed by source-bound route verification. The cause of the missing route is not established.
 
 Deployment used a local bundle rather than a GitHub fetch, preserving the user's requirement to see physical success before publication. No push or PR action was performed.
+
+## Approved temporary Ethernet-route restoration
+
+At device time 2026-09-26 16:42:40 UTC, applied the explicitly approved command `sudo ip -4 route replace 192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100`. The source-bound route from 192.168.1.199 to the actual SSH client 192.168.1.171 then selected eth0. Both Ethernet metric-100 and WLAN metric-600 connected routes were present. Same device boot and source HEAD; station remained COMPLETED on systeam5. Evidence: `10-device-route-restored.log`.
+
+This is a temporary runtime route, not a persistent fix for the missing-route cause. The physical password-change and phone browsing retry has been requested; its result is pending. No source changes or unit/lint runs were made for this route restoration.
