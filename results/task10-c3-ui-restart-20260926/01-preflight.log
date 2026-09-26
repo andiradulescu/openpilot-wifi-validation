@@ -1,0 +1,26 @@
+Sat Sep 26 04:49:37 PM UTC 2026
+comma-cb80a5fa
+5afbedc8-d038-49d4-a756-20d33f6c1339
+Offroad=1
+6b21c429302be2361be2c3fe6037b4b6611b1ec6
+bssid=00:0a:f5:4f:ed:d6
+freq=2437
+ssid=weedle-bbc2
+id=3
+mode=AP
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.43.1
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+38624
+56144
+1790527440 f2:d2:3c:24:f9:43 192.168.43.186 OnePlus-6 01:f2:d2:3c:24:f9:43
+comma: 1 windows (created Tue Jul 28 15:04:49 2026)
+2a02:2f04:c20c:d600:f0f5:72c4:cb83:e50e from :: dev eth0 proto ra src 2a02:2f04:c20c:d600:ac97:ae49:67a5:8ca5 metric 100 pref medium
+-P POSTROUTING ACCEPT
+-A POSTROUTING -s 192.168.43.0/24 ! -d 192.168.43.0/24 -m comment --comment openpilot-tethering -j MASQUERADE

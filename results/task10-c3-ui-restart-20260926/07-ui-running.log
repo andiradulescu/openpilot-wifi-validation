@@ -1,0 +1,65 @@
+Sat Sep 26 04:53:14 PM UTC 2026
+38624
+56144
+bssid=00:0a:f5:4f:ed:d6
+freq=2437
+ssid=weedle-bbc2
+id=3
+mode=AP
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.43.1
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+comma: 1 windows (created Sat Sep 26 16:52:45 2026)
+16:52:57.171 INFO    modem: port found, initializing
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+pid 320's current affinity list: 3
+pid 320's new affinity list: 3
+16:52:57.614 INFO    modem: modem identifiers redacted
+mnc=208011 ver=EG25GGBR07A08M2G
+16:52:57.623 INFO    modem: AT AT+CGDCONT=0,"IP","" failed: ERROR
+16:52:57.688 INFO    modem: APN '(network-provided)' written to CID 1, roaming=o
+n
+16:52:57.691 INFO    modem: INITIALIZING -> SEARCHING
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+
+-P POSTROUTING ACCEPT
+-A POSTROUTING -s 192.168.43.0/24 ! -d 192.168.43.0/24 -m comment --comment openpilot-tethering -j MASQUERADE
+net.ipv4.ip_forward = 0

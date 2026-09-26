@@ -1,0 +1,24 @@
+Sat Sep 26 04:51:18 PM UTC 2026
+AFTER_PIDS
+38624
+56144
+bssid=00:0a:f5:4f:ed:d6
+freq=2437
+ssid=weedle-bbc2
+id=3
+mode=AP
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.43.1
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+1790527440 f2:d2:3c:24:f9:43 192.168.43.186 OnePlus-6 01:f2:d2:3c:24:f9:43
+-P POSTROUTING ACCEPT
+-A POSTROUTING -s 192.168.43.0/24 ! -d 192.168.43.0/24 -m comment --comment openpilot-tethering -j MASQUERADE
+net.ipv4.ip_forward = 1
+no server running on /tmp/tmux-1000/default
+no server running on /tmp/tmux-1000/default

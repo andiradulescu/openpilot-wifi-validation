@@ -1,0 +1,41 @@
+Sat Sep 26 04:52:20 PM UTC 2026
+38624
+56144
+bssid=00:0a:f5:4f:ed:d6
+freq=2437
+ssid=weedle-bbc2
+id=3
+mode=AP
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.43.1
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+/data/openpilot has been modified, skipping overlay update installation
+Traceback (most recent call last):
+  File "/data/openpilot/openpilot/system/manager/./build.py", line 9, in <module
+>
+    from openpilot.common.hardware import HARDWARE, AGNOS
+  File "/data/openpilot/openpilot/common/hardware/__init__.py", line 4, in <modu
+le>
+    from openpilot.common.hardware.base import HardwareBase
+  File "/data/openpilot/openpilot/common/hardware/base.py", line 5, in <module>
+    from openpilot.cereal import log
+  File "/data/openpilot/openpilot/cereal/__init__.py", line 2, in <module>
+    import capnp
+ModuleNotFoundError: No module named 'capnp'
+Traceback (most recent call last):
+  File "/data/openpilot/openpilot/system/manager/./manager.py", line 9, in <modu
+le>
+    from openpilot.cereal import log
+  File "/data/openpilot/openpilot/cereal/__init__.py", line 2, in <module>
+    import capnp
+ModuleNotFoundError: No module named 'capnp'
+
+
+
+
