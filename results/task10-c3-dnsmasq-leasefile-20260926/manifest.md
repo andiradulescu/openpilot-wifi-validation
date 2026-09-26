@@ -71,3 +71,11 @@ Dnsmasq PID 72500 was running with `--dhcp-leasefile=/run/dnsmasq.wlan0.leases`.
 The optional `iw dev wlan0 station dump` inspection could not run because `iw` is not installed; no package was installed. DHCP evidence does not depend on that command. The user subsequently confirmed: "Page loads with mobile data off". This is physical browser acceptance, distinct from the SSH-observed lease and NAT evidence. Hotspot-off restoration, password change, UI restart survival, and the other Task 10 checks remain pending.
 
 Outcome: the original Enable Tethering failure is resolved on this comma three at `6ca796e338a955e16fd6c63869ee4c19baa81d5b`. Hotspot startup, DHCP, and client HTTPS browsing passed. The separately observed cleanup timeout has not been independently reproduced or declared fixed. No new unit or lint runs were performed during this device-only verification.
+
+## Hotspot off and station restoration
+
+The user confirmed reconnection to `systeam5` after turning tethering off. At device time 2026-09-26 16:23:51 UTC, wired SSH confirmed `COMPLETED`, `mode=station`, SSID `systeam5`, IPv4 `192.168.1.105`. Dnsmasq was absent, the tagged NAT rule was gone, and LIST_NETWORKS contained only the three station networks, with systeam5 current. Udhcpc PID 77305 was running with the repository hook.
+
+WLAN default and connected-prefix routes both had metric 600; eth0 equivalents remained metric 100. A source-bound route to the management client selected eth0. Evidence: `09-device-hotspot-off.log`. Normal hotspot shutdown and station reconnection passed. This does not independently reproduce the earlier error-path cleanup timeout.
+
+Next physical check requested: change the hotspot password while enabled, reconnect the phone with the new password, and verify HTTPS with mobile data off. No password value is requested or recorded. No new unit or lint runs for this device-only check.
