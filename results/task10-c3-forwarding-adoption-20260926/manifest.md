@@ -28,7 +28,7 @@ The clean, offroad comma three received the local Git bundle and checked out 886
 
 At 18:06:54 UTC, the new UI process was running, the device remained on 8869c2f563, forwarding was still 1, WPA reported COMPLETED in AP mode, and the phone lease remained present. Management traffic to the Mac selected eth0 and direct Ethernet IPv4 SSH succeeded. The first diagnostic NAT check incorrectly used iptables (nf_tables) and failed with exit 4. A corrected read using the implementation's iptables-legacy verified the exact openpilot-tethering MASQUERADE rule. No firewall change was made by either check.
 
-A follow-up `ping -c 10 -W 2 -I wlan0 192.168.43.186` received 10/10 replies, 0% loss, with maximum latency 1110.908 ms. Slow replies are a possible contributor to the earlier one-second timeouts, not a proven explanation for all 15. Fresh HTTPS confirmation with mobile data disabled and without reopening Network settings is pending. Evidence: 09-restart-preflight.log through 12-restart-followup.log.
+A follow-up `ping -c 10 -W 2 -I wlan0 192.168.43.186` received 10/10 replies, 0% loss, with maximum latency 1110.908 ms. Slow replies are a possible contributor to the earlier one-second timeouts, not a proven explanation for all 15. In response to the request to load a fresh HTTPS page with mobile data off and without reopening Network settings, the user confirmed: "phone is working fine". This is user-observed browsing confirmation after the restart, separate from the SSH measurements. Evidence: 09-restart-preflight.log through 12-restart-followup.log.
 
 ## Ethernet IPv4 investigation
 
@@ -40,7 +40,7 @@ The current device route selects eth0 for the management client. The Ethernet pr
 
 Approved amendment: retain an unset policy until the UI supplies it, instead of treating unset as False. The existing test's old expected adoption sysctl was replaced with an exact no-write expectation and explicit OFF/ON assertions; no assertions were dropped to hide a failure. The plan restart command now includes the checkout working directory and existing venv, both proven necessary in the prior physical run. Local Git bundles replace publication while validation is ongoing. No other source files, UI, hardware.py, or unrelated review findings changed. No GitHub push or PR action.
 
-Forwarding preservation across the physical UI restart is verified. Browser confirmation remains pending and uninterrupted phone connectivity was not established. Station-mode restart, remaining Task 10 checks, full hwsim matrix, and Ethernet root-cause resolution remain incomplete.
+Forwarding preservation across the physical UI restart is verified. Post-restart browsing is confirmed by the user; uninterrupted phone connectivity was not established. Station-mode restart, remaining Task 10 checks, full hwsim matrix, and Ethernet root-cause resolution remain incomplete.
 
 ## Size
 
