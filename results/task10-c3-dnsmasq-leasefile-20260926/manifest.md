@@ -79,3 +79,13 @@ The user confirmed reconnection to `systeam5` after turning tethering off. At de
 WLAN default and connected-prefix routes both had metric 600; eth0 equivalents remained metric 100. A source-bound route to the management client selected eth0. Evidence: `09-device-hotspot-off.log`. Normal hotspot shutdown and station reconnection passed. This does not independently reproduce the earlier error-path cleanup timeout.
 
 Next physical check requested: change the hotspot password while enabled, reconnect the phone with the new password, and verify HTTPS with mobile data off. No password value is requested or recorded. No new unit or lint runs for this device-only check.
+
+## Password change while hotspot is active: failed
+
+The user enabled tethering, changed its password, and observed tethering turn off. On the same device revision and boot, wired SSH confirmed WPA INACTIVE, no AP network, all three station networks DISABLED, no dnsmasq process, and no tagged NAT rule. Udhcpc remained running.
+
+The UI traceback shows `_stop_tethering` failing inside `WpaCtrl.request` while awaiting `REMOVE_NETWORK`, with `TimeoutError: timed out`, followed by `Failed to set tethering password`. The implementation's command receive timeout is two seconds. The exception prevents the normal `ENABLE_NETWORK all` and replacement AP startup. A later independent `wpa_cli ping` returned PONG; Ethernet management remained reachable.
+
+Dnsmasq exited normally at 16:24:54.757 UTC. Driver teardown messages appeared at 16:24:56.827 UTC, including `Failed:wlansap_stop` and `Failed:WLANSAP_close`. These timestamps are consistent with slow teardown but are not a measurement of the REMOVE_NETWORK request/reply duration. They do not establish whether its reply was late or lost. The command socket is currently reused after receive timeouts, so a late reply can also be consumed by a subsequent command; this behavior requires a separate regression before any correction.
+
+Evidence: `10-password-change-failure.log`, `11-password-change-system.log`, `12-password-change-teardown.log`. No password or PSK was read or recorded. This investigation changed no device state or production code, and ran no unit/lint checks. Task 10 password-change acceptance failed; earlier hotspot startup, DHCP, browsing and normal-off checks remain individually valid.
