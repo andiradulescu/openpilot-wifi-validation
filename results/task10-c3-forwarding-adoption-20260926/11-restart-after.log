@@ -1,0 +1,31 @@
+Sat Sep 26 06:06:54 PM UTC 2026
+8869c2f5639eaab178954d60c23e939a6c050ceb
+3721 /usr/sbin/wpa_supplicant -u -s -O DIR=/run/wpa_supplicant GROUP=netdev
+38624 wpa_supplicant -B -i wlan0 -D nl80211 -c /data/openpilot/openpilot/system/ui/lib/wpa_supplicant.conf -P /run/wpa_supplicant/wlan0.pid
+56120 sudo udhcpc -i wlan0 -f -R -s /data/openpilot/openpilot/system/ui/lib/udhcpc.script -p /run/udhcpc.wlan0.pid
+56121 udhcpc -i wlan0 -f -R -s /data/openpilot/openpilot/system/ui/lib/udhcpc.script -p /run/udhcpc.wlan0.pid
+56144 dnsmasq --interface=wlan0 --bind-interfaces --except-interface=lo --dhcp-range=192.168.43.2,192.168.43.254,24h --pid-file=/run/dnsmasq.wlan0.pid --dhcp-leasefile=/run/dnsmasq.wlan0.leases
+93036 openpilot.selfdrive.ui.ui
+94229 bash -c date -u; cd /data/openpilot && git rev-parse HEAD; pgrep -af "selfdrive.ui|system.ui|ui.py|wpa_supplicant|dnsmasq"; sysctl net.ipv4.ip_forward; sudo wpa_cli -i wlan0 status; sudo cat /run/dnsmasq.wlan0.leases; sudo iptables -t nat -C POSTROUTING -s 192.168.43.0/24 ! -o wlan0 -j MASQUERADE; echo NAT_CHECK=$?; ip -4 route get 192.168.1.171 from 192.168.1.199; tmux list-sessions
+net.ipv4.ip_forward = 1
+bssid=00:0a:f5:4f:ed:d6
+freq=2437
+ssid=weedle-bbc2
+id=3
+mode=AP
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.43.1
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+1790527440 f2:d2:3c:24:f9:43 192.168.43.186 OnePlus-6 01:f2:d2:3c:24:f9:43
+Warning: Extension MASQUERADE revision 0 not supported, missing kernel module?
+iptables v1.8.10 (nf_tables): Could not fetch rule set generation id: Invalid argument
+NAT_CHECK=4
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+comma: 1 windows (created Sat Sep 26 18:04:19 2026)

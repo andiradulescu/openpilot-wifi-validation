@@ -22,9 +22,13 @@ Host, QEMU, and installed device file hashes match:
 - manager: `aa0a9125c68627ca15c4a73a4e652ebe2a07dd7591d9ad3a58f93e38849da6b5`
 - test: `c21b4d413a1d23b0cb8c87cc099d84cad46882fbe63d0dd91ba95e45f75f7876`
 
-## Device staging and pending physical verification
+## Physical UI restart verification
 
-The clean, offroad comma three received the local Git bundle and checked out 8869c2f563 over Ethernet IPv4. No reboot or UI restart has been performed for this candidate yet; the existing UI process still has its previous code loaded. Supplicant PID 38624 and dnsmasq PID 56144 remained live. Forwarding was still 0 from the earlier failed adoption test. The user has been asked to open Network → Advanced to reapply the existing UI policy before the enabled-forwarding survival retry. That action and the physical retry are pending. No claim of hardware correction is made yet.
+The clean, offroad comma three received the local Git bundle and checked out 8869c2f563 over Ethernet IPv4. After the user opened Network → Advanced, preflight verified forwarding=1 and the phone lease at 192.168.43.186. The UI was stopped at 18:03:35 UTC and restarted at 18:04:20 UTC using the checkout working directory and existing venv. Supplicant PID 38624 and dnsmasq PID 56144 remained unchanged throughout. The 40 individual `ping -c1 -W1 -I wlan0 192.168.43.186` probes recorded 25 replies and 15 timeouts. This is not a clean continuity pass.
+
+At 18:06:54 UTC, the new UI process was running, the device remained on 8869c2f563, forwarding was still 1, WPA reported COMPLETED in AP mode, and the phone lease remained present. Management traffic to the Mac selected eth0 and direct Ethernet IPv4 SSH succeeded. The first diagnostic NAT check incorrectly used iptables (nf_tables) and failed with exit 4. A corrected read using the implementation's iptables-legacy verified the exact openpilot-tethering MASQUERADE rule. No firewall change was made by either check.
+
+A follow-up `ping -c 10 -W 2 -I wlan0 192.168.43.186` received 10/10 replies, 0% loss, with maximum latency 1110.908 ms. Slow replies are a possible contributor to the earlier one-second timeouts, not a proven explanation for all 15. Fresh HTTPS confirmation with mobile data disabled and without reopening Network settings is pending. Evidence: 09-restart-preflight.log through 12-restart-followup.log.
 
 ## Ethernet IPv4 investigation
 
@@ -36,7 +40,7 @@ The current device route selects eth0 for the management client. The Ethernet pr
 
 Approved amendment: retain an unset policy until the UI supplies it, instead of treating unset as False. The existing test's old expected adoption sysctl was replaced with an exact no-write expectation and explicit OFF/ON assertions; no assertions were dropped to hide a failure. The plan restart command now includes the checkout working directory and existing venv, both proven necessary in the prior physical run. Local Git bundles replace publication while validation is ongoing. No other source files, UI, hardware.py, or unrelated review findings changed. No GitHub push or PR action.
 
-The enabled-forwarding physical restart, station-mode restart, remaining Task 10 checks, full hwsim matrix, and Ethernet root-cause resolution remain incomplete.
+Forwarding preservation across the physical UI restart is verified. Browser confirmation remains pending and uninterrupted phone connectivity was not established. Station-mode restart, remaining Task 10 checks, full hwsim matrix, and Ethernet root-cause resolution remain incomplete.
 
 ## Size
 
