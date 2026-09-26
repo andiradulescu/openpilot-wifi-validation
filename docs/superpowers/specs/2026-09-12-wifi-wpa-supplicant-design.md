@@ -81,6 +81,8 @@ Constants: `WPA_CTRL_DIR = /run/wpa_supplicant`, socket `/run/wpa_supplicant/wla
 `WPA_PID = /run/wpa_supplicant/wlan0.pid`, `UDHCPC_PID = /run/udhcpc.wlan0.pid`, `DNSMASQ_PID = /run/dnsmasq.wlan0.pid`.
 Root-owned processes are started with `sudo`, `start_new_session=True`, and stdio to `DEVNULL`, the same way `modem.py`
 starts pppd. Pidfiles are written by the daemons themselves (`-P` / `-p` / `--pid-file`).
+The dnsmasq lease file is `/run/dnsmasq.wlan0.leases`, explicitly selected with `--dhcp-leasefile`;
+The tested AGNOS image does not provide the default `/var/lib/misc` parent directory.
 
 Init runs in a background thread, as upstream does:
 
@@ -188,7 +190,8 @@ Start: set `WifiState(hotspot ssid, CONNECTING)`, kill udhcpc, add an AP network
 (`ssid <hex>`, `mode 2`, `frequency 2437`, `key_mgmt WPA-PSK`, `proto RSN`, `pairwise CCMP`, `psk "<psk>"`),
 `SELECT_NETWORK` it, wait for `AP-ENABLED`, then `sudo ip addr flush dev wlan0`, `sudo ip addr add
 192.168.43.1/24 dev wlan0`, `sudo dnsmasq --interface=wlan0 --bind-interfaces --except-interface=lo
---dhcp-range=192.168.43.2,192.168.43.254,24h --pid-file=DNSMASQ_PID`, `sudo iptables-legacy -t nat -A POSTROUTING
+--dhcp-range=192.168.43.2,192.168.43.254,24h --pid-file=DNSMASQ_PID --dhcp-leasefile=/run/dnsmasq.wlan0.leases`,
+`sudo iptables-legacy -t nat -A POSTROUTING
 -s 192.168.43.0/24 ! -d 192.168.43.0/24 -j MASQUERADE -m comment --comment openpilot-tethering`, and
 `sudo sysctl net.ipv4.ip_forward=<1 if the ipv4_forward flag else 0>`. Then `WifiState(hotspot ssid, CONNECTED)`,
 `ipv4_address = 192.168.43.1`, queue `activated`. The NAT rule matches by source subnet, as NetworkManager's shared mode

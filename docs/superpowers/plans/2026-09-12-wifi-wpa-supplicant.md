@@ -15,7 +15,7 @@
 - openpilot worktree: `/Volumes/Stuff/openpilot-wifi-v3`, branch `wifi-wpa-supplicant`, base comma/master `0cf294d85`. All openpilot paths below are relative to that worktree; the tree is nested, so source lives under `openpilot/`.
 - Only `openpilot/system/ui/lib/wifi_manager.py`, `openpilot/system/ui/lib/wpa_supplicant.conf`, `openpilot/system/ui/lib/udhcpc.script`, `openpilot/system/ui/lib/tests/test_wifi_manager.py`, `pyproject.toml` and `uv.lock` change; `openpilot/system/ui/lib/networkmanager.py` and `openpilot/system/ui/lib/tests/test_handle_state_change.py` are deleted. No UI, setup, updater or hardware.py edits.
 - Public surface of `WifiManager` stays byte-for-byte identical to comma/master (methods, properties, callbacks, `Network`, `WifiState`, `ConnectStatus`, `SecurityType`, `MeteredType`, `normalize_ssid`).
-- Control socket `/run/wpa_supplicant/wlan0`; pidfiles `/run/wpa_supplicant/wlan0.pid`, `/run/udhcpc.wlan0.pid`, `/run/dnsmasq.wlan0.pid`.
+- Control socket `/run/wpa_supplicant/wlan0`; pidfiles `/run/wpa_supplicant/wlan0.pid`, `/run/udhcpc.wlan0.pid`, `/run/dnsmasq.wlan0.pid`; dnsmasq lease file `/run/dnsmasq.wlan0.leases`.
 - Profile dirs: persistent `/data/etc/NetworkManager/system-connections` (write target), runtime `/run/NetworkManager/system-connections` (read only), netplan YAML `/data/etc/netplan/90-NM-<uuid>.yaml`.
 - Constants with sources: Wi-Fi route metric 600 (NetworkManager default Wi-Fi metric; eth 100, ppp0 1000 in modem.py), `DHCP_TIMEOUT_SECONDS = 45` (NetworkManager `ipv4.dhcp-timeout` default), tethering `192.168.43.1/24`, DHCP range `192.168.43.2,192.168.43.254,24h`, frequency 2437 (channel 6, NetworkManager `band=bg` default), default hotspot password `swagswagcomma`, dBm to percent `-40 dBm = 100 %`, `-100 dBm = 0 %` (NetworkManager `nm-wifi-utils.c`).
 - Firewall: `iptables-legacy` only (nf_tables iptables fails on the 4.9 kernel).
@@ -1577,7 +1577,7 @@ class TestTethering(OpenpilotTestCase):
     self.assertEqual(manager_env.sudo[0], ["kill", str(os.getpid())])  # udhcpc stopped before the mode switch
     self.assertIn(["ip", "addr", "replace", "192.168.43.1/24", "dev", "wlan0"], manager_env.sudo)
     self.assertIn(["dnsmasq", "--interface=wlan0", "--bind-interfaces", "--except-interface=lo", "--dhcp-range=192.168.43.2,192.168.43.254,24h",
-                   f"--pid-file={manager_env.dnsmasq_pid}"], manager_env.sudo)
+                   f"--pid-file={manager_env.dnsmasq_pid}", "--dhcp-leasefile=/run/dnsmasq.wlan0.leases"], manager_env.sudo)
     self.assertIn(["iptables-legacy", "-t", "nat", "-A", *wifi_manager.TETHERING_NAT_RULE], manager_env.sudo)
     self.assertEqual(manager_env.sudo[-1], ["sysctl", "net.ipv4.ip_forward=0"])
 
@@ -1798,7 +1798,8 @@ Add to `WifiManager`:
   def _ensure_tethering_services(self):
     _sudo("ip", "addr", "replace", f"{TETHERING_IP_ADDRESS}/24", "dev", WLAN)
     if not _pid_alive(DNSMASQ_PID_PATH):
-      _sudo("dnsmasq", f"--interface={WLAN}", "--bind-interfaces", "--except-interface=lo", f"--dhcp-range={TETHERING_DHCP_RANGE}", f"--pid-file={DNSMASQ_PID_PATH}")
+      _sudo("dnsmasq", f"--interface={WLAN}", "--bind-interfaces", "--except-interface=lo", f"--dhcp-range={TETHERING_DHCP_RANGE}",
+            f"--pid-file={DNSMASQ_PID_PATH}", f"--dhcp-leasefile=/run/dnsmasq.{WLAN}.leases")
     # source-subnet NAT as in NetworkManager's shared mode, so the uplink may change between eth0 and ppp0
     if _sudo("iptables-legacy", "-t", "nat", "-C", *TETHERING_NAT_RULE, check=False).returncode != 0:
       _sudo("iptables-legacy", "-t", "nat", "-A", *TETHERING_NAT_RULE)
@@ -2090,6 +2091,17 @@ Expected: exactly two commits. Re-run the test command once more on the squashed
 
 ---
 
+
+### Amendment: hotspot lease file on AGNOS
+
+Use `/run/dnsmasq.wlan0.leases` explicitly when starting dnsmasq. Its default `/var/lib/misc/dnsmasq.leases` has no parent directory on the tested AGNOS device, causing dnsmasq to exit with status 3.
+
+- [ ] Extend `TestTethering.test_tethering_on_then_off`'s exact dnsmasq argument assertion with `--dhcp-leasefile=/run/dnsmasq.wlan0.leases`; run the full Wi-Fi suite and confirm that missing argument causes the failure.
+- [ ] Add `f"--dhcp-leasefile=/run/dnsmasq.{WLAN}.leases"` to the existing dnsmasq launch, preserving process detachment and all other arguments.
+- [ ] Synchronize the test and manager to the existing QEMU checkout, record candidate hashes, run the full Wi-Fi suite and required Ruff/ty checks, and commit after green. Preserve the final two-commit source branch shape and rerun the suite after squashing.
+- [ ] Repeat Task 10 hotspot validation over wired SSH and with a physical client. Unit success does not establish hotspot DHCP, browsing, or cleanup-timeout recovery on hardware.
+
+---
 
 ### Amendment: connected-prefix Wi-Fi route priority
 
