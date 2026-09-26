@@ -1,0 +1,31 @@
+Sat Sep 26 03:31:05 PM UTC 2026
+comma-cb80a5fa
+b34746a2-124e-4b7d-a1cc-1c86cd8b0e5f
+6ca796e338a955e16fd6c63869ee4c19baa81d5b
+edddf19581f031ae50634f5002a6cb2595e45d99f8d308c621000f2891d4b061  openpilot/system/ui/lib/wifi_manager.py
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=2
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.105
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+ieee80211ac=1
+14: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 3000
+    inet 192.168.1.105/24 brd 192.168.1.255 scope global wlan0
+       valid_lft forever preferred_lft forever
+-P POSTROUTING ACCEPT
+net.ipv4.ip_forward = 0
+0
+    PID     ELAPSED COMMAND
+  37870       00:28 wpa_supplicant -B -i wlan0 -D nl80211 -c /data/openpilot/openpilot/system/ui/lib/wpa_supplicant.conf -P /run/wpa_supplicant/wlan0.pid
+  38675       00:27 udhcpc -i wlan0 -f -R -s /data/openpilot/openpilot/system/ui/lib/udhcpc.script -p /run/udhcpc.wlan0.pid

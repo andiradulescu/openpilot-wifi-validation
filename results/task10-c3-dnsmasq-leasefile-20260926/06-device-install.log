@@ -1,0 +1,23 @@
+/tmp/wifi-lease-20260926.bundle is okay
+The bundle contains this ref:
+6ca796e338a955e16fd6c63869ee4c19baa81d5b refs/heads/wifi-wpa-supplicant
+The bundle requires this ref:
+0cf294d85fbaffd94a83f08536cf7a1bb3e75c80 
+The bundle uses this hash algorithm: sha1
+From /tmp/wifi-lease-20260926.bundle
+ * branch                  wifi-wpa-supplicant -> FETCH_HEAD
+Warning: you are leaving 2 commits behind, not connected to
+any of your branches:
+
+  2be8594264 wifi: test WifiManager against a fake wpa_supplicant
+  f983f05bba wifi: replace NetworkManager with wpa_supplicant
+
+If you want to keep them by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 2be8594264
+
+HEAD is now at 6ca796e338 wifi: test WifiManager against a fake wpa_supplicant
+6ca796e338a955e16fd6c63869ee4c19baa81d5b
+edddf19581f031ae50634f5002a6cb2595e45d99f8d308c621000f2891d4b061  openpilot/system/ui/lib/wifi_manager.py
+4e0bf9c6af22d06b28183407e41bc1c0d9f4df47a1b38b94fff1dcf4d95402f3  openpilot/system/ui/lib/tests/test_wifi_manager.py

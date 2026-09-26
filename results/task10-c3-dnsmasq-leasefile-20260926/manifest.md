@@ -1,6 +1,6 @@
 # Hotspot lease-file correction validation
 
-Date: 2026-09-26. This is local/QEMU validation; the correction has not been installed or accepted on physical hardware.
+Date: 2026-09-26. This records local/QEMU validation and subsequent physical installation. Hotspot startup, client DHCP, and HTTPS browsing with mobile data disabled have passed on comma three.
 
 ## Revisions and scope
 
@@ -51,3 +51,23 @@ No physical hotspot retry, DHCP lease, browser acceptance, or cleanup-timeout re
 `git diff --shortstat 0cf294d85`: `8 files changed, 2871 insertions(+), 1725 deletions(-)`.
 
 Line counts: manager 1061; test 2000.
+
+## Physical installation and post-reboot verification
+
+Installed the local Git bundle on comma three over `comma@192.168.1.199`, without a GitHub push, and rebooted. The device was offroad with a clean checkout before installation. The manager and test hashes matched the tested candidate.
+
+Post-reboot boot ID: `b34746a2-124e-4b7d-a1cc-1c86cd8b0e5f`; clean HEAD `6ca796e338a955e16fd6c63869ee4c19baa81d5b`. The UI started the repository supplicant and udhcpc. Station status reached `COMPLETED` on `systeam5`, with IPv4 `192.168.1.105`. All SSH used eth0 address `192.168.1.199`; source-bound route to the actual client `192.168.1.171` selected eth0.
+
+Before the touchscreen hotspot retry: no tethering NAT rule, forwarding 0, PrimeType 0. Evidence: `05-device-preflight.log`, `06-device-install.log`, `07-device-postboot.log`. This snapshot precedes the successful hotspot retry recorded below.
+
+Deployment deviation authorized by the request to verify the device before publishing: fetched the local Git bundle instead of fetching from GitHub. The install and reboot otherwise follow Task 10.
+
+## Physical hotspot and DHCP verification
+
+At device time 2026-09-26 16:21:17 UTC, the user reported a phone connected to tethering. Wired SSH confirmed the same boot and installed HEAD. Supplicant status was `COMPLETED`, `mode=AP`, SSID `weedle-bbc2`, frequency 2437, IP `192.168.43.1/24`.
+
+Dnsmasq PID 72500 was running with `--dhcp-leasefile=/run/dnsmasq.wlan0.leases`. Its lease file contained OnePlus-6 at `192.168.43.186`; syslog recorded DHCPACK at 16:20:44 UTC. IPv4 forwarding was 1. The tagged MASQUERADE rule counted 62 packets / 24671 bytes. The source-bound management route still selected eth0. Evidence: `08-device-client.log`.
+
+The optional `iw dev wlan0 station dump` inspection could not run because `iw` is not installed; no package was installed. DHCP evidence does not depend on that command. The user subsequently confirmed: "Page loads with mobile data off". This is physical browser acceptance, distinct from the SSH-observed lease and NAT evidence. Hotspot-off restoration, password change, UI restart survival, and the other Task 10 checks remain pending.
+
+Outcome: the original Enable Tethering failure is resolved on this comma three at `6ca796e338a955e16fd6c63869ee4c19baa81d5b`. Hotspot startup, DHCP, and client HTTPS browsing passed. The separately observed cleanup timeout has not been independently reproduced or declared fixed. No new unit or lint runs were performed during this device-only verification.

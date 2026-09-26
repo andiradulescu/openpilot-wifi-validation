@@ -1,0 +1,7 @@
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+55a24580388876918aee577385fcdd3c54d5ab8f6322aebc93789af31c6c336c  openpilot/system/ui/lib/wifi_manager.py
+comma:0.0 bash
+0
+-P POSTROUTING ACCEPT
+Sat Sep 26 03:29:19 PM UTC 2026

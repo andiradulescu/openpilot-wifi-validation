@@ -1,0 +1,37 @@
+Sat Sep 26 04:21:17 PM UTC 2026
+comma-cb80a5fa
+b34746a2-124e-4b7d-a1cc-1c86cd8b0e5f
+6ca796e338a955e16fd6c63869ee4c19baa81d5b
+bssid=00:0a:f5:4f:ed:d6
+freq=2437
+ssid=weedle-bbc2
+id=3
+mode=AP
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.43.1
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+14: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 3000
+    inet 192.168.43.1/24 scope global wlan0
+       valid_lft forever preferred_lft forever
+    PID     ELAPSED COMMAND
+  72500       00:43 dnsmasq --interface=wlan0 --bind-interfaces --except-interface=lo --dhcp-range=192.168.43.2,192.168.43.254,24h --pid-file=/run/dnsmasq.wlan0.pid --dhcp-leasefile=/run/dnsmasq.wlan0.leases
+1790526044 f2:d2:3c:24:f9:43 192.168.43.186 OnePlus-6 01:f2:d2:3c:24:f9:43
+sudo: iw: command not found
+Chain POSTROUTING (policy ACCEPT 1228 packets, 80757 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+   62 24671 MASQUERADE  0    --  *      *       192.168.43.0/24     !192.168.43.0/24      /* openpilot-tethering */
+net.ipv4.ip_forward = 1
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+2026-09-26T16:20:34.465161+00:00 comma-cb80a5fa dnsmasq[72500]: started, version 2.90 cachesize 150
+2026-09-26T16:20:44.804006+00:00 comma-cb80a5fa dnsmasq-dhcp[72500]: DHCPDISCOVER(wlan0) f2:d2:3c:24:f9:43 
+2026-09-26T16:20:44.804321+00:00 comma-cb80a5fa dnsmasq-dhcp[72500]: DHCPOFFER(wlan0) 192.168.43.186 f2:d2:3c:24:f9:43 
+2026-09-26T16:20:44.804500+00:00 comma-cb80a5fa dnsmasq-dhcp[72500]: DHCPDISCOVER(wlan0) f2:d2:3c:24:f9:43 
+2026-09-26T16:20:44.804670+00:00 comma-cb80a5fa dnsmasq-dhcp[72500]: DHCPOFFER(wlan0) 192.168.43.186 f2:d2:3c:24:f9:43 
+2026-09-26T16:20:44.869732+00:00 comma-cb80a5fa dnsmasq-dhcp[72500]: DHCPACK(wlan0) 192.168.43.186 f2:d2:3c:24:f9:43 OnePlus-6
