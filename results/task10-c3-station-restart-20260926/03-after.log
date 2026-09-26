@@ -1,0 +1,30 @@
+Sat Sep 26 06:51:22 PM UTC 2026
+113292 openpilot.selfdrive.ui.ui
+38624
+112199
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=2
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.105
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+ieee80211ac=1
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+PING 1.1.1.1 (1.1.1.1) from 192.168.1.105 wlan0: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=56 time=22.7 ms
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=56 time=16.3 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=56 time=15.1 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2004ms
+rtt min/avg/max/mdev = 15.114/18.021/22.682/3.329 ms
+-P POSTROUTING ACCEPT
