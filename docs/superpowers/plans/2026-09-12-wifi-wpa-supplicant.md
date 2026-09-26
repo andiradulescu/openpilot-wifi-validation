@@ -2092,6 +2092,17 @@ Expected: exactly two commits. Re-run the test command once more on the squashed
 ---
 
 
+### Amendment: preserve forwarding across hotspot adoption
+
+Task 10 showed that a new WifiManager overwrites live forwarding with its initial False value before the UI supplies policy.
+
+- [ ] Extend the existing hotspot-adoption test to require no sysctl write during adoption, then verify explicit False and True policies still issue their exact sysctl writes. Establish red before changing production code.
+- [ ] Initialize `_ipv4_forward` to None, representing policy not yet supplied. In `_ensure_tethering_services`, write sysctl only for a fresh hotspot or an explicit policy; a fresh hotspot with no policy defaults to disabled. Do not change the UI or public WifiManager surface.
+- [ ] Run the full Wi-Fi suite and required lint, commit after green, preserve the final two-commit shape, and rerun on the squashed tree.
+- [ ] Install the local bundle and repeat UI restart with an active hotspot, forwarding=1, and a phone attached. Verify 40 successful phone probes, unchanged daemon PIDs, forwarding still 1 after UI adoption, and fresh HTTPS browsing with mobile data off.
+
+---
+
 ### Amendment: bounded AP teardown and late command replies
 
 Task 10 password changes exposed a timeout awaiting `REMOVE_NETWORK`. Correct the existing control client and hotspot removal call sites without changing the public WifiManager surface.
@@ -2344,10 +2355,17 @@ For each, check `journalctl`-free evidence via `wpa_cli -i wlan0 status`, `ip -4
 - [ ] **Step 4: UI death and restart**
 
 ```bash
-ssh comma@192.168.1.199 'tmux kill-session -t comma; for i in $(seq 40); do ping -c1 -W1 -I wlan0 1.1.1.1 >/dev/null && echo ok || echo LOST; sleep 0.5; done | sort | uniq -c; rm -f /tmp/safe_staging_overlay.lock; tmux new -s comma -d "/data/openpilot/launch_openpilot.sh"; sleep 45; cat /run/wpa_supplicant/wlan0.pid /run/udhcpc.wlan0.pid'
+ssh comma@192.168.1.199 'bash -s' <<'REMOTE'
+tmux kill-session -t comma
+for i in $(seq 40); do ping -c1 -W1 -I wlan0 1.1.1.1 >/dev/null && echo ok || echo LOST; sleep 0.5; done | sort | uniq -c
+rm -f /tmp/safe_staging_overlay.lock
+tmux new -s comma -c /data/openpilot -d 'bash -c "source /usr/local/venv/bin/activate; exec ./launch_openpilot.sh"'
+sleep 45
+cat /run/wpa_supplicant/wlan0.pid /run/udhcpc.wlan0.pid
+REMOTE
 ```
 
-Expected: 40 `ok`, zero `LOST`, same pids as in Step 2. Repeat once with the hotspot active and a phone attached.
+Expected: 40 `ok`, zero `LOST`, same pids as in Step 2. Repeat once with the hotspot active and a phone attached, probing the phone address through wlan0 and checking dnsmasq rather than udhcpc. Record forwarding before and after restart, and verify phone HTTPS browsing with mobile data off. The launcher requires both the checkout working directory and the existing device venv.
 
 - [ ] **Step 5: Reboot autoconnect and crash recovery**
 

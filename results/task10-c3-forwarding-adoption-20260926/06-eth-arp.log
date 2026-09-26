@@ -1,0 +1,4 @@
+eth0 ARP capture ready
+op 1 sender 192.168.1.171 0a:27:ff:22:8b:24 target 192.168.1.199 00:00:00:00:00:00
+op 2 sender 192.168.1.171 0a:27:ff:22:8b:24 target 192.168.1.199 d0:37:45:1c:70:d9
+matching_packets 2

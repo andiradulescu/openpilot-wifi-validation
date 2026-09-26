@@ -1,0 +1,20 @@
+From /tmp/wifi-forwarding-20260926.bundle
+ * branch                  wifi-wpa-supplicant -> FETCH_HEAD
+Warning: you are leaving 2 commits behind, not connected to
+any of your branches:
+
+  6b21c42930 wifi: test WifiManager against a fake wpa_supplicant
+  e7a2132d4e wifi: replace NetworkManager with wpa_supplicant
+
+If you want to keep them by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 6b21c42930
+
+HEAD is now at 8869c2f563 wifi: test WifiManager against a fake wpa_supplicant
+8869c2f5639eaab178954d60c23e939a6c050ceb
+aa0a9125c68627ca15c4a73a4e652ebe2a07dd7591d9ad3a58f93e38849da6b5  openpilot/system/ui/lib/wifi_manager.py
+c21b4d413a1d23b0cb8c87cc099d84cad46882fbe63d0dd91ba95e45f75f7876  openpilot/system/ui/lib/tests/test_wifi_manager.py
+38624
+56144
+net.ipv4.ip_forward = 0

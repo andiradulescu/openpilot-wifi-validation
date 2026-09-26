@@ -1,0 +1,33 @@
+collected 1 test in 0.08s • 1 worker
+F openpilot.system.ui.lib.tests.test_wifi_manager.TestTethering.test_adopts_running_hotspot 1.04s
+
+ FAILED openpilot.system.ui.lib.tests.test_wifi_manager.TestTethering.test_adopts_running_hotspot 
+Traceback (most recent call last):
+  File "/workspace/openpilot/openpilot/common/test.py", line 59, in _callTestMethod
+    return method(**{name: self._fixture(name) for name in params})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/openpilot/openpilot/system/ui/lib/tests/test_wifi_manager.py", line 1315, in test_adopts_running_hotspot
+    self.assertEqual([c[0] for c in manager_env.sudo], ["ip", "iptables-legacy", "iptables-legacy"])
+AssertionError: Lists differ: ['ip', 'iptables-legacy', 'iptables-legacy', 'sysctl'] != ['ip', 'iptables-legacy', 'iptables-legacy']
+
+First list contains 1 additional elements.
+First extra element 3:
+'sysctl'
+
+- ['ip', 'iptables-legacy', 'iptables-legacy', 'sysctl']
+?                                            ----------
+
++ ['ip', 'iptables-legacy', 'iptables-legacy']
+
+--- captured stderr ---
+Exception ignored in: <_io.FileIO name='/tmp/tmpnajhgkhp/persistent/Hotspot.nmconnection' mode='rb' closefd=True>
+Traceback (most recent call last):
+  File "/workspace/openpilot/openpilot/system/ui/lib/tests/test_wifi_manager.py", line 254, in <lambda>
+    mocker.patch.object(wifi_manager, "sudo_read", lambda path: open(path).read())
+                                                                ^^^^^^^^^^^^^^^^^
+ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpnajhgkhp/persistent/Hotspot.nmconnection' mode='r' encoding='UTF-8'>
+
+slowest tests
+    1.04s  openpilot.system.ui.lib.tests.test_wifi_manager.TestTethering.test_adopts_running_hotspot
+
+1 failed in 1.12s

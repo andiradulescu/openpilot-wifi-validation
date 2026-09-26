@@ -209,6 +209,10 @@ own and the normal CONNECTED path runs.
 Adopt with `mode=AP`: state CONNECTED to the hotspot SSID, IP 192.168.43.1, dnsmasq and the NAT rule ensured
 (`iptables-legacy -C` before `-A`).
 
+When adopting a running hotspot before the UI supplies a forwarding policy, leave the live kernel forwarding
+value unchanged. A fresh hotspot defaults to forwarding disabled until an explicit policy is supplied. Explicit
+ON or OFF policies apply immediately and remain authoritative during later service reconciliation.
+
 `set_ipv4_forward(enabled)` stores the flag and, when tethering is active, applies the sysctl immediately. The prime
 type can change while the hotspot is up, and the harness exercises that path.
 

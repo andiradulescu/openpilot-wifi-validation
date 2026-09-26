@@ -1,0 +1,17 @@
+auto
+192.168.2.2/24
+-1
+no
+
+2026-07-28T15:04:53.401630+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251093.4013] device (eth0): state change: unmanaged -> unavailable (reason 'managed', sys-iface-state: 'external')
+2026-07-28T15:04:53.485411+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251093.4839] device (eth0): state change: unavailable -> disconnected (reason 'carrier-changed', sys-iface-state: 'managed')
+2026-07-28T15:04:53.485960+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251093.4856] device (eth0): state change: disconnected -> prepare (reason 'none', sys-iface-state: 'managed')
+2026-07-28T15:04:53.486402+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251093.4861] device (eth0): state change: prepare -> config (reason 'none', sys-iface-state: 'managed')
+2026-07-28T15:04:53.487583+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251093.4874] device (eth0): state change: config -> ip-config (reason 'none', sys-iface-state: 'managed')
+2026-07-28T15:04:53.508978+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251093.5088] dhcp4 (eth0): state changed new lease, address=192.168.1.199, acd pending
+2026-07-28T15:04:53.663495+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251093.6592] dhcp4 (eth0): state changed new lease, address=192.168.1.199
+2026-07-28T15:04:53.756177+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251093.7558] device (eth0): state change: ip-config -> ip-check (reason 'none', sys-iface-state: 'managed')
+2026-07-28T15:04:53.761900+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251093.7616] device (eth0): state change: ip-check -> secondaries (reason 'none', sys-iface-state: 'managed')
+2026-07-28T15:04:53.762666+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251093.7622] device (eth0): state change: secondaries -> activated (reason 'none', sys-iface-state: 'managed')
+2026-07-28T15:04:55.352718+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1785251095.3525] dhcp6 (eth0): state changed new lease, address=fd3d:6b1d:302d::c60 2a02:2f04:c20c:d600::c60
+2026-09-26T17:00:19.284874+00:00 comma-cb80a5fa NetworkManager[3671]: <info>  [1790442019.2815] dhcp6 (eth0): state changed new lease, address=fd3d:6b1d:302d::c60 2a02:2f04:c20c:d600::c60
