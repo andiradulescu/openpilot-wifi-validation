@@ -1,0 +1,32 @@
+Sat Sep 26 09:22:51 PM UTC 2026
+ 21:22:51 up 0 min,  3 users,  load average: 13.89, 4.20, 1.45
+29865 openpilot.selfdrive.ui.ui
+GENERAL.STATE:                          100 (connected)
+GENERAL.CONNECTION:                     openpilot connection systeam5
+IP4.ADDRESS[1]:                         192.168.1.105/24
+NAME                           TYPE      DEVICE 
+Wired connection 1             ethernet  eth0   
+openpilot connection systeam5  wifi      wlan0  
+lo                             loopback  lo     
+/etc/NetworkManager/conf.d:
+total 8
+-rw-rw-r-- 1 root root 33 Sep  2 00:24 10-globally-managed-devices.conf
+-rw-r--r-- 1 root root 32 Mar 19  2026 default-wifi-powersave-on.conf
+
+/run/NetworkManager/conf.d:
+total 4
+-rw-r--r-- 1 root root  0 Sep 26 21:22 10-globally-managed-devices.conf
+-rw-r----- 1 root root 97 Sep 26 21:22 netplan.conf
+default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 
+default via 192.168.1.1 dev wlan0 proto dhcp src 192.168.1.105 metric 600 
+192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 
+192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.105 metric 600 
+192.168.2.0/24 dev eth0 proto kernel scope link src 192.168.2.2 metric 100 
+PING 1.1.1.1 (1.1.1.1) from 192.168.1.105 wlan0: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=56 time=19.9 ms
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=56 time=11.0 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=56 time=15.3 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 10.958/15.385/19.880/3.642 ms

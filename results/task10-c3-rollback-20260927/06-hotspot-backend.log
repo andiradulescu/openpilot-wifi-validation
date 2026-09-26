@@ -1,0 +1,50 @@
+Sat Sep 26 09:27:45 PM UTC 2026
+/usr/sbin/nft
+netlink: Error: cache initialization failed: Invalid argument
+# Warning: iptables-legacy tables present, use iptables-legacy to see them
+iptables v1.8.10 (nf_tables): Could not fetch rule set generation id: Invalid argument
+# NetworkManager configuration: /etc/NetworkManager/NetworkManager.conf (lib: 10-default-firewall-use-iptables.conf, 10-dns-resolved.conf, no-mac-addr-change.conf) (run: netplan.conf) (etc: 10-globally-managed-devices.conf, default-wifi-powersave-on.conf)
+
+[main]
+# rc-manager=
+# migrate-ifcfg-rh=false
+# auth-polkit=true
+# dhcp=internal
+# iwd-config-path=
+firewall-backend=iptables
+dns=systemd-resolved
+plugins=ifupdown,keyfile
+configure-and-quit=no
+
+[ifupdown]
+managed=true
+
+[keyfile]
+unmanaged-devices=none
+
+[logging]
+# backend=journal
+# audit=true
+
+[device]
+# wifi.backend=wpa_supplicant
+wifi.scan-rand-mac-address=no
+
+[device-netplan.wifis.NM-a22d7125-b4dc-4b0f-9d27-1df3d3095558]
+match-device=type:wifi
+managed=1
+
+[device-31-mac-addr-change]
+match-device=driver:eagle_sdio,driver:wl
+wifi.scan-rand-mac-address=no
+
+[connection]
+wifi.powersave=3
+
+# no-auto-default file "/var/lib/NetworkManager/no-auto-default.state"
+connection.id:                          Hotspot
+ipv4.method:                            shared
+ipv4.addresses:                         192.168.43.1/24
+ipv4.gateway:                           --
+1790461587 f2:d2:3c:24:f9:43 192.168.43.168 OnePlus-6 01:f2:d2:3c:24:f9:43
+192.168.43.168 lladdr f2:d2:3c:24:f9:43 REACHABLE 

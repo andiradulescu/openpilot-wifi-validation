@@ -1,0 +1,9 @@
+Sat Sep 26 09:22:16 PM UTC 2026
+ 21:22:16 up 0 min,  2 users,  load average: 8.92, 2.03, 0.67
+0cf294d85fbaffd94a83f08536cf7a1bb3e75c80
+GENERAL.STATE:                          10 (unmanaged)
+GENERAL.CONNECTION:                     --
+default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 
+192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 
+192.168.2.0/24 dev eth0 proto kernel scope link src 192.168.2.2 metric 100 
+ping: connect: Network is unreachable

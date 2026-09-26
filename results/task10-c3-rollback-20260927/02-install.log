@@ -1,0 +1,12 @@
+Warning: you are leaving 2 commits behind, not connected to
+any of your branches:
+
+  8869c2f563 wifi: test WifiManager against a fake wpa_supplicant
+  17d587f062 wifi: replace NetworkManager with wpa_supplicant
+
+If you want to keep them by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 8869c2f563
+
+HEAD is now at 0cf294d85f ui: add descriptions for settings (#38867)

@@ -1,0 +1,27 @@
+Sat Sep 26 09:27:23 PM UTC 2026
+0cf294d85fbaffd94a83f08536cf7a1bb3e75c80
+GENERAL.STATE:                          100 (connected)
+GENERAL.CONNECTION:                     Hotspot
+IP4.ADDRESS[1]:                         192.168.43.1/24
+net.ipv4.ip_forward = 1
+default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 
+192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 
+192.168.2.0/24 dev eth0 proto kernel scope link src 192.168.2.2 metric 100 
+192.168.43.0/24 dev wlan0 proto kernel scope link src 192.168.43.1 metric 600 
+-P PREROUTING ACCEPT
+-P INPUT ACCEPT
+-P OUTPUT ACCEPT
+-P POSTROUTING ACCEPT
+-P FORWARD ACCEPT
+Chain FORWARD (policy ACCEPT 49 packets, 2940 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+PrimeType=0
+PING 1.1.1.1 (1.1.1.1) from 192.168.1.199 eth0: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=56 time=3.42 ms
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=56 time=3.69 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=56 time=3.78 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2004ms
+rtt min/avg/max/mdev = 3.417/3.630/3.783/0.155 ms
+  55844 /usr/sbin/dnsmasq --conf-file=/dev/null --no-hosts --keep-in-foreground --bind-interfaces --except-interface=lo --clear-on-reload --strict-order --listen-address=192.168.43.1 --dhcp-range=192.168.43.10,192.168.43.254,60m --dhcp-leasefile=/var/lib/NetworkManager/dnsmasq-wlan0.leases --pid-file=/run/nm-dnsmasq-wlan0.pid --conf-dir=/etc/NetworkManager/dnsmasq-shared.d

@@ -1,0 +1,22 @@
+Sat Sep 26 09:20:12 PM UTC 2026
+1
+8869c2f5639eaab178954d60c23e939a6c050ceb
+commit
+commit
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=2
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.105
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+ieee80211ac=1
