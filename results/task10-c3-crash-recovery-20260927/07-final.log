@@ -1,0 +1,15 @@
+Sat Sep 26 09:13:03 PM UTC 2026
+29019 openpilot.selfdrive.ui.ui
+54685
+55058
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+PING 1.1.1.1 (1.1.1.1) from 192.168.1.105 wlan0: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=56 time=15.0 ms
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=56 time=15.0 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=56 time=16.0 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 14.986/15.330/15.957/0.443 ms
+8869c2f5639eaab178954d60c23e939a6c050ceb

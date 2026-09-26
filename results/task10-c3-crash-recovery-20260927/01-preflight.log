@@ -1,0 +1,43 @@
+Sat Sep 26 09:10:14 PM UTC 2026
+comma-cb80a5fa
+1
+8869c2f5639eaab178954d60c23e939a6c050ceb
+5afbedc8-d038-49d4-a756-20d33f6c1339
+38624
+112199
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=2
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.105
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+ieee80211ac=1
+default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 
+default via 192.168.1.1 dev wlan0 metric 600 
+192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 
+192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.105 metric 600 
+192.168.1.1 dev eth0 proto dhcp scope link src 192.168.1.199 metric 100 
+192.168.2.0/24 dev eth0 proto kernel scope link src 192.168.2.2 metric 100 
+11: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    inet6 fd3d:6b1d:302d::c60/128 scope global dynamic noprefixroute 
+       valid_lft 42361sec preferred_lft 42361sec
+    inet6 2a02:2f04:c20c:d600::c60/128 scope global dynamic noprefixroute 
+       valid_lft 42361sec preferred_lft 42361sec
+    inet6 2a02:2f04:c20c:d600:ac97:ae49:67a5:8ca5/64 scope global temporary dynamic 
+       valid_lft 5266sec preferred_lft 2566sec
+    inet6 2a02:2f04:c20c:d600:67b8:fe6f:9589:cdfc/64 scope global dynamic mngtmpaddr noprefixroute 
+       valid_lft 5266sec preferred_lft 2566sec
+    inet6 fd3d:6b1d:302d:0:ac97:ae49:67a5:8ca5/64 scope global temporary dynamic 
+       valid_lft 5266sec preferred_lft 2566sec
+    inet6 fd3d:6b1d:302d:0:8af:e08f:6676:ad/64 scope global dynamic mngtmpaddr noprefixroute 
+       valid_lft 5266sec preferred_lft 2566sec
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 

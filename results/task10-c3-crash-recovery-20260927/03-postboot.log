@@ -1,0 +1,12 @@
+Sat Sep 26 09:11:01 PM UTC 2026
+7dbc2624-69fa-42f8-8134-03523914f372
+ 21:11:01 up 0 min,  4 users,  load average: 6.79, 1.50, 0.49
+cat: /run/wpa_supplicant/wlan0.pid: No such file or directory
+cat: /run/udhcpc.wlan0.pid: No such file or directory
+Failed to connect to non-global ctrl_ifname: wlan0  error: No such file or directory
+default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 
+192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 
+192.168.2.0/24 dev eth0 proto kernel scope link src 192.168.2.2 metric 100 
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+ping: connect: Network is unreachable
