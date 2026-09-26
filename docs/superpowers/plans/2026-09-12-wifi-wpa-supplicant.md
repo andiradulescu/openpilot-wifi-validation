@@ -2092,6 +2092,17 @@ Expected: exactly two commits. Re-run the test command once more on the squashed
 ---
 
 
+### Amendment: bounded AP teardown and late command replies
+
+Task 10 password changes exposed a timeout awaiting `REMOVE_NETWORK`. Correct the existing control client and hotspot removal call sites without changing the public WifiManager surface.
+
+- [ ] Add a TestWpaCtrl regression where SCAN times out, its late OK arrives, and the following PING must receive PONG. Run red, replace the timed-out command socket, run green, and commit. The fake server tolerates ConnectionRefusedError when replying to a client that has closed its socket.
+- [ ] Add a public password-change regression with a 2.2-second AP removal reply. Run red. Add an optional timeout to WpaCtrl.request/ok, keep the ordinary two-second limit, and pass the existing AP_TIMEOUT_SECONDS at the three AP-removal sites. Use an absolute request deadline so event messages cannot extend the wait indefinitely. Run the full suite and required lint, then commit.
+- [ ] Preserve the final implementation/test two-commit shape, transfer local commits to the VM without a GitHub push, and rerun on the exact squashed tree.
+- [ ] Install the tested local bundle on the offroad comma three over Ethernet, restart, and repeat password-change and phone browsing acceptance. Do not infer device success from fake-supplicant tests.
+
+---
+
 ### Amendment: hotspot lease file on AGNOS
 
 Use `/run/dnsmasq.wlan0.leases` explicitly when starting dnsmasq. Its default `/var/lib/misc/dnsmasq.leases` has no parent directory on the tested AGNOS device, causing dnsmasq to exit with status 3.

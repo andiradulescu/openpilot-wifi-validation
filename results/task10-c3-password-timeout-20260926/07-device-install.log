@@ -1,0 +1,17 @@
+From /tmp/wifi-timeout-20260926.bundle
+ * branch                  wifi-wpa-supplicant -> FETCH_HEAD
+Warning: you are leaving 2 commits behind, not connected to
+any of your branches:
+
+  6ca796e338 wifi: test WifiManager against a fake wpa_supplicant
+  52e2f700c4 wifi: replace NetworkManager with wpa_supplicant
+
+If you want to keep them by creating a new branch, this may be a good time
+to do so with:
+
+ git branch <new-branch-name> 6ca796e338
+
+HEAD is now at 6b21c42930 wifi: test WifiManager against a fake wpa_supplicant
+6b21c429302be2361be2c3fe6037b4b6611b1ec6
+fffe9ff917b4551782ab1837a4454e5319fb08367b4ed228e5b664b7bbde4b9e  openpilot/system/ui/lib/wifi_manager.py
+7e83928c789df0781b0af585bfef753d799157ebe826f467d68833876492eba2  openpilot/system/ui/lib/tests/test_wifi_manager.py

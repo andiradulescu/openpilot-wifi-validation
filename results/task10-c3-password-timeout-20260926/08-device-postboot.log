@@ -1,0 +1,61 @@
+Sat Sep 26 04:40:17 PM UTC 2026
+5afbedc8-d038-49d4-a756-20d33f6c1339
+6b21c429302be2361be2c3fe6037b4b6611b1ec6
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=2
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.105
+p2p_device_address=00:0a:f5:4f:ed:d6
+address=00:0a:f5:4f:ed:d6
+uuid=581d438e-9a1a-56b5-8651-f3173d5f968c
+ieee80211ac=1
+    PID     ELAPSED COMMAND
+  39272       00:29 udhcpc -i wlan0 -f -R -s /data/openpilot/openpilot/system/ui/lib/udhcpc.script -p /run/udhcpc.wlan0.pid
+192.168.1.171 from 192.168.1.199 dev wlan0 uid 1000 
+    cache 
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+logmessaged timed ui deleter pandad hardwared modem tombstoned updated uploader
+

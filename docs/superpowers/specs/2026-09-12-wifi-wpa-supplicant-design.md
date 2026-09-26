@@ -138,6 +138,11 @@ socket for events, `decode_ssid()` for wpa_supplicant's printf-style escapes (`\
 `\t`), and `parse_scan_results()`. SSIDs are sent to the supplicant as hex (`SET_NETWORK n ssid <hex>`) so no
 quoting rules apply. PSKs are sent quoted, with `"` and `\` escaped.
 
+Command requests have an absolute deadline: two seconds normally, ten seconds for AP network removal.
+A timed-out command socket is replaced before another command can use it, so a late reply cannot be mistaken
+for the next response. AP teardown may outlast the ordinary command limit; password changes wait for its
+reply before starting the replacement hotspot. The event socket remains separate.
+
 Loading a saved station profile: `ADD_NETWORK`, `SET_NETWORK n ssid <hex>`, `SET_NETWORK n psk "<psk>"` or
 `SET_NETWORK n key_mgmt NONE`, `SET_NETWORK n scan_ssid 1` when hidden, `ENABLE_NETWORK n`. The manager keeps an
 `id -> ssid` map, rebuilt from `LIST_NETWORKS` when adopting.
