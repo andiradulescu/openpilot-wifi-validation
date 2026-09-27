@@ -1,0 +1,56 @@
+BEFORE wpa_supplicant 30279 wpa_supplicant -B -i wlan0 -D nl80211 -c /data/openpilot/openpilot/system/ui/lib/wpa_supplicant.conf -P /run/wpa_supplicant/wlan0.pid 
+RECOVERED wpa_supplicant 53773 elapsed_seconds 9.574
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=2
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.108
+p2p_device_address=00:0a:f5:87:d4:d4
+address=00:0a:f5:87:d4:d4
+uuid=795ce4ac-13b9-591d-b32b-a682a0050115
+ieee80211ac=1
+ PING 1.1.1.1 (1.1.1.1) from 192.168.1.108 wlan0: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=14.4 ms
+
+--- 1.1.1.1 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 14.356/14.356/14.356/0.000 ms
+
+RESULT wpa_supplicant PASS
+BEFORE udhcpc 31103 udhcpc -i wlan0 -f -R -s /data/openpilot/openpilot/system/ui/lib/udhcpc.script -p /run/udhcpc.wlan0.pid 
+RECOVERED udhcpc 53853 elapsed_seconds 1.119
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=2
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.108
+p2p_device_address=00:0a:f5:87:d4:d4
+address=00:0a:f5:87:d4:d4
+uuid=795ce4ac-13b9-591d-b32b-a682a0050115
+ieee80211ac=1
+ PING 1.1.1.1 (1.1.1.1) from 192.168.1.108 wlan0: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=11.1 ms
+
+--- 1.1.1.1 ping statistics ---
+1 packets transmitted, 1 received, 0% packet loss, time 0ms
+rtt min/avg/max/mdev = 11.138/11.138/11.138/0.000 ms
+
+RESULT udhcpc PASS
+default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 
+default via 192.168.1.1 dev wlan0 metric 600 
+default via 10.64.64.64 dev ppp0 metric 1000 
+10.64.64.64 dev ppp0 proto kernel scope link src 10.133.248.54 
+192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 
+192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 

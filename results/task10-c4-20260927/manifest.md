@@ -58,4 +58,17 @@ At 12:51:24 UTC, the offroad device had weedle-ca83 active, phone lease 192.168.
 
 UI stop at 12:51:48 UTC followed by 40 individual `ping -c1 -W1 -I wlan0 192.168.43.220` probes spaced by 0.5 seconds produced 40 ok and zero LOST. Both daemon PIDs were unchanged and forwarding stayed 1. UI restart launched at 12:52:13 UTC using the amended cwd/venv command and an EXIT restoration trap. After the planned 45-second settling period, verification at 12:53:20 UTC found UI PID 110219, the same daemon PIDs, AP COMPLETED, forwarding=1, the same phone lease, and the tagged NAT rule. Wired SSH worked and replies used eth0. Post-restart `ping -c 3 -W 1 -I wlan0 192.168.43.220`: 3/3 replies.
 
-Automated hotspot restart checks PASS: 40/40 downtime probes and 3/3 afterward, with daemon adoption and forwarding preserved. Fresh post-restart phone HTTPS acceptance remains pending. No source changes, unit/lint reruns, or new implementation deviations.
+Automated hotspot restart checks PASS: 40/40 downtime probes and 3/3 afterward, with daemon adoption and forwarding preserved. The user subsequently confirmed fresh post-restart phone HTTPS browsing with mobile data off: "works". Physical hotspot restart acceptance PASS. No source changes, unit/lint reruns, or new implementation deviations.
+
+## Reboot autoconnect and daemon crash recovery
+
+After the user disabled tethering, preflight at 12:56:38 UTC verified systeam5 COMPLETED, offroad state, clean source HEAD 8869c2f5639eaab178954d60c23e939a6c050ceb, hotspot NAT rule absent, and management replies routed through eth0. The authorized reboot succeeded. Boot ID changed from 181ea9ac-0101-4476-81e4-c98e26ce4052 to f1adb808-3e89-4783-a3f6-eb00f6975077. The early 12:57:24 UTC observation preceded UI/Wi-Fi daemon startup. At 12:58:11 UTC, UI PID 25913 was running, supplicant PID 30279 and DHCP PID 31103 were active, systeam5 was COMPLETED at 192.168.1.108, and Wi-Fi-bound internet probes received 3/3 replies. No user input was needed. Reboot autoconnect PASS.
+
+For each crash test, a host-streamed Python standard-library script verified IsOffroad=1, the pidfile, and the process command line, then issued sudo kill -9 to that managed wlan0 daemon only. It polled once per second for a different live PID, systeam5 COMPLETED, and a successful `ping -c1 -W1 -I wlan0 1.1.1.1`, with a 35-second deadline measured using time.monotonic(). No script was installed on the device.
+
+- Supplicant: PID 30279 → 53773, recovery observed at 9.574 seconds, 1/1 internet reply. PASS.
+- udhcpc: PID 31103 → 53853, recovery observed at 1.119 seconds, 1/1 internet reply. PASS. This measures process respawn and connectivity, not a separately captured fresh DHCP exchange; the existing address may survive the client crash.
+
+At 12:59:16 UTC, the same UI PID and recovered daemon PIDs were present, wired SSH succeeded with replies through eth0, and `ping -c 3 -W 1 -I wlan0 1.1.1.1` received 3/3 replies. Recovery acceptance: 3 checks passed, 0 failed, with 8/8 acceptance probe replies across reboot, both crashes, and final verification. No source changes, unit/lint reruns, or new implementation deviations.
+
+Station Wi-Fi-to-cellular failover and return remain pending. Ethernet currently has the preferred default route, so simply losing station Wi-Fi while Ethernet stays connected would not prove cellular failover. Existing full-matrix and rollback limitations remain unchanged.

@@ -1,0 +1,22 @@
+Sun Sep 27 12:56:38 PM UTC 2026
+1
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=5
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.108
+p2p_device_address=00:0a:f5:87:d4:d4
+address=00:0a:f5:87:d4:d4
+uuid=795ce4ac-13b9-591d-b32b-a682a0050115
+ieee80211ac=1
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+8869c2f5639eaab178954d60c23e939a6c050ceb
+181ea9ac-0101-4476-81e4-c98e26ce4052
+-P POSTROUTING ACCEPT
