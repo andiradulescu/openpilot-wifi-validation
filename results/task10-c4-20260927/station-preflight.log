@@ -1,0 +1,30 @@
+Sun Sep 27 12:32:21 PM UTC 2026
+1
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=5
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.108
+p2p_device_address=00:0a:f5:87:d4:d4
+address=00:0a:f5:87:d4:d4
+uuid=795ce4ac-13b9-591d-b32b-a682a0050115
+ieee80211ac=1
+52334
+100296
+-P POSTROUTING ACCEPT
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+PING 1.1.1.1 (1.1.1.1) from 192.168.1.108 wlan0: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=13.5 ms
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=3.91 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=3.81 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev = 3.808/7.068/13.490/4.541 ms
