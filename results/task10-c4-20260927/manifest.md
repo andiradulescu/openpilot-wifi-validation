@@ -33,3 +33,11 @@ The user reconnected with the correct password, leaving metering unchanged. At 1
 ## Metered toggle
 
 After the user selected metered, verification at 12:19:41 UTC found systeam5 still COMPLETED and its persistent profile changed from metered unset to metered=1. In the device venv, HARDWARE.get_network_metered(log.DeviceState.NetworkType.wifi) returned True. HARDWARE.get_network_type() remained 6 (ethernet), whose metered value was False, consistent with wired management remaining preferred. The source-bound management reply route selected eth0. Metered persistence and explicit Wi-Fi hardware reporting PASS. No source changes or unit/lint reruns.
+
+## Hotspot browsing with Ethernet and cellular uplinks
+
+The user confirmed phone browsing with mobile data disabled, then reported "works on both without and with eth plugged in". This is physical user-observed browsing across Ethernet removal and reinsertion. No SSH capture or before/after cellular counter pair was collected during the unplugged interval, so packet-level attribution and zero-loss failover are not independently established.
+
+At 12:25:56 UTC after Ethernet was reattached, wired SSH verified weedle-ca83 in AP mode, COMPLETED, 192.168.43.1; phone lease 192.168.43.220; forwarding=1; the tagged openpilot-tethering MASQUERADE rule; supplicant PID 52334 and dnsmasq PID 96947. Only Ethernet (metric 100) and ppp0 (metric 1000) had default routes; wlan0 was serving the AP. ppp0 was UP with RX 4577928 bytes and TX 321971 bytes, but these cumulative counters do not isolate the user's browsing. Ethernet reply routing selected eth0.
+
+Hotspot association, DHCP/NAT state, and physical browsing with and without Ethernet PASS at the stated observation levels. UI password change, hotspot-off station recovery, UI restart, remaining recovery tests, and station Wi-Fi-to-cellular failover remain pending. No source changes, unit/lint reruns, or new implementation deviations.
