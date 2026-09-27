@@ -1,0 +1,70 @@
+No entry for terminal type "unknown";
+using dumb terminal settings.
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /workspace/openpilot/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace
+collecting ... collected 52 items / 51 deselected / 1 selected
+
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Test A-password123-False] FAILED
+
+=================================== FAILURES ===================================
+__________ test_connect_persist_and_reopen[Test A-password123-False] ___________
+
+lab = <wifi_e2e.WifiLab object at 0xee7acbfc4560>, ssid = 'Test A'
+password = 'password123', hidden = False
+
+    @pytest.mark.parametrize('ssid,password,hidden', [
+      ('Open', '', False),
+      ('Test A', 'password123', False),
+      ('Hidden', 'password123', True),
+      ('Hidden open', '', True),
+      ('București', 'parolă-123', False),
+      ('S' * 32, 'password123', False),
+      ('Test A', '12345678', False),
+      ('Test A', 'p' * 63, False),
+      ('Test A', 'ab' * 32, False),
+      ('Test A', ' pass\\word" ', False),
+    ])
+    def test_connect_persist_and_reopen(lab, ssid, password, hidden):
+      lab.ap(ssid, password, hidden=hidden)
+      lab.start_manager()
+      lab.call('connect_to_network', ssid, password, hidden=hidden)
+      state = lab.connected(ssid)
+      assert state['saved'][ssid]
+      profiles = [(identifier, cp) for identifier, name, cp in keyfile_profiles().values() if name == ssid]
+      assert len(profiles) == 1
+      identifier, _ = profiles[0]
+      run('nmcli', 'connection', 'reload', ns=lab.names['dut'])
+      assert identifier in run('nmcli', '-g', 'UUID', 'connection', 'show', ns=lab.names['dut']).stdout.splitlines()
+      if password:
+        result = run('nmcli', '--escape', 'no', '--show-secrets', '-g', '802-11-wireless-security.psk', 'connection', 'show', identifier, ns=lab.names['dut'])
+        assert result.stdout.rstrip('\n') == password
+      lab.stop_manager()
+      lab.start_manager()
+>     assert lab.connected(ssid)['saved'][ssid]
+             ^^^^^^^^^^^^^^^^^^^
+
+../openpilot-wifi-validation/test_wifi_e2e.py:78: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../openpilot-wifi-validation/wifi_e2e.py:313: in connected
+    self.http('dut', 'wlan0')
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <wifi_e2e.WifiLab object at 0xee7acbfc4560>, role = 'dut'
+interface = 'wlan0', success = True
+
+    def http(self, role='dut', interface=None, success=True):
+      args = ['curl', '--noproxy', '*', '--silent', '--show-error', '--fail', '--max-time', '3']
+      if interface:
+        args += ['--interface', interface]
+      result = run(*args, 'http://wifi.test:8000/probe', ns=self.names[role], check=False)
+>     assert (result.returncode == 0 and result.stdout == PROBE) == success, (result.returncode, result.stdout, result.stderr)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E     AssertionError: (28, '', 'curl: (28) Resolving timed out after 3004 milliseconds\n')
+
+../openpilot-wifi-validation/wifi_e2e.py:321: AssertionError
+- generated xml file: /workspace/openpilot-wifi-validation/results/20260927T202147448964Z-f02354e40638-hwsim/junit.xml -
+=========================== short test summary info ============================
+FAILED ../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Test A-password123-False] - AssertionError: (28, '', 'curl: (28) Resolving timed out after 3004 milliseconds\n')
+====================== 1 failed, 51 deselected in 12.64s =======================

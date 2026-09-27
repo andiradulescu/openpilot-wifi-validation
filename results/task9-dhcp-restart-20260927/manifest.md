@@ -33,3 +33,25 @@ The final hashes were verified in `/workspace/openpilot` on the local QEMU VM be
 | `wifi-hwsim-ap-packets.log` | `1dfaf3eb58b0a942633dd94c3c4afa18dbc30c5024cd6d73ee6bc418749c3092` | Supporting AP packet capture. |
 
 No hwsim matrix or physical-device run was performed for this amendment.
+
+## Exact reshaped-tree validation
+
+The source tree was reshaped without changing its tree object: `80aa4ee3b` (`wifi: replace NetworkManager with
+wpa_supplicant`) followed by `f02354e40` (`wifi: test WifiManager against a fake wpa_supplicant`). Final source
+HEAD was `f02354e40638ef32dd857faf3b32d829cbe124f1`, with tree
+`5dc2ad14d3e74c50e6fc6da65e1d740b23e0559b`. Relative to `0cf294d85`, the source diff is eight files, 3,051
+insertions, and 1,727 deletions; `wifi_manager.py` is 1,089 lines and `test_wifi_manager.py` is 2,150 lines.
+
+- The exact tree completed the required test command with 85 passed and 0 failed in 23.03 s; Ruff and ty passed.
+- The filtered hwsim command selected one case and exited 1: 0 passed, 1 failed, and 51 deselected. It did not run
+  the full matrix or any physical-device validation.
+- The failure occurred after reopening the manager in `test_connect_persist_and_reopen[Test A-password123-False]`.
+  The saved-profile assertion had already passed, then `curl --interface wlan0 http://wifi.test:8000/probe` timed out
+  resolving DNS after 3,004 ms.
+- Captured DUT state still showed `wpa_state=COMPLETED`, `ssid=Test A`, `ip_address=10.10.0.74`, wlan0's
+  metric-600 default and connected routes, and wwan0's metric-700 default route. This records post-failure state; it
+  does not establish the cause of the DNS timeout.
+
+`exact-tree/` contains the raw regular files retrieved from the exact-tree VM run, including `tmp/` command logs and
+the hwsim result manifest, JUnit, run, and service-state files. A raw final-red command log was not preserved: only
+the captured failure count and reason above are available.
