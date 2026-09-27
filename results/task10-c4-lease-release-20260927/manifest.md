@@ -21,7 +21,7 @@ The clean offroad comma four at Ethernet 192.168.1.199 received a local Git bund
 - manager: 1a560f373932451d1373bb977f7d9ba1de542e6278df86669a97bbe7febdc77b
 - test: 8d05771773a4de6a89d72ae3a5e968d9b2d752a1c593971f073547fb076d4d82
 
-Physical failover retest remains pending. Unit assertions prove signal dispatch, not actual route cleanup or cellular traffic. While the UI is dead there is no manager event handling, so daemon survival does not prove cellular failover in that state. Comma three remains on the previous revision. No GitHub push or PR operation was performed.
+Physical failover retest completed with the results below. Unit assertions prove signal dispatch, not actual route cleanup or cellular traffic. While the UI is dead there is no manager event handling, so daemon survival does not prove cellular failover in that state. Comma three remains on the previous revision. No GitHub push or PR operation was performed.
 
 ## Size and deviations
 
@@ -29,4 +29,18 @@ Physical failover retest remains pending. Unit assertions prove signal dispatch,
 
 ## Retest readiness
 
-At 14:39:48 UTC, UI PID 76110 was running the clean 9f1e7ada0 checkout, systeam5 was COMPLETED, existing udhcpc PID 53853 remained alive, Ethernet reply routing selected eth0, and Wi-Fi-bound probes received 3/3 replies. The new detached recorder PID 76667 was verified parented to PID 1 in a separate SSH connection and recorded successful probes with Ethernet selected. It writes /tmp/wifi-failover-20260927-1440.jsonl and stops on its matching .stop marker or after its bounded recording window. The user-driven unplug/AP-disable/AP-enable/replug sequence is pending.
+At 14:39:48 UTC, UI PID 76110 was running the clean 9f1e7ada0 checkout, systeam5 was COMPLETED, existing udhcpc PID 53853 remained alive, Ethernet reply routing selected eth0, and Wi-Fi-bound probes received 3/3 replies. The new detached recorder PID 76667 was verified parented to PID 1 in a separate SSH connection and recorded successful probes with Ethernet selected. It writes /tmp/wifi-failover-20260927-1440.jsonl and stops on its matching .stop marker or after its bounded recording window. The user subsequently confirmed completing the unplug/AP-disable/AP-enable/replug sequence; results follow.
+
+## Physical failover retest
+
+The user completed the same four-step sequence. The bounded recorder captured 14:40:13 through 15:10:13 UTC and stopped automatically at elapsed 1801.953 seconds. It captured Wi-Fi loss and recovery, but stopped before Ethernet reinsertion was observed; later live verification covers the final Ethernet state. Across 849 recorded probes: 839 passed, 10 failed.
+
+- Ethernet baseline: 370 passed, 0 failed.
+- Initial Wi-Fi-only interval: 28 passed, 2 failed.
+- Main Wi-Fi outage, 14:54:15.669846 through 14:57:03.370611 UTC: route lookups before and after probes selected ppp0, the Wi-Fi default was absent, and supplicant reported SCANNING without its previous IPv4 address. Cellular probes: 67 passed, 8 failed.
+- After Wi-Fi returned: 274 passed, 0 failed on wlan0.
+- A later sampled transition contained one successful wlan0 probe followed by DISCONNECTED status, one successful ppp0 probe while SCANNING, then 98 successful wlan0 probes. The initiating cause of that later brief transition was not recorded.
+
+All 76 samples selecting ppp0 had no wlan0 default; 68 passed and 8 timed out. The same pre-fix scenario never selected ppp0 and failed all 45 main-outage probes. This counterfactual establishes that the lease-release change corrects the stale preferred-route failure. Cellular traffic and return to Wi-Fi are verified. Zero-loss failover is not claimed, and the eight cellular probe timeouts are not explained by these samples. Probe timeout was one second. No exact link-loss-to-route-switch latency is claimed from sampled observations.
+
+At 15:27:58 UTC, final wired SSH verified HEAD 9f1e7ada0990a703ce22424737396ad2fb22bd08, systeam5 COMPLETED at 192.168.1.108, the original udhcpc PID 53853 still alive, Wi-Fi and cellular defaults restored behind Ethernet, and the reply route to the Mac 192.168.1.158 through eth0. The same DHCP daemon survived lease release and reacquisition. Physical station Wi-Fi-to-cellular-to-Wi-Fi failover PASS with the recorded probe-loss limits. No new source edits or test/lint reruns followed the successful exact-tree suite. No push was performed.
