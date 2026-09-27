@@ -1,0 +1,44 @@
+strace: Process 165 attached
+19:10:29.545032 ppoll([{fd=3, events=POLLIN}, {fd=-1}], 2, {tv_sec=3, tv_nsec=95462054}, NULL, 0) = 0 (Timeout)
+19:10:32.644694 socket(AF_INET, SOCK_RAW, IPPROTO_RAW) = 5
+19:10:32.645107 socket(AF_PACKET, SOCK_DGRAM, htons(ETH_P_IP)) = 5
+19:10:32.645253 bind(5, {sa_family=AF_PACKET, sll_protocol=htons(ETH_P_IP), sll_ifindex=80, sll_hatype=ARPHRD_NETROM, sll_pkttype=PACKET_HOST, sll_halen=0}, 20) = 0
+19:10:32.650917 setsockopt(5, SOL_PACKET, PACKET_AUXDATA, [1], 4) = 0
+19:10:32.651331 socket(AF_PACKET, SOCK_DGRAM, htons(ETH_P_IP)) = 6
+19:10:32.651566 bind(6, {sa_family=AF_PACKET, sll_protocol=htons(ETH_P_IP), sll_ifindex=80, sll_hatype=ARPHRD_NETROM, sll_pkttype=PACKET_HOST, sll_halen=6, sll_addr=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff]}, 20) = 0
+19:10:32.657895 sendto(6, "E\0\1H\0\0\0\0@\21y\246\0\0\0\0\377\377\377\377\0D\0C\0014H\262\1\1\6\0\375\303\355<\0\35\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 328, 0, {sa_family=AF_PACKET, sll_protocol=htons(ETH_P_IP), sll_ifindex=80, sll_hatype=ARPHRD_NETROM, sll_pkttype=PACKET_HOST, sll_halen=6, sll_addr=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff]}, 20) = 328
+19:10:32.668926 ppoll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}], 2, {tv_sec=3, tv_nsec=0}, NULL, 0) = 0 (Timeout)
+19:10:35.672851 socket(AF_INET, SOCK_RAW, IPPROTO_RAW) = 6
+19:10:35.674046 socket(AF_PACKET, SOCK_DGRAM, htons(ETH_P_IP)) = 6
+19:10:35.674513 bind(6, {sa_family=AF_PACKET, sll_protocol=htons(ETH_P_IP), sll_ifindex=80, sll_hatype=ARPHRD_NETROM, sll_pkttype=PACKET_HOST, sll_halen=6, sll_addr=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff]}, 20) = 0
+19:10:35.683939 sendto(6, "E\0\1H\0\0\0\0@\21y\246\0\0\0\0\377\377\377\377\0D\0C\0014H\257\1\1\6\0\375\303\355<\0 \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 328, 0, {sa_family=AF_PACKET, sll_protocol=htons(ETH_P_IP), sll_ifindex=80, sll_hatype=ARPHRD_NETROM, sll_pkttype=PACKET_HOST, sll_halen=6, sll_addr=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff]}, 20) = 328
+19:10:35.690062 ppoll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}], 2, {tv_sec=3, tv_nsec=0}, NULL, 0) = 1 ([{fd=5, revents=POLLIN}], left {tv_sec=2, tv_nsec=999995750})
+19:10:35.690783 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="E\0\0000\320\10@\0@\1Vf\n\n\0\1\n\n\0J\10\0R\312\2455\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0", iov_len=656}], msg_iovlen=1, msg_control=[{cmsg_len=36, cmsg_level=SOL_PACKET, cmsg_type=0x8, cmsg_data="\x01\x00\x00\x00\x30\x00\x00\x00\x30\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"}], msg_controllen=36, msg_flags=0}, 0) = 48
+19:10:35.691229 ppoll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}], 2, {tv_sec=3, tv_nsec=0}, NULL, 0) = 1 ([{fd=5, revents=POLLIN}], left {tv_sec=2, tv_nsec=999998042})
+19:10:35.691631 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="E\300\1H\222\316\0\0@\21\321\270\n\n\0\1\n\n\0J\0C\0D\0014{S\2\1\6\0\375\303\355<\0\35\0\0\0\0\0\0\n\n\0J\n\n\0\1\0\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., iov_len=656}], msg_iovlen=1, msg_control=[{cmsg_len=36, cmsg_level=SOL_PACKET, cmsg_type=0x8, cmsg_data="\x01\x00\x00\x00\x48\x01\x00\x00\x48\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"}], msg_controllen=36, msg_flags=0}, 0) = 328
+19:10:35.691996 socket(AF_INET, SOCK_RAW, IPPROTO_RAW) = 6
+19:10:35.692498 socket(AF_PACKET, SOCK_DGRAM, htons(ETH_P_IP)) = 6
+19:10:35.692681 bind(6, {sa_family=AF_PACKET, sll_protocol=htons(ETH_P_IP), sll_ifindex=80, sll_hatype=ARPHRD_NETROM, sll_pkttype=PACKET_HOST, sll_halen=6, sll_addr=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff]}, 20) = 0
+19:10:35.701853 sendto(6, "E\0\1H\0\0\0\0@\21y\246\0\0\0\0\377\377\377\377\0D\0C\0014\3372\1\1\6\0\375\303\355<\0 \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 328, 0, {sa_family=AF_PACKET, sll_protocol=htons(ETH_P_IP), sll_ifindex=80, sll_hatype=ARPHRD_NETROM, sll_pkttype=PACKET_HOST, sll_halen=6, sll_addr=[0xff, 0xff, 0xff, 0xff, 0xff, 0xff]}, 20) = 328
+19:10:35.707874 ppoll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}], 2, {tv_sec=3, tv_nsec=0}, NULL, 0) = 1 ([{fd=5, revents=POLLIN}], left {tv_sec=2, tv_nsec=999997125})
+19:10:35.708199 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="E\300\1H\222\317\0\0@\21\321\267\n\n\0\1\n\n\0J\0C\0D\0014{P\2\1\6\0\375\303\355<\0 \0\0\0\0\0\0\n\n\0J\n\n\0\1\0\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., iov_len=656}], msg_iovlen=1, msg_control=[{cmsg_len=36, cmsg_level=SOL_PACKET, cmsg_type=0x8, cmsg_data="\x01\x00\x00\x00\x48\x01\x00\x00\x48\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"}], msg_controllen=36, msg_flags=0}, 0) = 328
+19:10:35.708501 ppoll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}], 2, {tv_sec=3, tv_nsec=0}, NULL, 0) = 1 ([{fd=5, revents=POLLIN}], left {tv_sec=2, tv_nsec=999998458})
+19:10:35.708737 recvmsg(5, {msg_name=NULL, msg_namelen=0, msg_iov=[{iov_base="E\300\1H\222\334\0\0@\21\321\252\n\n\0\1\n\n\0J\0C\0D\0014xP\2\1\6\0\375\303\355<\0 \0\0\0\0\0\0\n\n\0J\n\n\0\1\0\0\0\0\2\0\0\0\3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., iov_len=656}], msg_iovlen=1, msg_control=[{cmsg_len=36, cmsg_level=SOL_PACKET, cmsg_type=0x8, cmsg_data="\x01\x00\x00\x00\x48\x01\x00\x00\x48\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"}], msg_controllen=36, msg_flags=0}, 0) = 328
+19:10:35.724033 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=200, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+19:10:35.724102 ppoll([{fd=3, events=POLLIN}, {fd=-1}], 2, {tv_sec=60, tv_nsec=0}, NULL, 0) = ? ERESTARTNOHAND (To be restarted if no handler)
+19:10:36.921712 --- SIGUSR1 {si_signo=SIGUSR1, si_code=SI_USER, si_pid=266, si_uid=0} ---
+19:10:36.921764 ppoll([{fd=3, events=POLLIN}, {fd=-1}], 2, {tv_sec=59, tv_nsec=0}, NULL, 0) = 1 ([{fd=3, revents=POLLIN}], left {tv_sec=58, tv_nsec=999999583})
+19:10:36.921801 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 5
+19:10:36.921820 setsockopt(5, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
+19:10:36.921848 setsockopt(5, SOL_SOCKET, SO_BROADCAST, [1], 4) = 0
+19:10:36.921856 setsockopt(5, SOL_SOCKET, SO_BINDTODEVICE, "wlan0\0\0\0\0\0\0\0\0\0\0\0P*^\0\0\0\0\0\3\0\0\0\0\0\0\0\4\0\0\0\0\0\0\0", 40) = 0
+19:10:36.921872 bind(5, {sa_family=AF_INET, sin_port=htons(68), sin_addr=inet_addr("0.0.0.0")}, 16) = 0
+19:10:36.921921 socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP) = 6
+19:10:36.922030 setsockopt(6, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
+19:10:36.922090 setsockopt(6, SOL_SOCKET, SO_BINDTODEVICE, "wlan0\0\0\0\0\0\0\0\0\0\0\0%%%%%%%%%%%%%%%%%d.%d.%d", 40) = 0
+19:10:36.922099 bind(6, {sa_family=AF_INET, sin_port=htons(68), sin_addr=inet_addr("10.10.0.74")}, 16) = 0
+19:10:36.922116 connect(6, {sa_family=AF_INET, sin_port=htons(67), sin_addr=inet_addr("10.10.0.1")}, 16) = 0
+19:10:36.922182 ppoll([{fd=3, events=POLLIN}, {fd=5, events=POLLIN}], 2, {tv_sec=3, tv_nsec=0}, NULL, 0) = 1 ([{fd=5, revents=POLLIN}], left {tv_sec=2, tv_nsec=998440583})
+19:10:36.935225 --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=271, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+19:10:36.935274 ppoll([{fd=3, events=POLLIN}, {fd=-1}], 2, {tv_sec=60, tv_nsec=0}, NULL, 0 <unfinished ...>) = ?
+19:10:37.032219 +++ killed by SIGKILL +++

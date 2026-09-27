@@ -1,0 +1,14 @@
+Results: /workspace/openpilot-wifi-validation/results/20260927T191138254836Z-9f1e7ada0990-hwsim
+No entry for terminal type "unknown";
+using dumb terminal settings.
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /workspace/openpilot/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace
+collecting ... collected 52 items / 51 deselected / 1 selected
+
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Test A-password123-False] PASSED
+
+- generated xml file: /workspace/openpilot-wifi-validation/results/20260927T191138254836Z-9f1e7ada0990-hwsim/junit.xml -
+====================== 1 passed, 51 deselected in 17.01s =======================
+

@@ -2103,6 +2103,22 @@ Approved after comma four's recorded Wi-Fi-to-cellular failover failure. This su
 
 ---
 
+### Amendment: restart DHCP discovery after a lease-less association
+
+- [x] Add a regression using the fake manager environment that models BusyBox `REQUESTING`, `RELEASED`, and `BOUND`
+  states. It must cover both release-before-renew and renew-before-release delivery, prove exactly one release and a
+  stable client lifetime, and show an association with an existing address receives no release. Run the full Wi-Fi
+  manager test file red before changing production code.
+- [x] In `_on_associated`, under the existing lock, re-read the current station association before a destructive
+  signal. If it is still the selected association, is not AP mode, has no address, and udhcpc is live, send one
+  `SIGUSR2`, then call the existing `_start_dhcp()` path. Preserve the stop, selection, association, and AP exit checks.
+- [x] During the existing 0.5-second no-address polling, send `SIGUSR1` only to a live PID. Do not add a helper,
+  restart the process, sleep outside the bounded polling loop, or repeat the release.
+- [x] Run the full Wi-Fi manager test file, Ruff, and ty on the exact VM candidate. Preserve the red and green logs,
+  hashes, and scope in `results/task9-dhcp-restart-20260927/`; do not run the full hwsim matrix for this amendment.
+
+---
+
 ### Amendment: preserve forwarding across hotspot adoption
 
 Task 10 showed that a new WifiManager overwrites live forwarding with its initial False value before the UI supplies policy.

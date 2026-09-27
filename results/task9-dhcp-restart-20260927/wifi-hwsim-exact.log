@@ -1,0 +1,63 @@
+Results: /workspace/openpilot-wifi-validation/results/20260927T190806362154Z-9f1e7ada0990-hwsim
+No entry for terminal type "unknown";
+using dumb terminal settings.
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /workspace/openpilot/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace
+collecting ... collected 52 items / 51 deselected / 1 selected
+
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Test A-password123-False] FAILED
+
+=================================== FAILURES ===================================
+__________ test_connect_persist_and_reopen[Test A-password123-False] ___________
+
+lab = <wifi_e2e.WifiLab object at 0xeb7427a56cc0>, ssid = 'Test A'
+password = 'password123', hidden = False
+
+    @pytest.mark.parametrize('ssid,password,hidden', [
+      ('Open', '', False),
+      ('Test A', 'password123', False),
+      ('Hidden', 'password123', True),
+      ('Hidden open', '', True),
+      ('București', 'parolă-123', False),
+      ('S' * 32, 'password123', False),
+      ('Test A', '12345678', False),
+      ('Test A', 'p' * 63, False),
+      ('Test A', 'ab' * 32, False),
+      ('Test A', ' pass\\word" ', False),
+    ])
+    def test_connect_persist_and_reopen(lab, ssid, password, hidden):
+      lab.ap(ssid, password, hidden=hidden)
+      lab.start_manager()
+      lab.call('connect_to_network', ssid, password, hidden=hidden)
+>     state = lab.connected(ssid)
+              ^^^^^^^^^^^^^^^^^^^
+
+../openpilot-wifi-validation/test_wifi_e2e.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../openpilot-wifi-validation/wifi_e2e.py:308: in connected
+    state = self.wait(lambda s: s['connected'] == ssid and bool(s['ip']))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <wifi_e2e.WifiLab object at 0xeb7427a56cc0>
+predicate = <function WifiLab.connected.<locals>.<lambda> at 0xeb742700b880>
+timeout = 35
+
+    def wait(self, predicate, timeout=35):
+      deadline = time.monotonic() + timeout
+      while time.monotonic() < deadline:
+        state = self.call('snapshot')
+        if predicate(state):
+          return state
+        time.sleep(0.05)
+>     raise AssertionError(f'Wi-Fi operation did not complete: {self.snapshot}; events={self.events}; logs={self.directory}')
+E     AssertionError: Wi-Fi operation did not complete: {'connected': None, 'connecting': 'Test A', 'status': 1, 'ip': '', 'metered': 0, 'tethering': False, 'password': 'swagswagcomma', 'networks': [{'ssid': 'Test A', 'strength': 100, 'security_type': 1, 'is_tethering': False}], 'saved': {'Test A': False}}; events=[['forgotten', 'Test A'], ['networks_updated']]; logs=/run/wifi-e2e-logs/wifi-e2e-8mymb9_1
+
+../openpilot-wifi-validation/wifi_e2e.py:296: AssertionError
+- generated xml file: /workspace/openpilot-wifi-validation/results/20260927T190806362154Z-9f1e7ada0990-hwsim/junit.xml -
+=========================== short test summary info ============================
+FAILED ../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Test A-password123-False] - AssertionError: Wi-Fi operation did not complete: {'connected': None, 'connecting': 'Test A', 'status': 1, 'ip': '', 'metered': 0, 'tethering': False, 'password': 'swagswagcomma', 'networks': [{'ssid': 'Test A', 'strength': 100, 'security_type': 1, 'is_tethering': False}], 'saved': {'Test A': False}}; events=[['forgotten', 'Test A'], ['networks_updated']]; logs=/run/wifi-e2e-logs/wifi-e2e-8mymb9_1
+====================== 1 failed, 51 deselected in 35.89s =======================
+

@@ -101,12 +101,15 @@ Init runs in a background thread, as upstream does:
 UI leaves station or hotspot networking running; the next `WifiManager` adopts it through step 1.
 
 One udhcpc runs for the life of the supplicant: `sudo udhcpc -i wlan0 -f -R -s <repo script> -p UDHCPC_PID`. On
-every CONNECTED event the manager sends `SIGUSR1` so a new network gets a fresh lease immediately. On DISCONNECTED,
-if current supplicant status is neither COMPLETED nor AP mode, send `SIGUSR2` to the live udhcpc to release the lease.
-The stock deconfig hook removes the station address and routes, allowing the cellular default route to become selected.
-Keep udhcpc running; the next CONNECTED event renews it. A stale disconnect event after reconnection or AP activation
-must not release a current lease. While the UI is dead, no event handling occurs; daemon survival does not establish
-cellular failover in that state. Tethering start kills udhcpc; tethering stop restarts it.
+every CONNECTED event, the manager re-reads station status under its lock. When that current association has no
+`ip_address=`, it sends one `SIGUSR2` to a live udhcpc, then uses the existing DHCP start path to renew it with
+`SIGUSR1`. The stock deconfig hook removes the station address and routes, allowing the cellular default route to become
+selected. During the existing 0.5-second bounded association polling, a still lease-less current association sends
+`SIGUSR1` only to a live PID. This handles BusyBox ignoring a renew while its initial negotiation is in progress and a
+kernel delivery order where the renew arrives before the release. A current association that already has an address
+keeps its lease. Keep udhcpc running; a stale disconnect after reconnection or AP activation must not release a current
+lease. While the UI is dead, no event handling occurs; daemon survival does not establish cellular failover in that
+state. Tethering start kills udhcpc; tethering stop restarts it.
 
 ## Storage
 
@@ -164,9 +167,11 @@ selection that the supplicant has not acted on yet. This replaces upstream's epo
 
 The monitor thread handles:
 
-- `CTRL-EVENT-CONNECTED`: renew or start udhcpc, `ENABLE_NETWORK all`, then poll `STATUS` every 0.5 s for
-  `ip_address=`. On an address: set `WifiState(ssid, CONNECTED)`, write the pending profile if it matches, refresh
-  metering, queue `activated`. If the association drops during the wait, return and let the next event decide. After
+- `CTRL-EVENT-CONNECTED`: after verifying the current station association under the manager lock, release a live
+  DHCP client once with `SIGUSR2` only if it has no `ip_address=`, then renew or start udhcpc and `ENABLE_NETWORK all`.
+  Poll `STATUS` every 0.5 s for `ip_address=`; each still lease-less current association renews only a live client.
+  On an address: set `WifiState(ssid, CONNECTED)`, write the pending profile if it matches, refresh metering, queue
+  `activated`. If the association drops during the wait, return and let the next event decide. After
   `DHCP_TIMEOUT_SECONDS = 45` (NetworkManager's `ipv4.dhcp-timeout` default) without an address: `DISABLE_NETWORK`
   that id so the supplicant stops looping on it, set DISCONNECTED, queue `disconnected`.
 - `CTRL-EVENT-SSID-TEMP-DISABLED ... reason=WRONG_KEY` for the SSID in the current state: `REMOVE_NETWORK` it so the

@@ -1,0 +1,14 @@
+Sun Sep 27 19:11:53 UTC 2026
+bssid=02:00:00:00:02:00
+freq=2412
+ssid=Test A
+id=0
+mode=station
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+p2p_device_address=42:00:00:00:03:00
+address=02:00:00:00:03:00
+uuid=d9ec65b2-32e4-538d-b26c-3f2b86f7a8d5
+RELEASE_AND_RENEW_SENT
