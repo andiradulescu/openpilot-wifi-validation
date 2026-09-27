@@ -55,3 +55,12 @@ insertions, and 1,727 deletions; `wifi_manager.py` is 1,089 lines and `test_wifi
 `exact-tree/` contains the raw regular files retrieved from the exact-tree VM run, including `tmp/` command logs and
 the hwsim result manifest, JUnit, run, and service-state files. A raw final-red command log was not preserved: only
 the captured failure count and reason above are available.
+
+## Unresolved review risk
+
+Primary-source review found a plausible introduced correctness risk. BusyBox can queue multiple `SIGUSR1` signals while
+its bound hook is executing; after the client reaches BOUND, a first queued signal can start renewal and a second can
+move renewal into deconfiguration and fresh discovery. The new 0.5-second retry loop can queue those signals if the
+hook blocks across at least two polls while wpa status still lacks `ip_address=`. This was not proven as the DNS failure
+cause. The artifacts contain no packet, signal, or hook timeline, and their final connected/IP snapshot cannot rule out
+a temporary deconfiguration. Future acceptance needs those traces before this amendment can be accepted.
