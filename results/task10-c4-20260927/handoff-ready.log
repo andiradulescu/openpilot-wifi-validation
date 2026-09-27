@@ -1,0 +1,57 @@
+Sun Sep 27 08:34:46 AM UTC 2026
+52124 openpilot.selfdrive.ui.ui
+10 (unmanaged)
+52334
+52378
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=2
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.108
+p2p_device_address=00:0a:f5:87:d4:d4
+address=00:0a:f5:87:d4:d4
+uuid=795ce4ac-13b9-591d-b32b-a682a0050115
+ieee80211ac=1
+default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 
+default via 192.168.1.1 dev wlan0 metric 600 
+default via 10.64.64.64 dev ppp0 metric 1000 
+10.64.64.64 dev ppp0 proto kernel scope link src 10.137.161.80 
+192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 
+192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 
+Link 14 (wlan0)
+    Current Scopes: DNS
+         Protocols: +DefaultRoute -LLMNR -mDNS -DNSOverTLS DNSSEC=no/unsupported
+       DNS Servers: 192.168.1.1
+        DNS Domain: lan
+PING 1.1.1.1 (1.1.1.1) from 192.168.1.108 wlan0: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=1 ttl=57 time=28.8 ms
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=14.7 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=13.5 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 13.509/19.002/28.756/6.915 ms
+PING 1.1.1.1 (1.1.1.1) from 10.137.161.80 ppp0: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=82.1 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=47.0 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 2 received, 33.3333% packet loss, time 2016ms
+rtt min/avg/max/mdev = 47.016/64.564/82.112/17.548 ms
+90-NM-3e84a11f-564b-4a7c-97ee-b5c4ac13aba2.yaml
+90-NM-caf523f7-6a6a-5334-adff-531f3405cd39.yaml
+90-NM-f6b2b2bf-d063-55d9-b079-42192cdd0f1e.yaml
+90-NM-b185a9e7-ddec-4cd7-9fc2-2d3a6f4cde15.yaml
+esim.nmconnection
+openpilot connection systeam5.nmconnection
+Raluca 5GHz.nmconnection
+3e84a11f-564b-4a7c-97ee-b5c4ac13aba2-Hotspot.nmconnection
+Hotspot.nmconnection
+openpilot connection Andrei’s iPhone 13.nmconnection
+cce38e1f-49c5-43ae-98e7-773c10673967-weedle.nmconnection

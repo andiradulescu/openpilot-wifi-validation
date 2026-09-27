@@ -1,0 +1,36 @@
+Sun Sep 27 08:31:03 AM UTC 2026
+comma-12462a9b
+SSH_CONNECTION=192.168.1.171 50813 192.168.1.108 22
+IsOffroad=1
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+bond0            DOWN           
+dummy0           DOWN           
+ifb0             DOWN           
+ifb1             DOWN           
+ip_vti0@NONE     DOWN           
+ip6_vti0@NONE    DOWN           
+sit0@NONE        DOWN           
+ip6tnl0@NONE     DOWN           
+rmnet_ipa0       DOWN           
+wlan0            UP             192.168.1.108/24 fd3d:6b1d:302d:0:4805:7fc6:606c:3cd1/64 fd3d:6b1d:302d:0:20a:f5ff:fe87:d4d4/64 2a02:2f04:c20c:d600:4805:7fc6:606c:3cd1/64 2a02:2f04:c20c:d600:20a:f5ff:fe87:d4d4/64 fe80::20a:f5ff:fe87:d4d4/64 
+p2p0             DOWN           
+ppp0             UNKNOWN        10.136.148.80 peer 10.64.64.64/32 fe80::b8d4:96b3:8a73:139e/128 
+default via 192.168.1.1 dev wlan0 metric 600 
+default via 10.64.64.64 dev ppp0 metric 1000 
+10.64.64.64 dev ppp0 proto kernel scope link src 10.136.148.80 
+192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 
+8869c2f5639eaab178954d60c23e939a6c050ceb
+48917 openpilot.selfdrive.ui.ui
+DEVICE         TYPE      STATE                   CONNECTION 
+lo             loopback  connected (externally)  lo         
+ppp0           ppp       disconnected            --         
+p2p-dev-wlan0  wifi-p2p  unavailable             --         
+bond0          bond      unmanaged               --         
+dummy0         dummy     unmanaged               --         
+ifb0           ifb       unmanaged               --         
+ifb1           ifb       unmanaged               --         
+ip6_vti0       iptunnel  unmanaged               --         
+ip6tnl0        iptunnel  unmanaged               --         
+ip_vti0        iptunnel  unmanaged               --         
+sit0           iptunnel  unmanaged               --         
+wlan0          wifi      unmanaged               --         

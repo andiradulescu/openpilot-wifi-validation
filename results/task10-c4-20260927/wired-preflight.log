@@ -1,0 +1,31 @@
+Sun Sep 27 08:31:57 AM UTC 2026
+comma-12462a9b
+192.168.1.171 50967 192.168.1.199 22
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+a9daffa1-8b5b-4e76-9f5c-d474703ada42
+8869c2f5639eaab178954d60c23e939a6c050ceb
+49180
+49223
+bssid=5c:02:14:b0:21:e3
+freq=5500
+ssid=systeam5
+id=2
+mode=station
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.108
+p2p_device_address=00:0a:f5:87:d4:d4
+address=00:0a:f5:87:d4:d4
+uuid=795ce4ac-13b9-591d-b32b-a682a0050115
+ieee80211ac=1
+PING 1.1.1.1 (1.1.1.1) from 10.136.148.80 ppp0: 56(84) bytes of data.
+64 bytes from 1.1.1.1: icmp_seq=2 ttl=57 time=78.6 ms
+64 bytes from 1.1.1.1: icmp_seq=3 ttl=57 time=76.0 ms
+
+--- 1.1.1.1 ping statistics ---
+3 packets transmitted, 2 received, 33.3333% packet loss, time 2028ms
+rtt min/avg/max/mdev = 75.992/77.290/78.589/1.298 ms
