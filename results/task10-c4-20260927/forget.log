@@ -1,0 +1,30 @@
+Sun Sep 27 11:47:31 AM UTC 2026
+comma-12462a9b
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+bssid=5c:02:14:b0:21:e2
+freq=2412
+ssid=systeam
+id=5
+mode=station
+wifi_generation=4
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.1.108
+p2p_device_address=00:0a:f5:87:d4:d4
+address=00:0a:f5:87:d4:d4
+uuid=795ce4ac-13b9-591d-b32b-a682a0050115
+network id / ssid / bssid / flags
+0	Raluca 5GHz	any	
+1	Andrei\xe2\x80\x99s iPhone 13	any	
+4	Andrei\xe2\x80\x99s iPhone 13	any	
+5	systeam	any	[CURRENT]
+14: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 3000
+    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0
+       valid_lft forever preferred_lft forever
+/data/etc/netplan systeam5_matches= []
+/data/etc/NetworkManager/system-connections systeam5_matches= []
+/run/NetworkManager/system-connections systeam5_matches= []
+original_netplan_exists= False

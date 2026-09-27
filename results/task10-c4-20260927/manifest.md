@@ -11,3 +11,9 @@ Fetched the published wifi-wpa-supplicant branch, verified FETCH_HEAD exactly 88
 ## Touchscreen test prerequisite
 
 systeam5 appears in legacy netplan file /data/etc/netplan/90-NM-b185a9e7-ddec-4cd7-9fc2-2d3a6f4cde15.yaml and also has a persistent openpilot connection systeam5.nmconnection profile. No passwords were read into evidence. Forget and subsequent UI checks are pending. No source modifications, unit/lint reruns, or new implementation deviations. No full Task 10 pass claimed. These artifacts have not been pushed.
+
+## Legacy-profile Forget
+
+The user reported completing Forget on systeam5. At 11:47:31 UTC, Ethernet SSH succeeded and the source-bound reply route to 192.168.1.171 selected eth0. Supplicant LIST_NETWORKS contained no systeam5 entry. No systeam5 contents matched files in /data/etc/netplan, /data/etc/NetworkManager/system-connections, or /run/NetworkManager/system-connections; the original netplan YAML was absent. No credentials were printed. Legacy-profile removal PASS.
+
+The device was connected to the other saved network systeam, so it did not remain disconnected. This does not invalidate removal of systeam5; it means no claim of a disconnected station state is made. Reconnection to systeam5 with a correct password and remaining touchscreen tests are pending.
