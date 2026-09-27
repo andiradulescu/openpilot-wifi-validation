@@ -51,3 +51,11 @@ In response to the request to change the password while tethering was ON, reconn
 The user disabled tethering and reported station recovery. At 12:32:21 UTC, systeam5 was COMPLETED with 192.168.1.108, the hotspot NAT rule was absent, Ethernet reply routing selected eth0, and the device was offroad. `ping -c 3 -W 1 -I wlan0 1.1.1.1`: 3 transmitted, 3 received. Hotspot-off cleanup and station reconnection PASS.
 
 At 12:32:50 UTC the UI was stopped. The planned 40 individual `ping -c1 -W1 -I wlan0 1.1.1.1` probes, separated by 0.5 seconds, returned 40 ok and zero LOST. Supplicant PID 52334 and udhcpc PID 100296 were unchanged. UI restart launched at 12:33:12 UTC using the amended checkout-cwd and activated-venv command, with an EXIT trap for restoration if the probe script failed. After the 45-second settling period, verification at 12:34:14 UTC found UI PID 104054 running, the same daemon PIDs, systeam5 COMPLETED, and Ethernet reply routing still on eth0. Post-restart `ping -c 3 -W 1 -I wlan0 1.1.1.1`: 3 transmitted, 3 received. Station UI restart PASS: 40/40 downtime probes and 3/3 post-restart probes. No source changes, unit/lint reruns, or new implementation deviations. Hotspot-mode UI restart remains pending.
+
+## Hotspot UI restart
+
+At 12:51:24 UTC, the offroad device had weedle-ca83 active, phone lease 192.168.43.220, forwarding=1, supplicant PID 52334 and dnsmasq PID 107641. Preflight `ping -c 3 -W 1 -I wlan0 192.168.43.220`: 3/3 replies. Ethernet reply routing selected eth0.
+
+UI stop at 12:51:48 UTC followed by 40 individual `ping -c1 -W1 -I wlan0 192.168.43.220` probes spaced by 0.5 seconds produced 40 ok and zero LOST. Both daemon PIDs were unchanged and forwarding stayed 1. UI restart launched at 12:52:13 UTC using the amended cwd/venv command and an EXIT restoration trap. After the planned 45-second settling period, verification at 12:53:20 UTC found UI PID 110219, the same daemon PIDs, AP COMPLETED, forwarding=1, the same phone lease, and the tagged NAT rule. Wired SSH worked and replies used eth0. Post-restart `ping -c 3 -W 1 -I wlan0 192.168.43.220`: 3/3 replies.
+
+Automated hotspot restart checks PASS: 40/40 downtime probes and 3/3 afterward, with daemon adoption and forwarding preserved. Fresh post-restart phone HTTPS acceptance remains pending. No source changes, unit/lint reruns, or new implementation deviations.

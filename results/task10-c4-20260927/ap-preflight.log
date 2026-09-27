@@ -1,0 +1,30 @@
+Sun Sep 27 12:51:24 PM UTC 2026
+1
+bssid=00:0a:f5:87:d4:d4
+freq=2437
+ssid=weedle-ca83
+id=6
+mode=AP
+wifi_generation=5
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+ip_address=192.168.43.1
+p2p_device_address=00:0a:f5:87:d4:d4
+address=00:0a:f5:87:d4:d4
+uuid=795ce4ac-13b9-591d-b32b-a682a0050115
+1790599857 0a:b0:87:0e:84:c1 192.168.43.220 OnePlus-6 01:0a:b0:87:0e:84:c1
+52334
+107641
+net.ipv4.ip_forward = 1
+192.168.1.171 from 192.168.1.199 dev eth0 uid 1000 
+    cache 
+PING 192.168.43.220 (192.168.43.220) from 192.168.43.1 wlan0: 56(84) bytes of data.
+64 bytes from 192.168.43.220: icmp_seq=1 ttl=64 time=58.3 ms
+64 bytes from 192.168.43.220: icmp_seq=2 ttl=64 time=89.6 ms
+64 bytes from 192.168.43.220: icmp_seq=3 ttl=64 time=149 ms
+
+--- 192.168.43.220 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev = 58.348/99.076/149.308/37.737 ms
