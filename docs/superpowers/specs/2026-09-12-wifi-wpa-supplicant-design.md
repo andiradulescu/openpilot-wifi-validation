@@ -132,8 +132,10 @@ Identity for UI purposes is the SSID, as upstream. A saved network is any profil
 - Edit (metering, hotspot password): rewrite the profile as a persistent keyfile with the changed key and remove any
   other sources for that UUID (runtime copy and YAML). Netplan-origin profiles therefore become persistent keyfiles on
   first edit. This reuses forget and save rather than adding a third write path.
-- Hotspot: SSID `weedle-<dongle prefix>` and password `swagswagcomma` by default. `tethering_password` reads the psk.
-  `set_tethering_password` edits the profile and restarts tethering when active.
+- Hotspot: SSID `weedle-<dongle prefix>` and password `swagswagcomma` by default. `tethering_password` is a cached
+  read under the manager lock: it returns the matching AP profile's psk, or `""` when that profile is absent. It never
+  creates or rewrites a profile. Initialisation, explicit password changes, and tethering activation retain the only
+  profile-provisioning paths. `set_tethering_password` edits the profile and restarts tethering when active.
 - Metering: `set_current_network_metered` edits the connected profile. `current_network_metered` is read from the
   connected profile on every status refresh. This is exactly what `hardware.py` reads for `deviceState`.
 
@@ -267,6 +269,9 @@ In `andiradulescu/openpilot-wifi-validation` (this repository, branch `wifi-v3`)
   itself, which is the documented rollback procedure.
 - Build a disposable QEMU Ubuntu 24.04 arm64 VM with `linux-modules-extra` for `mac80211_hwsim` (OrbStack's kernel
   lacks it). Run `--suite unit` and the full `--suite hwsim` matrix against the v3 SHA; record manifests. The hwsim suite invokes the real stock DHCP hook through the repository hook with wwan0 and wlan0 both on 192.168.1.0/24, confirms wlan0's connected prefix is metric 600, and confirms a source-bound lookup from the wired address chooses wwan0 before and after wlan0 is down.
+- The hwsim worker copies the shipped supplicant configuration to an isolated `/run` path and appends
+  `freq_list=2412`, matching every fixture AP's channel 1. This is harness-only setup; the production configuration
+  and production scan behavior remain unchanged.
 - Device pass on the comma three at 192.168.1.105 (currently on PR #26 code, so install v3, reboot, verify adoption,
   station, hotspot with a real client, UI kill survival, reboot autoconnect) and on a comma four for the LTE/ppp0
   priority and tethering over cellular. The comma four host is still to be named by Andi.

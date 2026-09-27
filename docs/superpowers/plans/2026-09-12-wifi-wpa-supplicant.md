@@ -2119,6 +2119,23 @@ Approved after comma four's recorded Wi-Fi-to-cellular failover failure. This su
 
 ---
 
+### Amendment: cached tethering password read and channel-1 hwsim fixture
+
+The generic CI report renders `tethering_password` before any hotspot lifecycle operation. A getter that calls
+`_hotspot_profile()` can write a profile through `write_profile()` and therefore invoke `sudo install` against the
+generic runner. The getter must instead read the already cached matching AP profile under the manager lock, returning
+`""` when no profile exists. Profile creation remains in initialization and the explicit setter/activation paths.
+
+The hwsim fixture APs all use channel 1. The harness worker copies the shipped supplicant configuration to its isolated
+`/run` path and appends `freq_list=2412`; it does not edit the production configuration or change production scanning.
+
+- [x] Add a regression that observes the getter with no cached hotspot profile and fails on any profile write. Establish
+  red evidence, then make the getter a cached read under the existing lock; retain initialization, setter, and
+  activation provisioning behavior.
+- [x] Run the full Wi-Fi suite, Ruff, and ty after the narrow source change. Keep the final two-commit source shape.
+- [x] Use the copied hwsim-only configuration for the channel-1 fixture. Preserve unbounded trace runs as evidence that
+  the scan behavior is not deterministic, and do not infer a hardware defect from the fixture.
+
 ### Amendment: preserve forwarding across hotspot adoption
 
 Task 10 showed that a new WifiManager overwrites live forwarding with its initial False value before the UI supplies policy.
