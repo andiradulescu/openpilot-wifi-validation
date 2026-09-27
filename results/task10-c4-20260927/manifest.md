@@ -29,3 +29,7 @@ The user reported "done showed incorrect password", then "I also deleted system 
 ## Reconnect after wrong-password test
 
 The user reconnected with the correct password, leaving metering unchanged. At 12:18:21 UTC, systeam5 was COMPLETED with IPv4 192.168.1.108, a persistent mode-0600 profile, and metered unset. `ping -c 3 -W 1 -I wlan0 1.1.1.1`: 3 transmitted, 3 received, 0% loss. Wired SSH reply routing still selected eth0. Correct-password recovery PASS. Metered toggle remains pending.
+
+## Metered toggle
+
+After the user selected metered, verification at 12:19:41 UTC found systeam5 still COMPLETED and its persistent profile changed from metered unset to metered=1. In the device venv, HARDWARE.get_network_metered(log.DeviceState.NetworkType.wifi) returned True. HARDWARE.get_network_type() remained 6 (ethernet), whose metered value was False, consistent with wired management remaining preferred. The source-bound management reply route selected eth0. Metered persistence and explicit Wi-Fi hardware reporting PASS. No source changes or unit/lint reruns.
