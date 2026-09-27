@@ -49,7 +49,15 @@ def keyfile_profiles():
 
 def worker(path):
   from dataclasses import asdict
+  from openpilot.system.ui.lib import wifi_manager
   from openpilot.system.ui.lib.wifi_manager import WifiManager
+
+  config = Path('/run/wifi-e2e-wpa_supplicant.conf')
+  shutil.copyfile(wifi_manager.WPA_CONF_PATH, config)
+  # Hwsim station fixtures use channel 1.
+  with config.open('a') as f:
+    f.write('\nfreq_list=2412\n')
+  wifi_manager.WPA_CONF_PATH = str(config)
 
   events = []
   manager = WifiManager()
@@ -64,6 +72,7 @@ def worker(path):
   if 'forget_failed' in inspect.signature(manager.add_callbacks).parameters:
     manager.add_callbacks(forget_failed=lambda ssid: events.append(['forget_failed', ssid]))
   with socket.socket(socket.AF_UNIX) as server:
+    WifiLab.wait_external(lambda: manager._ready)
     server.bind(path)
     os.chmod(path, 0o600)
     server.listen(1)
@@ -189,7 +198,7 @@ class WifiLab:
     (self.directory / 'probe').write_text(PROBE)
     self.spawn('wan', sys.executable, '-m', 'http.server', '8000', '--bind', SERVER, '--directory', str(self.directory))
     self.spawn('wan', 'dnsmasq', '--conf-file=/dev/null', '--keep-in-foreground', '--no-resolv', '--bind-interfaces',
-               f'--listen-address={SERVER},{CELLULAR_DNS}', f'--address=/wifi.test/{SERVER}')
+               f'--listen-address={SERVER},{CELLULAR_DNS}', f'--address=/wifi.test/{SERVER}', '--local=/wifi.test/')
     self.spawn('dut', 'dbus-daemon', '--system', '--nofork', '--nopidfile')
     self.wait_external(lambda: Path('/run/dbus/system_bus_socket').exists())
     config = self.directory / 'NetworkManager.conf'
@@ -202,6 +211,8 @@ class WifiLab:
     self.wait_external(lambda: run('nmcli', '-t', '-f', 'RUNNING', 'general', ns=self.names['dut'], check=False).stdout.strip() == 'running')
     self.wait_external(lambda: run('curl', '--noproxy', '*', '--silent', '--max-time', '1',
                                   f'http://{SERVER}:8000/probe', ns=self.names['wan'], check=False).stdout == PROBE)
+    sudo = run('sudo', '-n', 'true', ns=self.names['dut'])
+    assert 'unable to resolve host' not in sudo.stderr
 
   def ap(self, ssid='Test A', password='password123', index=0, hidden=False, dhcp=True):
     self.ssids.add(ssid)
@@ -214,7 +225,7 @@ class WifiLab:
     lines = ['interface=wlan0', 'driver=nl80211', 'hw_mode=g', 'channel=1',
              f'ctrl_interface={self.directory}/ap{index}-ctrl', f'ssid2={ssid.encode().hex()}', f'ignore_broadcast_ssid={int(hidden)}']
     if password:
-      psk = password if re.fullmatch(r'[0-9a-fA-F]{64}', password) else hashlib.pbkdf2_hmac('sha1', password.encode(), ssid.encode(), 4096).hex()
+      psk = password if re.fullmatch(r'[0-9a-fA-F]{64}', password) else hashlib.pbkdf2_hmac('sha1', password.encode(), ssid.encode(), 4096, 32).hex()
       lines += ['wpa=2', 'wpa_key_mgmt=WPA-PSK', 'rsn_pairwise=CCMP', f'wpa_psk={psk}']
     config.write_text('\n'.join(lines) + '\n')
     config.chmod(0o600)
@@ -331,7 +342,7 @@ class WifiLab:
 
   def client(self, ssid, password):
     config = self.directory / 'client.conf'
-    psk = password if re.fullmatch(r'[0-9a-fA-F]{64}', password) else hashlib.pbkdf2_hmac('sha1', password.encode(), ssid.encode(), 4096).hex()
+    psk = password if re.fullmatch(r'[0-9a-fA-F]{64}', password) else hashlib.pbkdf2_hmac('sha1', password.encode(), ssid.encode(), 4096, 32).hex()
     config.write_text(f'ctrl_interface={self.directory}/client-ctrl\nnetwork={{\nssid={ssid.encode().hex()}\npsk={psk}\n}}\n')
     config.chmod(0o600)
     self.spawn('client', 'wpa_supplicant', '-i', 'wlan0', '-c', str(config))

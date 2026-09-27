@@ -39,13 +39,28 @@ fi
 }
 shift
 mount --make-rprivate /
-for dir in /run /tmp /data /etc/NetworkManager /etc/netplan /etc/netns /var/lib/NetworkManager /var/lib/misc; do
+mount -t tmpfs tmpfs /tmp
+cp /etc/hosts /tmp/hosts
+printf '\n127.0.1.1 %s\n' "$(hostname)" >> /tmp/hosts
+mount --bind /tmp/hosts /etc/hosts
+mkdir /tmp/wifi-e2e-journal
+mount --bind /run/systemd/journal /tmp/wifi-e2e-journal
+for dir in /run /data /etc/NetworkManager /etc/netplan /etc/netns /var/lib/NetworkManager /var/lib/misc; do
   mkdir -p "$dir"
   mount -t tmpfs tmpfs "$dir"
 done
+mkdir -p /run/systemd/journal
+mount --bind /tmp/wifi-e2e-journal /run/systemd/journal
+if [[ -n "${WIFI_E2E_LOG_DIR:-}" ]]; then
+  mkdir -p "$WIFI_E2E_LOG_DIR"
+  ln -s "$(readlink -m "$WIFI_E2E_LOG_DIR")" /run/wifi-e2e-logs
+  export WIFI_E2E_LOG_DIR=/run/wifi-e2e-logs
+fi
 mkdir -p /run/dbus /data/etc/NetworkManager/system-connections /etc/NetworkManager/system-connections
 mount --bind /data/etc/NetworkManager/system-connections /etc/NetworkManager/system-connections
 # Each ip-netns exec also receives its own resolver file from /etc/netns/<name>.
+touch /tmp/resolvconf.disabled
+mount --bind /tmp/resolvconf.disabled "$(readlink -m /sbin/resolvconf)"
 resolv_target="$(readlink -m /etc/resolv.conf)"
 mkdir -p "$(dirname "$resolv_target")"
 touch "$resolv_target" /tmp/resolv.conf
