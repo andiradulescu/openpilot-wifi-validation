@@ -1,0 +1,15 @@
+('ip', '-br', 'addr')
+lo               UNKNOWN        127.0.0.1/8 198.18.0.1/32 198.18.0.2/32 ::1/128 
+wan1@if15        UP             10.200.1.1/24 fe80::e0c3:7dff:fe54:a89f/64 
+wan2@if17        UP             10.200.2.1/24 fe80::bca8:e6ff:fe5e:4ab4/64 
+wan3@if19        UP             10.200.3.1/24 fe80::cc27:3cff:fea7:5f9e/64 
+
+('ip', 'route')
+10.10.0.0/24 via 10.200.2.2 dev wan2 
+10.20.0.0/24 via 10.200.3.2 dev wan3 
+10.200.1.0/24 dev wan1 proto kernel scope link src 10.200.1.1 
+10.200.2.0/24 dev wan2 proto kernel scope link src 10.200.2.1 
+10.200.3.0/24 dev wan3 proto kernel scope link src 10.200.3.1 
+
+('iw', 'dev')
+

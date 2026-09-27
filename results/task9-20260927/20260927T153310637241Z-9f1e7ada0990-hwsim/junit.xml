@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="4" time="120.662" timestamp="2026-09-27T15:33:10.859574+00:00" hostname="wifi-e2e"><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_empty_scan" time="0.729" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Open--False]" time="32.975" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Test A-password123-False]" time="35.808"><failure message="AssertionError: Wi-Fi operation did not complete: {'connected': None, 'connecting': 'Test A', 'status': 1, 'ip': '', 'metered': 0, 'tethering': False, 'password': 'swagswagcomma', 'networks': [{'ssid': 'Test A', 'strength': 100, 'security_type': 1, 'is_tethering': False}, {'ssid': 'Open', 'strength': 100, 'security_type': 0, 'is_tethering': False}], 'saved': {'Test A': False}}; events=[['forgotten', 'Test A'], ['networks_updated']]; logs=/run/wifi-e2e-logs/wifi-e2e-ghmvqyrm">lab = &lt;wifi_e2e.WifiLab object at 0xfff296c9e540&gt;, ssid = 'Test A'
+password = 'password123', hidden = False
+
+    @pytest.mark.parametrize('ssid,password,hidden', [
+      ('Open', '', False),
+      ('Test A', 'password123', False),
+      ('Hidden', 'password123', True),
+      ('Hidden open', '', True),
+      ('București', 'parolă-123', False),
+      ('S' * 32, 'password123', False),
+      ('Test A', '12345678', False),
+      ('Test A', 'p' * 63, False),
+      ('Test A', 'ab' * 32, False),
+      ('Test A', ' pass\\word" ', False),
+    ])
+    def test_connect_persist_and_reopen(lab, ssid, password, hidden):
+      lab.ap(ssid, password, hidden=hidden)
+      lab.start_manager()
+      lab.call('connect_to_network', ssid, password, hidden=hidden)
+&gt;     state = lab.connected(ssid)
+              ^^^^^^^^^^^^^^^^^^^
+
+../openpilot-wifi-validation/test_wifi_e2e.py:66: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../openpilot-wifi-validation/wifi_e2e.py:308: in connected
+    state = self.wait(lambda s: s['connected'] == ssid and bool(s['ip']))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = &lt;wifi_e2e.WifiLab object at 0xfff296c9e540&gt;
+predicate = &lt;function WifiLab.connected.&lt;locals&gt;.&lt;lambda&gt; at 0xfff296c83d80&gt;
+timeout = 35
+
+    def wait(self, predicate, timeout=35):
+      deadline = time.monotonic() + timeout
+      while time.monotonic() &lt; deadline:
+        state = self.call('snapshot')
+        if predicate(state):
+          return state
+        time.sleep(0.05)
+&gt;     raise AssertionError(f'Wi-Fi operation did not complete: {self.snapshot}; events={self.events}; logs={self.directory}')
+E     AssertionError: Wi-Fi operation did not complete: {'connected': None, 'connecting': 'Test A', 'status': 1, 'ip': '', 'metered': 0, 'tethering': False, 'password': 'swagswagcomma', 'networks': [{'ssid': 'Test A', 'strength': 100, 'security_type': 1, 'is_tethering': False}, {'ssid': 'Open', 'strength': 100, 'security_type': 0, 'is_tethering': False}], 'saved': {'Test A': False}}; events=[['forgotten', 'Test A'], ['networks_updated']]; logs=/run/wifi-e2e-logs/wifi-e2e-ghmvqyrm
+
+../openpilot-wifi-validation/wifi_e2e.py:296: AssertionError</failure></testcase><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Hidden-password123-True]" time="34.115" /><testcase time="0.419" /></testsuite></testsuites>

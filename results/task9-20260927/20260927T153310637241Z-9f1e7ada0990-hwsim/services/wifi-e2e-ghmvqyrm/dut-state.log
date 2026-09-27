@@ -1,0 +1,46 @@
+('ip', '-br', 'addr')
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+wlan0            UP             fe80::ff:fe00:300/64 
+wwan0@if20       UP             10.200.1.2/24 fe80::509b:f4ff:feb7:3d19/64 
+
+('ip', 'route')
+default via 10.200.1.1 dev wwan0 metric 700 
+10.200.1.0/24 dev wwan0 proto kernel scope link src 10.200.1.2 
+
+('iw', 'dev')
+phy#3
+	Interface wlan0
+		ifindex 6
+		wdev 0x300000001
+		addr 02:00:00:00:03:00
+		type managed
+		channel 1 (2412 MHz), width: 20 MHz (no HT), center1: 2412 MHz
+		txpower 20.00 dBm
+		multicast TXQ:
+			qsz-byt	qsz-pkt	flows	drops	marks	overlmt	hashcol	tx-bytes	tx-packets
+			0	0	0	0	0	0	0	0		0
+	Unnamed/non-netdev interface
+		wdev 0x300000003
+		addr 42:00:00:00:03:00
+		type P2P-device
+		txpower 20.00 dBm
+
+('nmcli', 'device')
+DEVICE  TYPE      STATE      CONNECTION 
+wwan0   ethernet  unmanaged  --         
+lo      loopback  unmanaged  --         
+wlan0   wifi      unmanaged  --         
+
+('wpa_cli', '-p', '/run/wpa_supplicant', '-i', 'wlan0', 'status')
+bssid=02:00:00:00:02:00
+freq=2412
+ssid=Test A
+id=0
+mode=station
+pairwise_cipher=CCMP
+group_cipher=CCMP
+key_mgmt=WPA2-PSK
+wpa_state=COMPLETED
+address=02:00:00:00:03:00
+uuid=d9ec65b2-32e4-538d-b26c-3f2b86f7a8d5
+

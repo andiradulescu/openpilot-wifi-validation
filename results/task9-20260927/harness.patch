@@ -1,0 +1,140 @@
+diff --git a/run_wifi_e2e.sh b/run_wifi_e2e.sh
+index f1fc0fa..2b7911e 100755
+--- a/run_wifi_e2e.sh
++++ b/run_wifi_e2e.sh
+@@ -39,13 +39,28 @@ fi
+ }
+ shift
+ mount --make-rprivate /
+-for dir in /run /tmp /data /etc/NetworkManager /etc/netplan /etc/netns /var/lib/NetworkManager /var/lib/misc; do
++mount -t tmpfs tmpfs /tmp
++cp /etc/hosts /tmp/hosts
++printf '\n127.0.1.1 %s\n' "$(hostname)" >> /tmp/hosts
++mount --bind /tmp/hosts /etc/hosts
++mkdir /tmp/wifi-e2e-journal
++mount --bind /run/systemd/journal /tmp/wifi-e2e-journal
++for dir in /run /data /etc/NetworkManager /etc/netplan /etc/netns /var/lib/NetworkManager /var/lib/misc; do
+   mkdir -p "$dir"
+   mount -t tmpfs tmpfs "$dir"
+ done
++mkdir -p /run/systemd/journal
++mount --bind /tmp/wifi-e2e-journal /run/systemd/journal
++if [[ -n "${WIFI_E2E_LOG_DIR:-}" ]]; then
++  mkdir -p "$WIFI_E2E_LOG_DIR"
++  ln -s "$(readlink -m "$WIFI_E2E_LOG_DIR")" /run/wifi-e2e-logs
++  export WIFI_E2E_LOG_DIR=/run/wifi-e2e-logs
++fi
+ mkdir -p /run/dbus /data/etc/NetworkManager/system-connections /etc/NetworkManager/system-connections
+ mount --bind /data/etc/NetworkManager/system-connections /etc/NetworkManager/system-connections
+ # Each ip-netns exec also receives its own resolver file from /etc/netns/<name>.
++touch /tmp/resolvconf.disabled
++mount --bind /tmp/resolvconf.disabled "$(readlink -m /sbin/resolvconf)"
+ resolv_target="$(readlink -m /etc/resolv.conf)"
+ mkdir -p "$(dirname "$resolv_target")"
+ touch "$resolv_target" /tmp/resolv.conf
+diff --git a/test_wifi_e2e.py b/test_wifi_e2e.py
+index fcb718c..592d47e 100644
+--- a/test_wifi_e2e.py
++++ b/test_wifi_e2e.py
+@@ -4,6 +4,7 @@ from pathlib import Path
+ 
+ import pytest
+ 
++from openpilot.system.ui.lib.wifi_manager import UDHCPC_SCRIPT_PATH
+ from wifi_e2e import PROFILE_DIR, SERVER, WifiLab, keyfile_profiles, run
+ 
+ 
+@@ -223,6 +224,45 @@ def test_manager_restart_preserves_working_station(lab, crash):
+   assert [path.read_text() for path in files] == pids
+ 
+ 
++def test_udhcpc_connected_prefix_loses_to_wired_shared_subnet(lab):
++  dut, wan = lab.names['dut'], lab.names['wan']
++  run('ip', 'route', 'del', 'default', 'via', '10.200.1.1', 'dev', 'wwan0', 'metric', '700', ns=dut)
++  run('ip', 'addr', 'del', '10.200.1.2/24', 'dev', 'wwan0', ns=dut)
++  run('ip', 'addr', 'del', '10.200.1.1/24', 'dev', 'wan1', ns=wan)
++  run('ip', 'addr', 'add', '192.168.1.2/24', 'dev', 'wwan0', ns=dut)
++  run('ip', 'addr', 'add', '192.168.1.1/24', 'dev', 'wan1', ns=wan)
++  run('ip', 'route', 'del', '192.168.1.0/24', 'dev', 'wwan0', ns=dut)
++  run('ip', 'route', 'add', '192.168.1.0/24', 'dev', 'wwan0', 'metric', '100', ns=dut)
++  run('ip', 'route', 'add', 'default', 'via', '192.168.1.1', 'dev', 'wwan0', 'metric', '100', ns=dut)
++  wired_prefix = run('busybox', 'ip', '-4', 'route', 'show', 'dev', 'wwan0', 'proto', 'kernel', 'scope', 'link', ns=dut).stdout.splitlines()
++  assert [line.split() for line in wired_prefix] == [['192.168.1.0/24', 'dev', 'wwan0', 'metric', '100']]
++
++  hook_env = ('UDHCPC_DEFAULT_SCRIPT=/etc/udhcpc/default.script', 'interface=wlan0', 'ip=192.168.1.3',
++              'subnet=255.255.255.0', 'router=192.168.1.1', 'dns=198.18.0.2')
++  run('env', *hook_env, UDHCPC_SCRIPT_PATH, 'bound', ns=dut)
++
++  lookup = run('ip', '-4', 'route', 'get', '192.168.1.1', 'from', '192.168.1.2', ns=dut).stdout
++  assert 'dev wwan0' in lookup, lookup
++  wlan_prefix = run('busybox', 'ip', '-4', 'route', 'show', 'dev', 'wlan0', 'proto', 'kernel', 'scope', 'link', ns=dut).stdout.splitlines()
++  assert [line.split() for line in wlan_prefix] == [['192.168.1.0/24', 'dev', 'wlan0', 'src', '192.168.1.3', 'metric', '600']]
++  assert run('busybox', 'ip', '-4', 'route', 'show', 'dev', 'wwan0', 'proto', 'kernel', 'scope', 'link', ns=dut).stdout.splitlines() == wired_prefix
++  defaults = [line.split() for line in run('busybox', 'ip', '-4', 'route', 'show', 'default', ns=dut).stdout.splitlines()]
++  assert defaults == [['default', 'via', '192.168.1.1', 'dev', 'wwan0', 'metric', '100'],
++                      ['default', 'via', '192.168.1.1', 'dev', 'wlan0', 'metric', '600']]
++
++  run('ip', 'route', 'add', '203.0.113.0/24', 'via', '192.168.1.1', 'dev', 'wlan0', ns=dut)
++  run('env', *hook_env, UDHCPC_SCRIPT_PATH, 'renew', ns=dut)
++  assert run('busybox', 'ip', '-4', 'route', 'show', '203.0.113.0/24', ns=dut).stdout.split() == [
++    '203.0.113.0/24', 'via', '192.168.1.1', 'dev', 'wlan0']
++  assert run('busybox', 'ip', '-4', 'route', 'show', 'dev', 'wlan0', 'proto', 'kernel', 'scope', 'link', ns=dut).stdout.splitlines() == wlan_prefix
++  assert [line.split() for line in run('busybox', 'ip', '-4', 'route', 'show', 'default', ns=dut).stdout.splitlines()] == defaults
++  assert run('busybox', 'ip', '-4', 'route', 'show', 'dev', 'wwan0', 'proto', 'kernel', 'scope', 'link', ns=dut).stdout.splitlines() == wired_prefix
++
++  run('ip', 'link', 'set', 'wlan0', 'down', ns=dut)
++  down_lookup = run('ip', '-4', 'route', 'get', '192.168.1.1', 'from', '192.168.1.2', ns=dut).stdout
++  assert 'dev wwan0' in down_lookup, down_lookup
++
++
+ def test_wifi_lte_priority_and_ap_loss(lab):
+   start_connected(lab)
+   assert 'dev wlan0' in run('ip', 'route', 'get', SERVER, ns=lab.names['dut']).stdout
+diff --git a/wifi_e2e.py b/wifi_e2e.py
+index 2cd9740..ca3d214 100644
+--- a/wifi_e2e.py
++++ b/wifi_e2e.py
+@@ -64,6 +64,7 @@ def worker(path):
+   if 'forget_failed' in inspect.signature(manager.add_callbacks).parameters:
+     manager.add_callbacks(forget_failed=lambda ssid: events.append(['forget_failed', ssid]))
+   with socket.socket(socket.AF_UNIX) as server:
++    WifiLab.wait_external(lambda: manager._ready)
+     server.bind(path)
+     os.chmod(path, 0o600)
+     server.listen(1)
+@@ -189,7 +190,7 @@ class WifiLab:
+     (self.directory / 'probe').write_text(PROBE)
+     self.spawn('wan', sys.executable, '-m', 'http.server', '8000', '--bind', SERVER, '--directory', str(self.directory))
+     self.spawn('wan', 'dnsmasq', '--conf-file=/dev/null', '--keep-in-foreground', '--no-resolv', '--bind-interfaces',
+-               f'--listen-address={SERVER},{CELLULAR_DNS}', f'--address=/wifi.test/{SERVER}')
++               f'--listen-address={SERVER},{CELLULAR_DNS}', f'--address=/wifi.test/{SERVER}', '--local=/wifi.test/')
+     self.spawn('dut', 'dbus-daemon', '--system', '--nofork', '--nopidfile')
+     self.wait_external(lambda: Path('/run/dbus/system_bus_socket').exists())
+     config = self.directory / 'NetworkManager.conf'
+@@ -202,6 +203,8 @@ class WifiLab:
+     self.wait_external(lambda: run('nmcli', '-t', '-f', 'RUNNING', 'general', ns=self.names['dut'], check=False).stdout.strip() == 'running')
+     self.wait_external(lambda: run('curl', '--noproxy', '*', '--silent', '--max-time', '1',
+                                   f'http://{SERVER}:8000/probe', ns=self.names['wan'], check=False).stdout == PROBE)
++    sudo = run('sudo', '-n', 'true', ns=self.names['dut'])
++    assert 'unable to resolve host' not in sudo.stderr
+ 
+   def ap(self, ssid='Test A', password='password123', index=0, hidden=False, dhcp=True):
+     self.ssids.add(ssid)
+@@ -214,7 +217,7 @@ class WifiLab:
+     lines = ['interface=wlan0', 'driver=nl80211', 'hw_mode=g', 'channel=1',
+              f'ctrl_interface={self.directory}/ap{index}-ctrl', f'ssid2={ssid.encode().hex()}', f'ignore_broadcast_ssid={int(hidden)}']
+     if password:
+-      psk = password if re.fullmatch(r'[0-9a-fA-F]{64}', password) else hashlib.pbkdf2_hmac('sha1', password.encode(), ssid.encode(), 4096).hex()
++      psk = password if re.fullmatch(r'[0-9a-fA-F]{64}', password) else hashlib.pbkdf2_hmac('sha1', password.encode(), ssid.encode(), 4096, 32).hex()
+       lines += ['wpa=2', 'wpa_key_mgmt=WPA-PSK', 'rsn_pairwise=CCMP', f'wpa_psk={psk}']
+     config.write_text('\n'.join(lines) + '\n')
+     config.chmod(0o600)
+@@ -331,7 +334,7 @@ class WifiLab:
+ 
+   def client(self, ssid, password):
+     config = self.directory / 'client.conf'
+-    psk = password if re.fullmatch(r'[0-9a-fA-F]{64}', password) else hashlib.pbkdf2_hmac('sha1', password.encode(), ssid.encode(), 4096).hex()
++    psk = password if re.fullmatch(r'[0-9a-fA-F]{64}', password) else hashlib.pbkdf2_hmac('sha1', password.encode(), ssid.encode(), 4096, 32).hex()
+     config.write_text(f'ctrl_interface={self.directory}/client-ctrl\nnetwork={{\nssid={ssid.encode().hex()}\npsk={psk}\n}}\n')
+     config.chmod(0o600)
+     self.spawn('client', 'wpa_supplicant', '-i', 'wlan0', '-c', str(config))

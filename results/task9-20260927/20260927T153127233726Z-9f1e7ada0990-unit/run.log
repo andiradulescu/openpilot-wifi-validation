@@ -1,0 +1,17 @@
+collected 83 tests in 0.09s • 1 worker
+................................................................................
+...
+
+slowest tests
+    3.27s  openpilot.system.ui.lib.tests.test_wifi_manager.TestTethering.test_tethering_password_change_waits_for_slow_ap_removal
+    3.16s  openpilot.system.ui.lib.tests.test_wifi_manager.TestHealth.test_crashed_supplicant_is_respawned_with_saved_networks
+    2.07s  openpilot.system.ui.lib.tests.test_wifi_manager.TestStation.test_delayed_workers_do_not_select_stale_network
+    2.07s  openpilot.system.ui.lib.tests.test_wifi_manager.TestStation.test_stale_dhcp_timeout_keeps_new_pending_connection
+    2.07s  openpilot.system.ui.lib.tests.test_wifi_manager.TestStation.test_terminal_callbacks_enqueue_before_later_selection
+    2.04s  openpilot.system.ui.lib.tests.test_wifi_manager.TestHealth.test_dead_udhcpc_is_restarted_while_connected
+    2.04s  openpilot.system.ui.lib.tests.test_wifi_manager.TestHealth.test_reattaching_healthy_supplicant_preserves_pending_hotspot_without_services
+    2.04s  openpilot.system.ui.lib.tests.test_wifi_manager.TestHealth.test_fresh_supplicant_restart_clears_pending_hotspot_state
+    1.60s  openpilot.system.ui.lib.tests.test_wifi_manager.TestStation.test_connect_persists_after_first_address
+    1.59s  openpilot.system.ui.lib.tests.test_wifi_manager.TestStation.test_connect_replaces_saved_network_without_clearing_selection
+
+83 passed in 82.13s

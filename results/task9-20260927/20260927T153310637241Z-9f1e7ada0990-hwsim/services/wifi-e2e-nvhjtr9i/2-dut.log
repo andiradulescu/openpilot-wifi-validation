@@ -1,0 +1,9 @@
+dbus[1027]: Unknown username "whoopsie" in message bus configuration file
+dbus-daemon[1027]: [system] Activating service name='org.freedesktop.hostname1' requested by ':1.1' (uid=0 pid=1028 comm="NetworkManager --no-daemon --config=/run/wifi-e2e-" label="unconfined") (using servicehelper)
+dbus-daemon[1027]: [system] Activated service 'org.freedesktop.hostname1' failed: Launch helper exited with unknown return code 1
+dbus-daemon[1027]: [system] Activating service name='org.freedesktop.nm_dispatcher' requested by ':1.1' (uid=0 pid=1028 comm="NetworkManager --no-daemon --config=/run/wifi-e2e-" label="unconfined") (using servicehelper)
+dbus-daemon[1027]: [system] Successfully activated service 'org.freedesktop.nm_dispatcher'
+dbus-daemon[1027]: [system] Activating service name='org.freedesktop.systemd1' requested by ':1.3' (uid=0 pid=1048 comm="/bin/systemctl is-system-running" label="unconfined") (using servicehelper)
+dbus-daemon[1027]: [system] Activated service 'org.freedesktop.systemd1' failed: Launch helper exited with unknown return code 1
+dbus-daemon[1027]: [system] Activating service name='org.freedesktop.systemd1' requested by ':1.4' (uid=0 pid=1052 comm="systemctl daemon-reload --no-ask-password" label="unconfined") (using servicehelper)
+dbus-daemon[1027]: [system] Activated service 'org.freedesktop.systemd1' failed: Launch helper exited with unknown return code 1

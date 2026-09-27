@@ -1,0 +1,26 @@
+('ip', '-br', 'addr')
+lo               UNKNOWN        127.0.0.1/8 ::1/128 
+wlan0            DOWN           10.20.0.1/24 
+uplink@if24      UP             10.200.3.2/24 fe80::2cb5:afff:fef0:3a73/64 
+
+('ip', 'route')
+default via 10.200.3.1 dev uplink metric 700 
+10.200.3.0/24 dev uplink proto kernel scope link src 10.200.3.2 
+
+('iw', 'dev')
+phy#1
+	Interface wlan0
+		ifindex 4
+		wdev 0x100000001
+		addr 02:00:00:00:01:00
+		type managed
+		txpower 20.00 dBm
+		multicast TXQ:
+			qsz-byt	qsz-pkt	flows	drops	marks	overlmt	hashcol	tx-bytes	tx-packets
+			0	0	0	0	0	0	0	0		0
+	Unnamed/non-netdev interface
+		wdev 0x100000002
+		addr 42:00:00:00:01:00
+		type P2P-device
+		txpower 20.00 dBm
+
