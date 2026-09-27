@@ -1,0 +1,8 @@
+Sun Sep 27 02:38:44 PM UTC 2026
+From /tmp/wifi-release-20260927.bundle
+ * branch                wifi-wpa-supplicant -> FETCH_HEAD
+Previous HEAD position was 8869c2f56 wifi: test WifiManager against a fake wpa_supplicant
+HEAD is now at 9f1e7ada0 wifi: test WifiManager against a fake wpa_supplicant
+1a560f373932451d1373bb977f7d9ba1de542e6278df86669a97bbe7febdc77b  openpilot/system/ui/lib/wifi_manager.py
+8d05771773a4de6a89d72ae3a5e968d9b2d752a1c593971f073547fb076d4d82  openpilot/system/ui/lib/tests/test_wifi_manager.py
+UI_RESTART_LAUNCHED

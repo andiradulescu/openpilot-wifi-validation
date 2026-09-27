@@ -1,0 +1,37 @@
+collected 1 test in 0.08s • 1 worker
+F openpilot.system.ui.lib.tests.test_wifi_manager.TestStation.test_link_loss_reports_disconnected 1.05s
+
+ FAILED openpilot.system.ui.lib.tests.test_wifi_manager.TestStation.test_link_loss_reports_disconnected 
+Traceback (most recent call last):
+  File "/workspace/openpilot/openpilot/common/test.py", line 59, in _callTestMethod
+    return method(**{name: self._fixture(name) for name in params})
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/openpilot/openpilot/system/ui/lib/tests/test_wifi_manager.py", line 766, in test_link_loss_reports_disconnected
+    self.assertEqual(manager_env.sudo, [["kill", "-USR2", str(os.getpid())]])
+AssertionError: Lists differ: [] != [['kill', '-USR2', '17212']]
+
+Second list contains 1 additional elements.
+First extra element 0:
+['kill', '-USR2', '17212']
+
+- []
++ [['kill', '-USR2', '17212']]
+
+--- captured stderr ---
+Exception ignored in: <_io.FileIO name='/tmp/tmpzehqcw58/persistent/weedle.nmconnection' mode='rb' closefd=True>
+Traceback (most recent call last):
+  File "/workspace/openpilot/openpilot/system/ui/lib/tests/test_wifi_manager.py", line 254, in <lambda>
+    mocker.patch.object(wifi_manager, "sudo_read", lambda path: open(path).read())
+                                                                ^^^^^^^^^^^^^^^^^
+ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpzehqcw58/persistent/weedle.nmconnection' mode='r' encoding='UTF-8'>
+Exception ignored in: <_io.FileIO name='/tmp/tmpzehqcw58/persistent/weedle.nmconnection' mode='rb' closefd=True>
+Traceback (most recent call last):
+  File "/workspace/openpilot/openpilot/system/ui/lib/tests/test_wifi_manager.py", line 254, in <lambda>
+    mocker.patch.object(wifi_manager, "sudo_read", lambda path: open(path).read())
+                                                                ^^^^^^^^^^^^^^^^^
+ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/tmpzehqcw58/persistent/weedle.nmconnection' mode='r' encoding='UTF-8'>
+
+slowest tests
+    1.05s  openpilot.system.ui.lib.tests.test_wifi_manager.TestStation.test_link_loss_reports_disconnected
+
+1 failed in 1.14s

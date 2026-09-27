@@ -101,9 +101,12 @@ Init runs in a background thread, as upstream does:
 UI leaves station or hotspot networking running; the next `WifiManager` adopts it through step 1.
 
 One udhcpc runs for the life of the supplicant: `sudo udhcpc -i wlan0 -f -R -s <repo script> -p UDHCPC_PID`. On
-every CONNECTED event the manager sends `SIGUSR1` so a new network gets a fresh lease immediately. Nothing is sent on
-DISCONNECTED, so a reconnect to the same AP while the UI is dead keeps its valid lease, and a UI restart renews.
-Tethering start kills udhcpc; tethering stop restarts it.
+every CONNECTED event the manager sends `SIGUSR1` so a new network gets a fresh lease immediately. On DISCONNECTED,
+if current supplicant status is neither COMPLETED nor AP mode, send `SIGUSR2` to the live udhcpc to release the lease.
+The stock deconfig hook removes the station address and routes, allowing the cellular default route to become selected.
+Keep udhcpc running; the next CONNECTED event renews it. A stale disconnect event after reconnection or AP activation
+must not release a current lease. While the UI is dead, no event handling occurs; daemon survival does not establish
+cellular failover in that state. Tethering start kills udhcpc; tethering stop restarts it.
 
 ## Storage
 
@@ -243,7 +246,8 @@ directories are temp dirs injected through module constants. The suite covers ea
 9. Metering on a keyfile profile and on a netplan-origin profile (migrated to persistent).
 10. Tethering on and off: recorded commands, state, `activated` then `disconnected`; password change while active
     rewrites the profile and restarts.
-11. Disconnected event clears state and queues `disconnected`.
+11. Disconnected event clears state, releases the station DHCP lease without killing udhcpc, and queues `disconnected`.
+    Reconnection renews the same daemon; a stale disconnect after reconnection preserves its lease.
 12. `stop()` records no kill or teardown commands.
 
 Target under 400 lines, table-driven with `SubTests` where cases differ only in data.

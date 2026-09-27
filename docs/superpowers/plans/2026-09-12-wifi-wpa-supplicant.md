@@ -2092,6 +2092,17 @@ Expected: exactly two commits. Re-run the test command once more on the squashed
 ---
 
 
+### Amendment: release station lease on link loss
+
+Approved after comma four's recorded Wi-Fi-to-cellular failover failure. This supersedes the original no-signal-on-disconnect policy and `_on_disconnected` implementation below.
+
+- [x] Extend the existing link-loss regression to require SIGUSR2 to the live DHCP client, unchanged process lifetime, and SIGUSR1 on reconnection. Check stale disconnect events after a completed association preserve the lease. Run red before implementation.
+- [x] Under the existing manager lock, refresh current status and release the live udhcpc lease only when status is neither COMPLETED nor AP mode. Preserve the public API and existing callback semantics. The stock DHCP deconfig hook owns address and route cleanup.
+- [x] Run the full Wi-Fi suite, Ruff and ty, commit green, and preserve the final two-commit shape.
+- [ ] Rerun the full suite on the exact squashed tree, install a local bundle over verified Ethernet, and repeat physical Wi-Fi-to-cellular-to-Wi-Fi failover with unbound probes and recorded route selection. Do not claim physical correction from command-level unit assertions.
+
+---
+
 ### Amendment: preserve forwarding across hotspot adoption
 
 Task 10 showed that a new WifiManager overwrites live forwarding with its initial False value before the UI supplies policy.

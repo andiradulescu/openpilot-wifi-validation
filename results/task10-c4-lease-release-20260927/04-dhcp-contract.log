@@ -1,0 +1,107 @@
+BusyBox v1.36.1 (Ubuntu 1:1.36.1-6ubuntu3.1) multi-call binary.
+
+Usage: udhcpc [-fbqRB] [-a[MSEC]] [-t N] [-T SEC] [-A SEC|-n]
+	[-i IFACE] [-s PROG] [-p PIDFILE]
+	[-oC] [-r IP] [-V VENDOR] [-F NAME] [-x OPT:VAL]... [-O OPT]...
+
+	-i IFACE	Interface to use (default eth0)
+	-s PROG		Run PROG at DHCP events (default /etc/udhcpc/default.script)
+	-p FILE		Create pidfile
+	-B		Request broadcast replies
+	-t N		Send up to N discover packets (default 3)
+	-T SEC		Pause between packets (default 3)
+	-A SEC		Wait if lease is not obtained (default 20)
+	-b		Background if lease is not obtained
+	-n		Exit if lease is not obtained
+	-q		Exit after obtaining lease
+	-R		Release IP on exit
+	-f		Run in foreground
+	-S		Log to syslog too
+	-a[MSEC]	Validate offered address with ARP ping
+	-r IP		Request this IP address
+	-o		Don't request any options (unless -O is given)
+	-O OPT		Request option OPT from server (cumulative)
+	-x OPT:VAL	Include option OPT in sent packets (cumulative)
+			Examples of string, numeric, and hex byte opts:
+			-x hostname:bbox - option 12
+			-x lease:3600 - option 51 (lease time)
+			-x 0x3d:0100BEEFC0FFEE - option 61 (client id)
+			-x 14:'"dumpfile"' - option 14 (shell-quoted)
+	-F NAME		Ask server to update DNS mapping for NAME
+	-V VENDOR	Vendor identifier (default 'udhcp VERSION')
+	-C		Don't send MAC as client identifier
+Signals:
+	USR1	Renew lease
+	USR2	Release lease
+#!/bin/sh
+# Busybox udhcpc dispatcher script.
+# Copyright (C) 2009 by Axel Beckert.
+# Copyright (C) 2014 by Michael Tokarev.
+#
+# Based on the busybox example scripts and the old udhcp source
+# package default.* scripts.
+
+RESOLV_CONF="/etc/resolv.conf"
+
+log() {
+    logger -t "udhcpc[$PPID]" -p daemon.$1 "$interface: $2"
+}
+
+case $1 in
+    bound|renew)
+
+	# Configure new IP address.
+	# Do it unconditionally even if the address hasn't changed,
+	# to also set subnet, broadcast, mtu, ...
+	busybox ifconfig $interface ${mtu:+mtu $mtu} \
+	    $ip netmask $subnet ${broadcast:+broadcast $broadcast}
+
+	# get current ("old") routes (after setting new IP)
+	crouter=$(busybox ip -4 route show dev $interface |
+	          busybox awk '$1 == "default" { print $3; }')
+	router="${router%% *}" # linux kernel supports only one (default) route
+	if [ ".$router" != ".$crouter" ]; then
+	    # reset just default routes
+	    busybox ip -4 route flush exact 0.0.0.0/0 dev $interface
+	fi
+	if [ -n "$router" ]; then
+	    # special case for /32 subnets: use onlink keyword
+	    [ ".$subnet" = .255.255.255.255 ] \
+		    && onlink=onlink || onlink=
+	    busybox ip -4 route add default via $router dev $interface $onlink
+	fi
+
+	# Update resolver configuration file
+	[ -n "$domain" ] && R="domain $domain" || R=""
+	for i in $dns; do
+	    R="$R
+nameserver $i"
+	done
+
+	if [ -x /sbin/resolvconf ]; then
+	    echo "$R" | resolvconf -a "$interface.udhcpc"
+	else
+	    echo "$R" > "$RESOLV_CONF"
+	fi
+
+	log info "$1: IP=$ip/$subnet router=$router domain=\"$domain\" dns=\"$dns\" lease=$lease"
+	;;
+
+    deconfig)
+	busybox ip link set $interface up
+	busybox ip -4 addr flush dev $interface
+	busybox ip -4 route flush dev $interface
+	[ -x /sbin/resolvconf ] &&
+	    resolvconf -d "$interface.udhcpc"
+	log notice "deconfigured"
+	;;
+
+    leasefail | nak)
+	log err "configuration failed: $1: $message"
+	;;
+
+    *)
+	echo "$0: Unknown udhcpc command: $1" >&2
+	exit 1
+	;;
+esac
