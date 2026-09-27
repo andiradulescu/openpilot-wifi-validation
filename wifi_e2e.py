@@ -29,7 +29,12 @@ UI_MUTATIONS = {
 
 def run(*args, ns=None, check=True):
   command = ['ip', 'netns', 'exec', ns, *args] if ns else list(args)
-  return subprocess.run(command, check=check, capture_output=True, text=True, timeout=30)
+  try:
+    return subprocess.run(command, check=check, capture_output=True, text=True, timeout=30)
+  except subprocess.CalledProcessError as error:
+    print('subprocess stdout:\n', error.stdout, sep='')
+    print('subprocess stderr:\n', error.stderr, sep='')
+    raise
 
 
 def keyfile_profiles():
@@ -60,6 +65,16 @@ def worker(path):
   wifi_manager.WPA_CONF_PATH = str(config)
 
   events = []
+  write_profile = wifi_manager.write_profile
+
+  def record_failed_profile_write(profile):
+    try:
+      return write_profile(profile)
+    except Exception:
+      events.append(['save_failed', profile.ssid])
+      raise
+
+  wifi_manager.write_profile = record_failed_profile_write
   manager = WifiManager()
   manager.add_callbacks(
     need_auth=lambda ssid: events.append(['need_auth', ssid]),
@@ -88,7 +103,27 @@ def worker(path):
         request = json.loads(line)
         method = request['method']
         if method in UI_MUTATIONS:
-          getattr(manager, method)(*request.get('args', []), **request.get('kwargs', {}))
+          if request.get('wait_for_setter'):
+            threads = []
+            threading_module = wifi_manager.threading
+
+            def create_thread(*args, **kwargs):
+              thread = threading_module.Thread(*args, **kwargs)
+              threads.append(thread)
+              return thread
+
+            wifi_manager.threading = type('ThreadFactory', (), {'Thread': staticmethod(create_thread)})
+            try:
+              getattr(manager, method)(*request.get('args', []), **request.get('kwargs', {}))
+            finally:
+              wifi_manager.threading = threading_module
+            if len(threads) != 1:
+              raise RuntimeError(f'{method} started {len(threads)} worker threads')
+            threads[0].join(timeout=35)
+            if threads[0].is_alive():
+              raise TimeoutError(f'{method} worker thread did not finish')
+          else:
+            getattr(manager, method)(*request.get('args', []), **request.get('kwargs', {}))
         elif method == 'stop':
           manager.stop()
         elif method != 'snapshot':
@@ -145,7 +180,7 @@ class WifiLab:
     return proc
 
   def setup(self):
-    for path in (PROFILE_DIR, RUNTIME_PROFILE_DIR, Path('/run/wpa_supplicant'),
+    for path in (PROFILE_DIR, RUNTIME_PROFILE_DIR, Path('/run/NetworkManager/devices'), Path('/run/wpa_supplicant'),
                  Path('/etc/netplan'), Path('/var/lib/NetworkManager')):
       path.mkdir(parents=True, exist_ok=True)
       for child in path.iterdir():
@@ -207,7 +242,7 @@ class WifiLab:
                       + f'[global-dns-domain-*]\nservers={CELLULAR_DNS}\n')
     empty = self.directory / 'empty'
     empty.mkdir()
-    self.spawn('dut', 'NetworkManager', '--no-daemon', f'--config={config}', f'--config-dir={empty}', f'--system-config-dir={empty}')
+    self.spawn('dut', 'NetworkManager', '--no-daemon', '--log-level=DEBUG', f'--config={config}', f'--config-dir={empty}', f'--system-config-dir={empty}')
     self.wait_external(lambda: run('nmcli', '-t', '-f', 'RUNNING', 'general', ns=self.names['dut'], check=False).stdout.strip() == 'running')
     self.wait_external(lambda: run('curl', '--noproxy', '*', '--silent', '--max-time', '1',
                                   f'http://{SERVER}:8000/probe', ns=self.names['wan'], check=False).stdout == PROBE)
@@ -242,13 +277,13 @@ class WifiLab:
     self.ssids.add(ssid)
     identifier = str(uuid.uuid4())
     if source == 'netplan':
-      document = {'network': {'version': 2, 'renderer': 'NetworkManager', 'wifis': {'wlan0': {
-        'dhcp4': True, 'access-points': {ssid: {'password': password, 'networkmanager': {
+      document = {'network': {'version': 2, 'renderer': 'NetworkManager', 'wifis': {f'NM-{identifier}': {
+        'match': {'name': 'wlan0'}, 'dhcp4': True, 'access-points': {ssid: {'password': password}}, 'networkmanager': {
           'uuid': identifier, 'name': f'openpilot connection {ssid}', 'passthrough': {
             'connection.autoconnect-retries': '0', 'connection.autoconnect-priority': str(priority),
             'ipv4.dns-priority': '600', 'ipv6.method': 'ignore',
           },
-        }}},
+        },
       }}}}
       # JSON is valid YAML and avoids quoting test credentials by hand.
       path = Path('/etc/netplan') / f'90-NM-{identifier}.yaml'
@@ -281,10 +316,12 @@ class WifiLab:
     self.stream = self.conn.makefile('rwb')
     return self.call('snapshot')
 
-  def call(self, method, *args, **kwargs):
+  def _call(self, method, *args, wait_for_setter=False, **kwargs):
     if method == 'connect_to_network':
       self.ssids.add(args[0])
-    request = {'method': method, 'args': args, 'kwargs': kwargs, 'ssids': sorted(self.ssids)}
+    self.conn.settimeout(40 if wait_for_setter else 15)
+    request = {'method': method, 'args': args, 'kwargs': kwargs, 'ssids': sorted(self.ssids),
+               'wait_for_setter': wait_for_setter}
     self.stream.write(json.dumps(request).encode() + b'\n')
     self.stream.flush()
     line = self.stream.readline()
@@ -293,6 +330,12 @@ class WifiLab:
     self.snapshot = json.loads(line)
     self.events.extend(self.snapshot.pop('events'))
     return self.snapshot
+
+  def call(self, method, *args, **kwargs):
+    return self._call(method, *args, **kwargs)
+
+  def call_setter(self, method, *args, **kwargs):
+    return self._call(method, *args, wait_for_setter=True, **kwargs)
 
   def wait(self, predicate, timeout=35):
     deadline = time.monotonic() + timeout
@@ -354,12 +397,22 @@ class WifiLab:
 
   @contextmanager
   def readonly_profiles(self):
-    run('mount', '--bind', str(PROFILE_DIR), str(PROFILE_DIR))
+    if self.manager is None or self.manager.poll() is not None:
+      raise RuntimeError('Profile write failure injection requires a live manager')
+    namespace = ('nsenter', '-t', str(self.manager.pid), '-m', '--')
+    run(*namespace, 'mount', '--bind', str(PROFILE_DIR), str(PROFILE_DIR))
     try:
-      run('mount', '-o', 'remount,bind,ro', str(PROFILE_DIR))
+      run(*namespace, 'mount', '-o', 'remount,bind,ro', str(PROFILE_DIR))
+      probe = PROFILE_DIR / '.wifi-e2e-readonly-probe'
+      result = run(*namespace, 'env', 'LC_ALL=C', 'touch', str(probe), check=False)
+      if result.returncode == 0:
+        run(*namespace, 'rm', '-f', str(probe))
+        raise AssertionError('Profile write fault did not make the manager mount read-only')
+      if 'Read-only file system' not in result.stderr:
+        raise AssertionError(f'Profile write fault probe failed unexpectedly: {result.stderr.strip()}')
       yield
     finally:
-      run('umount', str(PROFILE_DIR))
+      run(*namespace, 'umount', str(PROFILE_DIR))
 
   def diagnostics(self):
     for role, name in self.names.items():
@@ -367,7 +420,8 @@ class WifiLab:
         continue
       commands = [('ip', '-br', 'addr'), ('ip', 'route'), ('iw', 'dev')]
       if role == 'dut':
-        commands += [('nmcli', 'device'), ('wpa_cli', '-p', '/run/wpa_supplicant', '-i', 'wlan0', 'status')]
+        commands += [('nmcli', 'device'), ('nmcli', '-f', 'GENERAL', 'device', 'show', 'wlan0'),
+                     ('wpa_cli', '-p', '/run/wpa_supplicant', '-i', 'wlan0', 'status')]
       with (self.directory / f'{role}-state.log').open('w') as log:
         for command in commands:
           try:

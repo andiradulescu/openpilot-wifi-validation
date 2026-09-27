@@ -19,7 +19,7 @@ if [[ "${1:-}" != --isolated ]]; then
   [[ -z "$(find /sys/class/ieee80211 -mindepth 1 -maxdepth 1 2>/dev/null)" ]] || {
     echo 'Refusing to run on a host with existing Wi-Fi radios.' >&2; exit 77
   }
-  for cmd in ip iw modprobe unshare mount hostapd wpa_supplicant wpa_cli udhcpc dnsmasq dbus-daemon NetworkManager nmcli curl netplan; do
+  for cmd in ip iw modprobe unshare mount nsenter udevadm hostapd wpa_supplicant wpa_cli udhcpc dnsmasq dbus-daemon NetworkManager nmcli curl netplan; do
     command -v "$cmd" >/dev/null || { echo "Missing prerequisite: $cmd" >&2; exit 77; }
   done
   [[ -x "$python" && -x /etc/udhcpc/default.script ]] || {
@@ -45,12 +45,18 @@ printf '\n127.0.1.1 %s\n' "$(hostname)" >> /tmp/hosts
 mount --bind /tmp/hosts /etc/hosts
 mkdir /tmp/wifi-e2e-journal
 mount --bind /run/systemd/journal /tmp/wifi-e2e-journal
+udevadm settle --timeout=5
+mkdir -p /tmp/wifi-e2e-udev/data
+cp -a /run/udev/data/. /tmp/wifi-e2e-udev/data/
 for dir in /run /data /etc/NetworkManager /etc/netplan /etc/netns /var/lib/NetworkManager /var/lib/misc; do
   mkdir -p "$dir"
   mount -t tmpfs tmpfs "$dir"
 done
 mkdir -p /run/systemd/journal
 mount --bind /tmp/wifi-e2e-journal /run/systemd/journal
+mkdir -p /run/udev/data
+mount --bind /tmp/wifi-e2e-udev/data /run/udev/data
+mount -o remount,bind,ro /run/udev/data
 if [[ -n "${WIFI_E2E_LOG_DIR:-}" ]]; then
   mkdir -p "$WIFI_E2E_LOG_DIR"
   ln -s "$(readlink -m "$WIFI_E2E_LOG_DIR")" /run/wifi-e2e-logs
@@ -58,6 +64,8 @@ if [[ -n "${WIFI_E2E_LOG_DIR:-}" ]]; then
 fi
 mkdir -p /run/dbus /data/etc/NetworkManager/system-connections /etc/NetworkManager/system-connections
 mount --bind /data/etc/NetworkManager/system-connections /etc/NetworkManager/system-connections
+mkdir -p /data/etc/netplan
+mount --bind /data/etc/netplan /etc/netplan
 # Each ip-netns exec also receives its own resolver file from /etc/netns/<name>.
 touch /tmp/resolvconf.disabled
 mount --bind /tmp/resolvconf.disabled "$(readlink -m /sbin/resolvconf)"
@@ -72,4 +80,5 @@ fi
 if [[ -d /etc/dnsmasq.d ]]; then mount -t tmpfs tmpfs /etc/dnsmasq.d; fi
 touch /run/wifi-e2e-isolated
 export WIFI_E2E=1 PYTHONPATH="$root" RAYLIB_BACKEND=headless
-exec "$python" -m pytest -o addopts='' -vv -s "$lab_root/test_wifi_e2e.py" "$@"
+# Keep bash as PID 1 so it reaps orphaned fixture services during recovery tests.
+"$python" -m pytest -o addopts='' -vv -s "$lab_root/test_wifi_e2e.py" "$@"

@@ -125,7 +125,9 @@ Identity for UI purposes is the SSID, as upstream. A saved network is any profil
   so wrong passwords never land on disk. The file is `<quoted ssid>.nmconnection` using `urllib.parse.quote(ssid,
   safe="")`, with the same sections upstream produced through D-Bus: `[connection] id="openpilot connection <ssid>"
   uuid type=wifi autoconnect-retries=0`, `[wifi] ssid mode=infrastructure hidden`, `[wifi-security] key-mgmt=wpa-psk
-  psk` when a password exists, `[ipv4] method=auto dns-priority=600`, `[ipv6] method=ignore`.
+  psk` when a password exists, `[ipv4] method=auto dns-priority=600`, `[ipv6] method=ignore`. Keyfile PSKs use
+  GLib escaping for backslashes, spaces, newlines, tabs, and carriage returns, and the reader decodes those
+  escapes so NetworkManager can reload the exact passphrase.
 - Forget: for every profile with that SSID, remove its keyfile; if the file name starts with `netplan-NM-`, also remove
   `/data/etc/netplan/90-NM-<uuid>.yaml`. Remove the matching supplicant networks. Fire `forgotten(ssid)` in every case,
   as upstream did, and log any removal failure with `cloudlog.exception`.
@@ -173,7 +175,9 @@ The monitor thread handles:
   DHCP client once with `SIGUSR2` only if it has no `ip_address=`, then renew or start udhcpc and `ENABLE_NETWORK all`.
   Poll `STATUS` every 0.5 s for `ip_address=`; each still lease-less current association renews only a live client.
   On an address: set `WifiState(ssid, CONNECTED)`, write the pending profile if it matches, refresh metering, queue
-  `activated`. If the association drops during the wait, return and let the next event decide. After
+  `activated`. If that profile write fails, clear the pending profile, refresh STATUS without forcing a disconnect,
+  and do not queue `activated`; retain CONNECTED only when that refresh still reports station IPv4. If the association
+  drops during the wait, return and let the next event decide. After
   `DHCP_TIMEOUT_SECONDS = 45` (NetworkManager's `ipv4.dhcp-timeout` default) without an address: `DISABLE_NETWORK`
   that id so the supplicant stops looping on it, set DISCONNECTED, queue `disconnected`.
 - `CTRL-EVENT-SSID-TEMP-DISABLED ... reason=WRONG_KEY` for the SSID in the current state: `REMOVE_NETWORK` it so the

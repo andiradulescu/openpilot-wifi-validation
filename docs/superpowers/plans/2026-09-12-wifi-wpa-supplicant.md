@@ -2136,6 +2136,21 @@ The hwsim fixture APs all use channel 1. The harness worker copies the shipped s
 - [x] Use the copied hwsim-only configuration for the channel-1 fixture. Preserve unbounded trace runs as evidence that
   the scan behavior is not deterministic, and do not infer a hardware defect from the fixture.
 
+### Amendment: keyfile write outcomes
+
+Keyfile PSKs use GLib escaping for backslashes, spaces, newlines, tabs, and carriage returns, with matching decoding
+on read so NetworkManager reloads the original passphrase. If saving a newly connected profile fails, the manager
+clears the pending profile, refreshes STATUS without forcing a disconnect, retains CONNECTED only when that refresh
+still reports station IPv4, and does not emit `activated`.
+
+- [x] Establish source red/green evidence for the status-refresh repair: 86 passed plus 1 error, then 87 passed.
+- [x] Establish source red/green evidence for escaped keyfile PSKs: 87 passed plus 1 failure, then 88 passed; run Ruff
+  and ty. The preliminary NameError was corrected test setup, not behavior evidence.
+- [x] Run the real escaped-PSK NetworkManager hwsim case: 1 selected, 52 deselected, 5.76 s at
+  `results/20260927T213141625888Z-1542b52525b0-hwsim`.
+
+The invalid-hotspot-password rejection policy remains pending and this amendment does not change it.
+
 ### Amendment: preserve forwarding across hotspot adoption
 
 Task 10 showed that a new WifiManager overwrites live forwarding with its initial False value before the UI supplies policy.

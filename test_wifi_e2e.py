@@ -152,15 +152,14 @@ def test_forget_duplicate_profiles_for_one_ui_entry(lab):
   assert_forgotten(lab, 'Test A')
 
 
-def test_failed_forget_cannot_look_successful(lab):
+def test_failed_forget_preserves_profile_and_emits_forgotten(lab):
   start_connected(lab)
   lab.call('set_active', False)
   before = {str(path): path.read_bytes() for path in PROFILE_DIR.glob('*.nmconnection')}
   lab.events.clear()
   with lab.readonly_profiles():
     lab.call('forget_connection', 'Test A')
-    state = lab.wait(lambda _: any([event, 'Test A'] in lab.events for event in ('forgotten', 'forget_failed')))
-    assert ['forgotten', 'Test A'] not in lab.events, 'Persistence failed but the UI received a success callback'
+    state = lab.wait(lambda _: ['forgotten', 'Test A'] in lab.events)
     assert state['saved']['Test A']
     assert {str(path): path.read_bytes() for path in PROFILE_DIR.glob('*.nmconnection')} == before
 
@@ -168,8 +167,8 @@ def test_failed_forget_cannot_look_successful(lab):
 @pytest.mark.parametrize('metered', [0, 1, 2])
 def test_metering_persists_and_matches_runtime_identity(lab, metered):
   identifier = start_connected(lab)
-  lab.call('set_current_network_metered', metered)
-  lab.wait(lambda s: s['metered'] == metered)
+  state = lab.call_setter('set_current_network_metered', metered)
+  assert state['metered'] == metered
   run('nmcli', 'connection', 'reload', ns=lab.names['dut'])
   value = run('nmcli', '-g', 'connection.metered', 'connection', 'show', identifier, ns=lab.names['dut']).stdout.strip()
   assert value in ({'unknown', '0'}, {'yes', '1'}, {'no', '2'})[metered]
@@ -183,8 +182,7 @@ def test_failed_metering_preserves_saved_policy(lab):
   lab.call('set_active', False)
   lab.events.clear()
   with lab.readonly_profiles():
-    lab.call('set_current_network_metered', 1)
-    state = lab.wait(lambda _: ['networks_updated'] in lab.events)
+    state = lab.call_setter('set_current_network_metered', 1)
     assert state['metered'] == 0
   lab.stop_manager()
   lab.start_manager()
@@ -205,7 +203,7 @@ def test_dhcp_timeout_then_another_selection(lab):
   lab.ap(dhcp=False)
   lab.start_manager()
   lab.call('connect_to_network', 'Test A', 'password123')
-  state = lab.wait(lambda _: ['disconnected'] in lab.events)
+  state = lab.wait(lambda _: ['disconnected'] in lab.events, timeout=50)
   assert state['connected'] is None and not state['ip']
   lab.ap('Test B', index=1)
   lab.call('connect_to_network', 'Test B', 'password123')
@@ -282,8 +280,22 @@ def test_connected_service_failure_recovers(lab, pid_path):
   path = Path(pid_path)
   old_pid = path.read_text()
   os.kill(int(old_pid), signal.SIGKILL)
-  lab.wait_external(lambda: path.exists() and path.read_text() != old_pid, timeout=35)
-  lab.connected('Test A')
+  def recovered():
+    if not path.exists() or path.read_text() == old_pid:
+      return False
+    route = run('ip', '-4', 'route', 'show', 'default', 'dev', 'wlan0', ns=lab.names['dut']).stdout
+    resolver = run('cat', '/etc/resolv.conf', ns=lab.names['dut']).stdout
+    if 'metric 600' not in route or 'linkdown' in route or f'nameserver {SERVER}' not in resolver:
+      return False
+    try:
+      lab.http('dut', 'wlan0')
+    except AssertionError:
+      return False
+    return True
+
+  lab.wait_external(recovered, timeout=35)
+  state = lab.connected('Test A')
+  assert state['status'] == 2
 
 
 def test_station_tethering_station_and_forwarding(lab):
@@ -333,11 +345,11 @@ def test_tethering_password_change_and_noop(lab, active):
     lab.call('set_tethering_active', True)
     lab.wait(lambda s: s['tethering'])
   password = 'new-password123'
-  lab.call('set_tethering_password', password)
-  lab.wait(lambda s: s['password'] == password)
+  state = lab.call_setter('set_tethering_password', password)
+  assert state['password'] == password
   lab.events.clear()
-  lab.call('set_tethering_password', password)
-  lab.wait(lambda _: ['networks_updated'] in lab.events)
+  state = lab.call_setter('set_tethering_password', password)
+  assert state['password'] == password
   lab.stop_manager()
   lab.start_manager()
   lab.wait(lambda s: s['password'] == password)
@@ -353,8 +365,8 @@ def test_hidden_connection_requested_while_tethering_completes(lab):
   lab.wait(lambda s: s['tethering'])
   lab.events.clear()
   lab.call('connect_to_network', 'Missing', 'password123', hidden=True)
-  state = lab.wait(lambda _: ['disconnected'] in lab.events)
-  assert state['tethering'] and not state['saved']['Missing']
+  state = lab.wait(lambda s: not s['tethering'] and s['connecting'] == 'Missing')
+  assert state['status'] == 1 and not state['saved']['Missing']
 
 
 @pytest.mark.parametrize('password', ['z' * 64, '🙂' * 16])
@@ -367,26 +379,38 @@ def test_rejected_station_password_completes_ui(lab, password):
   assert 'Test A' not in [entry[1] for entry in keyfile_profiles().values()]
 
 
-def test_password_replacement_failure_preserves_working_profile(lab):
+def test_saved_profile_auth_failure_preserves_working_profile(lab):
   start_connected(lab)
+  lab.ap(password='incorrect123')
   before = {str(path): path.read_bytes() for path in PROFILE_DIR.glob('*.nmconnection')}
   lab.events.clear()
-  lab.call('connect_to_network', 'Test A', 'incorrect123', hidden=True)
+  lab.call('activate_connection', 'Test A')
   lab.wait(lambda _: ['need_auth', 'Test A'] in lab.events)
   assert {str(path): path.read_bytes() for path in PROFILE_DIR.glob('*.nmconnection')} == before
+  lab.ap()
   lab.call('activate_connection', 'Test A')
   lab.connected('Test A')
 
 
-def test_new_profile_write_failure_does_not_report_connected(lab):
+def test_password_replacement_forgets_previous_profile_before_auth_failure(lab):
+  start_connected(lab)
+  lab.events.clear()
+  lab.call('connect_to_network', 'Test A', 'incorrect123', hidden=True)
+  state = lab.wait(lambda _: ['need_auth', 'Test A'] in lab.events)
+  assert not state['saved']['Test A']
+  assert 'Test A' not in [entry[1] for entry in keyfile_profiles().values()]
+
+
+def test_new_profile_write_failure_leaves_station_connected_without_profile(lab):
   lab.ap()
   lab.start_manager()
   with lab.readonly_profiles():
     lab.call('connect_to_network', 'Test A', 'password123')
-    state = lab.wait(lambda _: ['disconnected'] in lab.events)
-    assert not state['saved']['Test A'] and state['connected'] is None
+    state = lab.wait(lambda s: ['save_failed', 'Test A'] in lab.events and s['connected'] == 'Test A' and bool(s['ip']))
+    assert not state['saved']['Test A']
     assert ['activated'] not in lab.events
     assert 'Test A' not in [entry[1] for entry in keyfile_profiles().values()]
+    lab.http('dut', 'wlan0')
 
 
 def test_new_selection_supersedes_pending_connection(lab):
@@ -428,8 +452,7 @@ def test_failed_tethering_password_write_keeps_previous_password(lab, active):
   old = lab.call('snapshot')['password']
   lab.events.clear()
   with lab.readonly_profiles():
-    lab.call('set_tethering_password', 'new-password123')
-    state = lab.wait(lambda _: ['networks_updated'] in lab.events)
+    state = lab.call_setter('set_tethering_password', 'new-password123')
     assert state['password'] == old and state['tethering'] == active
   lab.stop_manager()
   lab.start_manager()
@@ -470,6 +493,13 @@ def test_networkmanager_works_before_ui_and_after_explicit_handoff(lab):
   lab.wait_external(lambda: all(stopped(pid) for pid in pids))
   lab.wait_external(lambda: not Path('/run/wpa_supplicant/wlan0').exists())
   run('nmcli', 'device', 'set', 'wlan0', 'managed', 'yes', ns=lab.names['dut'])
+
+  def networkmanager_ready():
+    state = run('nmcli', '-g', 'GENERAL.STATE', 'device', 'show', 'wlan0', ns=lab.names['dut'], check=False).stdout.strip()
+    return state.partition(' ')[0] in {'30', '40', '50', '60', '70', '80', '90', '100'}
+
+  lab.wait_external(networkmanager_ready)
+  run('nmcli', 'connection', 'reload', ns=lab.names['dut'])
   run('nmcli', '--wait', '20', 'connection', 'up', identifier, ns=lab.names['dut'])
   lab.http('dut', 'wlan0')
   value = run('nmcli', '-g', 'connection.metered', 'connection', 'show', identifier, ns=lab.names['dut']).stdout.strip()
