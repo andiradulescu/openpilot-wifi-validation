@@ -2149,7 +2149,19 @@ still reports station IPv4, and does not emit `activated`.
 - [x] Run the real escaped-PSK NetworkManager hwsim case: 1 selected, 52 deselected, 5.76 s at
   `results/20260927T213141625888Z-1542b52525b0-hwsim`.
 
-The invalid-hotspot-password rejection policy remains pending and this amendment does not change it.
+### Amendment: selected-station runtime preference and hotspot-password validation
+
+Before either explicit station selection, the chosen network receives runtime priority 1 and every other saved network
+receives priority 0; the existing `ENABLE_NETWORK all` keeps all saved networks enabled as fallbacks after association.
+This is runtime-only and does not rewrite saved profiles or remove fallback networks. The hwsim switch case must prove
+the selected SSID, its IPv4 lease, the wlan0 route, and HTTP survive a periodic scan.
+
+Hotspot password changes accept 8 through 63 UTF-8 bytes or a 64-hex-character raw PSK. Rejection preserves the prior
+password and, when active, the running hotspot. The four invalid-password hwsim cases use the existing setter-completion
+barrier and retain those password and active-state assertions; they do not wait for an unrelated callback.
+
+- [x] Add source red/green tests for selected-station runtime preference with saved fallbacks and the password boundary.
+- [x] Run the strengthened hwsim switch and all four invalid-password cases after source transfer.
 
 ### Amendment: preserve forwarding across hotspot adoption
 

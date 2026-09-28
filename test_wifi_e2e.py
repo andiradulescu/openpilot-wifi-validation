@@ -1,10 +1,11 @@
 import os
 import signal
+import time
 from pathlib import Path
 
 import pytest
 
-from openpilot.system.ui.lib.wifi_manager import UDHCPC_SCRIPT_PATH
+from openpilot.system.ui.lib.wifi_manager import SCAN_PERIOD_SECONDS, UDHCPC_SCRIPT_PATH
 from wifi_e2e import PROFILE_DIR, SERVER, WifiLab, keyfile_profiles, run
 
 
@@ -110,6 +111,14 @@ def test_switch_saved_networks_replaces_lease(lab):
   assert lab.connected('Test A')['ip'].startswith('10.10.0.')
   lab.call('activate_connection', 'Test B')
   assert lab.connected('Test B')['ip'].startswith('10.20.0.')
+  scan_started = time.monotonic()
+  lab.events.clear()
+  lab.call('set_active', True)
+  state = lab.wait(lambda _: time.monotonic() - scan_started >= SCAN_PERIOD_SECONDS and
+                   lab.events.count(['networks_updated']) >= 2, timeout=12)
+  assert state['connected'] == 'Test B' and state['ip'].startswith('10.20.0.')
+  assert 'dev wlan0' in run('ip', 'route', 'get', SERVER, ns=lab.names['dut']).stdout
+  lab.http('dut', 'wlan0')
 
 
 @pytest.mark.parametrize('source', ['keyfile', 'shadow', 'netplan'])
@@ -331,8 +340,7 @@ def test_rejected_tethering_password_completes_ui(lab, active, password):
     lab.wait(lambda s: s['tethering'])
   old = lab.call('snapshot')['password']
   lab.events.clear()
-  lab.call('set_tethering_password', password)
-  state = lab.wait(lambda _: ['networks_updated'] in lab.events)
+  state = lab.call_setter('set_tethering_password', password)
   assert state['password'] == old
   assert state['tethering'] == active
 

@@ -164,6 +164,11 @@ SSID (upstream behaviour), adds the network, remembers it as pending, and `SELEC
 sets CONNECTING and `SELECT_NETWORK`s the saved network's id. `SELECT_NETWORK` disables the others, so every terminal
 event ends with `ENABLE_NETWORK all` to restore autoconnect.
 
+Before either explicit station `SELECT_NETWORK`, the chosen network receives runtime priority 1 and the other saved
+networks receive priority 0. The existing terminal `ENABLE_NETWORK all` still restores every saved network as a
+fallback. Periodic scans must not move an addressed selected station to another saved SSID. This runtime preference
+does not rewrite saved profiles or remove fallback networks.
+
 `ConnectStatus.CONNECTED` means the station has an IPv4 address, which is what NetworkManager's ACTIVATED meant and
 what setup uses to decide the device is online. A completed WPA handshake without an address is still CONNECTING.
 The manager remembers the SSID the user selected until a terminal outcome, so status refreshes never clear a
@@ -229,6 +234,10 @@ ON or OFF policies apply immediately and remain authoritative during later servi
 
 `set_ipv4_forward(enabled)` stores the flag and, when tethering is active, applies the sysctl immediately. The prime
 type can change while the hotspot is up, and the harness exercises that path.
+
+`set_tethering_password(password)` accepts a WPA passphrase of 8 through 63 UTF-8 bytes, or a 64-hex-character raw
+PSK. Invalid values leave the cached and persistent password unchanged; when the hotspot is active, they leave that
+hotspot active without restarting it.
 
 ## Error handling
 
