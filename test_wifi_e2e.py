@@ -1,5 +1,7 @@
 import os
 import signal
+import sys
+import tempfile
 import time
 from pathlib import Path
 
@@ -512,3 +514,14 @@ def test_networkmanager_works_before_ui_and_after_explicit_handoff(lab):
   lab.http('dut', 'wlan0')
   value = run('nmcli', '-g', 'connection.metered', 'connection', 'show', identifier, ns=lab.names['dut']).stdout.strip()
   assert value in ('yes', '1')
+
+
+@pytest.mark.parametrize('mode', ['no-nm', 'nm'])
+def test_route_priority_during_dhcp(mode, tmp_path):
+  assert os.geteuid() == 0 and os.environ.get('WIFI_E2E_VM') == '1' and not Path('/AGNOS').exists()
+  directory = tempfile.mkdtemp(prefix=f'route-{mode}-', dir=os.environ.get('WIFI_E2E_LOG_DIR', str(tmp_path)))
+  worker = Path(__file__).with_name('wifi_e2e.py')
+  result = run('unshare', '-m', '--propagation', 'private', 'env', f'UDHCPC_SCRIPT_PATH={UDHCPC_SCRIPT_PATH}',
+      f"WIFI_E2E_OUTER_MNT={os.readlink('/proc/self/ns/mnt')}",
+               sys.executable, str(worker), '--route-priority', mode, directory, check=False)
+  assert result.returncode == 0, f'child stdout:\n{result.stdout}\nchild stderr:\n{result.stderr}'

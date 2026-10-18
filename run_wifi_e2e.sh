@@ -48,6 +48,10 @@ mount --bind /run/systemd/journal /tmp/wifi-e2e-journal
 udevadm settle --timeout=5
 mkdir -p /tmp/wifi-e2e-udev/data
 cp -a /run/udev/data/. /tmp/wifi-e2e-udev/data/
+mkdir -p /tmp/wifi-e2e-udev/live
+mount --bind /run/udev/data /tmp/wifi-e2e-udev/live
+mount -o remount,bind,ro /tmp/wifi-e2e-udev/live
+export WIFI_E2E_UDEV_DATA=/tmp/wifi-e2e-udev/live
 for dir in /run /data /etc/NetworkManager /etc/netplan /etc/netns /var/lib/NetworkManager /var/lib/misc; do
   mkdir -p "$dir"
   mount -t tmpfs tmpfs "$dir"
