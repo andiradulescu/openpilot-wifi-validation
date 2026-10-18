@@ -1,0 +1,15 @@
+/Users/andiradulescu/Projects/firstmate/data/wifi-route-priority/fix-wifi-route-priority.bundle is okay
+The bundle contains this ref:
+c47761b0b51e8965a067aed71001fd09471579c0 refs/heads/fix/wifi-route-priority
+The bundle requires this ref:
+510f9b76b63800756c0258acad794cfa9623d08f 
+The bundle uses this hash algorithm: sha1
+commit c47761b0b51e8965a067aed71001fd09471579c0
+Author:     Andrei Radulescu <andi.radulescu@gmail.com>
+AuthorDate: Fri Oct 16 19:07:58 2026 +0300
+Commit:     Andrei Radulescu <andi.radulescu@gmail.com>
+CommitDate: Fri Oct 16 19:07:58 2026 +0300
+
+    wifi: install DHCP routes at metric 600 from the start
+510f9b76b63800756c0258acad794cfa9623d08f
+510f9b76b63800756c0258acad794cfa9623d08f

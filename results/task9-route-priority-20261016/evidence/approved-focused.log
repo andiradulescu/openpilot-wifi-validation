@@ -1,0 +1,13 @@
+No entry for terminal type "unknown";
+using dumb terminal settings.
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /workspace/openpilot/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace
+collecting ... collected 55 items / 53 deselected / 2 selected
+
+../openpilot-wifi-validation/test_wifi_e2e.py::test_route_priority_during_dhcp[no-nm] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_route_priority_during_dhcp[nm] PASSED
+
+- generated xml file: /workspace/openpilot-wifi-validation/task-results/focused/junit.xml -
+======================= 2 passed, 53 deselected in 9.85s =======================

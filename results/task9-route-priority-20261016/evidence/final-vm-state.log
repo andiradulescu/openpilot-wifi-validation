@@ -1,0 +1,7 @@
+default via 10.0.2.2 dev enp0s1 proto dhcp src 10.0.2.15 metric 100 
+10.0.2.0/24 dev enp0s1 proto kernel scope link src 10.0.2.15 metric 100 
+10.0.2.2 dev enp0s1 proto dhcp scope link src 10.0.2.15 metric 100 
+10.0.2.3 dev enp0s1 proto dhcp scope link src 10.0.2.15 metric 100 
+ebdf560272a77357195c39e98340b77e18c8a8ce2025ee950e9e0c7b01467ab8  /etc/resolv.conf
+own-probe-veth-absent
+hwsim-unloaded

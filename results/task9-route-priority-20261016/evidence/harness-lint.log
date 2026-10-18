@@ -1,0 +1,56 @@
+E501 Line too long (272 > 160)
+   --> /Volumes/Stuff/openpilot-extra/openpilot-wifi-validation/wifi_e2e.py:576:161
+    |
+574 | …
+575 | …
+576 | …}/empty --system-config-dir={p}/empty --pid-file={p}/nm.pid --log-level=TRACE --log-domains=PLATFORM,IP4,DEVICE,DHCP4,CORE
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+577 | …
+578 | …
+    |
+
+F821 Undefined name `action`
+   --> /Volumes/Stuff/openpilot-extra/openpilot-wifi-validation/wifi_e2e.py:588:12
+    |
+586 |         if nm.poll() is not None:
+587 |           raise RuntimeError('private NM exited; inspect nm.log')
+588 |         if action != 'deconfig':
+    |            ^^^^^^
+589 |           run(
+590 |             [
+    |
+
+E501 Line too long (221 > 160)
+   --> /Volumes/Stuff/openpilot-extra/openpilot-wifi-validation/wifi_e2e.py:593:161
+    |
+591 | …
+592 | …
+593 | …ODEVICE,b'wlan0\\0');s.bind(('192.168.1.108',0));s.sendto(b'wlanprobe',('192.168.1.171',9999))",
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+594 | …
+595 | …
+    |
+
+E501 Line too long (563 > 160)
+   --> /Volumes/Stuff/openpilot-extra/openpilot-wifi-validation/wifi_e2e.py:666:161
+    |
+664 | …
+665 | …
+666 | …sr/sbin/NetworkManager\n test ! -x /usr/bin/nmcli…lver_target}\nexec {p}/udhcpc.script "$1"\n'
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^…^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+667 | …
+668 | …
+    |
+
+E501 Line too long (221 > 160)
+   --> /Volumes/Stuff/openpilot-extra/openpilot-wifi-validation/wifi_e2e.py:689:161
+    |
+687 | …
+688 | …
+689 | …ODEVICE,b'wlan0\\0');s.bind(('192.168.1.108',0));s.sendto(b'wlanprobe',('192.168.1.171',9999))",
+    |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+690 | …
+691 | …
+    |
+
+Found 5 errors.

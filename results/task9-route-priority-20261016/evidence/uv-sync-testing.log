@@ -1,0 +1,6 @@
+Prepared 1 package in 291ms
+Installed 4 packages in 3ms
+ + codespell==2.4.3
+ + coverage==7.15.4
+ + ruff==0.16.3
+ + ty==0.0.72

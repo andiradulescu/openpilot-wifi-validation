@@ -1,0 +1,6 @@
+schema=fm-task-inbox.v1
+at=2026-10-18T15:37:13Z
+--
+I approve
+
+Approval context: implement the exact reviewed four-line runner-proposal.patch in run_wifi_e2e.sh and the accompanying existing wifi_e2e.py helper update to consume the live read-only udev view, wait boundedly for genuine initialized per-ifindex records, and retain the private read-only NM snapshot. The captain hold is released and brief ownership updated. Refresh current source/harness state and VM reachability since the approval arrived on Oct 18. Preserve c47761b0b and other work. Run focused routing cases first, then the final full 55-case hwsim suite on exact frozen staged bytes. Never change staged files during an active run. Retain all assertions and prior failed evidence. After green, commit only the authorized harness files and permitted results with author Andrei Radulescu <andi.radulescu@gmail.com>, single-line message, no agent coauthor. Refresh source/harness manifests and report with exact commands/counts/hashes/departures and copy final evidence to results/task9-route-priority-20261016/. No push, PR update, merge, physical-device actions, VM lifecycle actions, or new production changes. Stop and report a failing prerequisite or a genuinely new scope requirement rather than improvising.

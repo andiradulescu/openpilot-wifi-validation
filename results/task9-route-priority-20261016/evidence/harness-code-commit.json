@@ -1,0 +1,6 @@
+{
+  "head": "8fbb0f73e2b04772eeb7c3c516a3f232ff446482",
+  "parent": "185c5e216d6f53bdc027d30f3db7cde20d906d8b",
+  "message": "test: cover DHCP route priority in both NetworkManager configurations",
+  "author": "Andrei Radulescu <andi.radulescu@gmail.com>"
+}

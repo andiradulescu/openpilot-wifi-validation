@@ -1,0 +1,421 @@
+No entry for terminal type "unknown";
+using dumb terminal settings.
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /tmp/wifi-route-priority-20261016-1620/source/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /tmp/wifi-route-priority-20261016-1620
+collecting ... collected 55 items / 53 deselected / 2 selected
+
+../harness/test_wifi_e2e.py::test_route_priority_during_dhcp[no-nm] FAILED [ 50%]
+../harness/test_wifi_e2e.py::test_route_priority_during_dhcp[nm] FAILED  [100%]
+
+=================================== FAILURES ===================================
+____________________ test_route_priority_during_dhcp[no-nm] ____________________
+
+mode = 'no-nm'
+tmp_path = PosixPath('/tmp/wifi-route-priority-20261016-1620/red-permanent-3/test_route_priority_during_dhc0')
+
+    @pytest.mark.parametrize('mode', ['no-nm', 'nm'])
+    def test_route_priority_during_dhcp(mode, tmp_path):
+      assert os.geteuid() == 0 and os.environ.get('WIFI_E2E_VM') == '1' and not Path('/AGNOS').exists()
+      worker = Path(__file__).with_name('wifi_e2e.py')
+>     run('unshare', '-m', '--propagation', 'private', 'env', f'UDHCPC_SCRIPT_PATH={UDHCPC_SCRIPT_PATH}',
+          sys.executable, str(worker), '--route-priority', mode, str(tmp_path))
+
+../harness/test_wifi_e2e.py:522: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harness/wifi_e2e.py:33: in run
+    return subprocess.run(command, check=check, capture_output=True, text=True, timeout=30)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = 30, check = True
+popenargs = (['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/tmp/wifi-route-priority-20261016-1620/source/openpilot/system/ui/lib/udhcpc.script', ...],)
+kwargs = {'text': True, 'stdout': -1, 'stderr': -1}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout (seconds) is given and the process takes too long,
+         a TimeoutExpired exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/tmp/wifi-route-priority-20261016-1620/source/openpilot/system/ui/lib/udhcpc.script', '/tmp/wifi-route-priority-20261016-1620/source/.venv/bin/python', '/tmp/wifi-route-priority-20261016-1620/harness/wifi_e2e.py', '--route-priority', 'no-nm', '/tmp/wifi-route-priority-20261016-1620/red-permanent-3/test_route_priority_during_dhc0']' returned non-zero exit status 1.
+
+/home/ubuntu/.local/share/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/subprocess.py:571: CalledProcessError
+----------------------------- Captured stdout call -----------------------------
+subprocess stdout:
+wired-baseline 1792166863.8554556
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+ap-address-baseline 1792166863.8606505
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.43.0/24 dev wlan0 proto kernel scope link src 192.168.43.1 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.43.1/24 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-0-deconfig 1792166863.8629596
+cycle-0-deconfig-after 1792166863.9697473
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-0-bound 1792166863.9725912
+cycle-0-bound-after 1792166864.0923543
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-0-renew 1792166864.0949135
+cycle-0-renew-after 1792166864.2124972
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-1-deconfig 1792166864.215249
+cycle-1-deconfig-after 1792166864.322509
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-1-bound 1792166864.3252916
+cycle-1-bound-after 1792166864.445711
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-1-renew 1792166864.4500246
+cycle-1-renew-after 1792166864.570158
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-2-deconfig 1792166864.5750086
+cycle-2-deconfig-after 1792166864.6842408
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-2-bound 1792166864.6896353
+cycle-2-bound-after 1792166864.8092892
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-2-renew 1792166864.8143823
+cycle-2-renew-after 1792166864.9370422
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-3-deconfig 1792166864.9395492
+cycle-3-deconfig-after 1792166865.0486715
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-3-bound 1792166865.0556874
+cycle-3-bound-after 1792166865.1811736
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-3-renew 1792166865.1869612
+cycle-3-renew-after 1792166865.3117251
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-4-deconfig 1792166865.3166893
+cycle-4-deconfig-after 1792166865.4247773
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-4-bound 1792166865.4308302
+cycle-4-bound-after 1792166865.5567696
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-4-renew 1792166865.5626235
+cycle-4-renew-after 1792166865.6851993
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-5-deconfig 1792166865.6904192
+cycle-5-deconfig-after 1792166865.803283
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-5-bound 1792166865.8081546
+cycle-5-bound-after 1792166865.9297252
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-5-renew 1792166865.935025
+cycle-5-renew-after 1792166866.0534801
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-6-deconfig 1792166866.059274
+cycle-6-deconfig-after 1792166866.170438
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-6-bound 1792166866.175656
+cycle-6-bound-after 1792166866.2986953
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-6-renew 1792166866.30588
+cycle-6-renew-after 1792166866.434446
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-7-deconfig 1792166866.437094
+cycle-7-deconfig-after 1792166866.5482285
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-7-bound 1792166866.5537496
+cycle-7-bound-after 1792166866.6779513
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-7-renew 1792166866.683514
+cycle-7-renew-after 1792166866.8038118
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-8-deconfig 1792166866.8083377
+cycle-8-deconfig-after 1792166866.9204385
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-8-bound 1792166866.923239
+cycle-8-bound-after 1792166867.039007
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-8-renew 1792166867.0415165
+cycle-8-renew-after 1792166867.1617339
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-9-deconfig 1792166867.166655
+cycle-9-deconfig-after 1792166867.2767165
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-9-bound 1792166867.2818522
+cycle-9-bound-after 1792166867.4003115
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-9-renew 1792166867.4056692
+cycle-9-renew-after 1792166867.5263348
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n68: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n70: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+CLEANUP host_routes_unchanged True
+CLEANUP host_resolver_unchanged True
+NAMESPACES 
+
+subprocess stderr:
+Traceback (most recent call last):
+  File "/tmp/wifi-route-priority-20261016-1620/harness/wifi_e2e.py", line 834, in <module>
+    check_route_priority(sys.argv[2], os.environ['UDHCPC_SCRIPT_PATH'], sys.argv[3])
+  File "/tmp/wifi-route-priority-20261016-1620/harness/wifi_e2e.py", line 710, in check_route_priority
+    assert installed and all('metric 600' in line for line in installed), installed
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ['[2026-10-16T16:07:43.975891] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:43.976646] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:43.978234] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:43.978473] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:44.098734] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:44.100291] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:44.100544] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:44.328618] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:44.329294] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:44.330842] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:44.331134] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:44.453885] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:44.455423] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:44.455704] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:44.694332] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:44.694923] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:44.696439] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:44.696702] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:44.821200] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:44.823022] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:44.823343] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:45.062146] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:45.063339] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:45.066365] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:45.066811] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:45.194647] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:45.197383] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:45.197842] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:45.437675] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:45.438703] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:45.441189] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:45.441660] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:45.571613] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:45.574216] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:45.574707] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:45.814319] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:45.815364] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:45.817295] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:45.817583] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:45.942056] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:45.943633] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:45.943907] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:46.182152] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:46.183159] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:46.185372] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:46.185633] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:46.315275] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:46.318190] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:46.318648] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:46.559926] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:46.560875] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:46.562742] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:46.562999] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:46.690971] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:46.692686] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:46.692963] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:46.926546] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:46.927112] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:46.928687] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:46.928940] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:47.045273] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:47.046771] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:47.047045] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:47.286659] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:47.287303] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:47.288906] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:47.289181] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:47.410178] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:47.411620] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:47.411836] default via 192.168.1.1 dev wlan0 metric 600 ']
+
+_____________________ test_route_priority_during_dhcp[nm] ______________________
+
+mode = 'nm'
+tmp_path = PosixPath('/tmp/wifi-route-priority-20261016-1620/red-permanent-3/test_route_priority_during_dhc1')
+
+    @pytest.mark.parametrize('mode', ['no-nm', 'nm'])
+    def test_route_priority_during_dhcp(mode, tmp_path):
+      assert os.geteuid() == 0 and os.environ.get('WIFI_E2E_VM') == '1' and not Path('/AGNOS').exists()
+      worker = Path(__file__).with_name('wifi_e2e.py')
+>     run('unshare', '-m', '--propagation', 'private', 'env', f'UDHCPC_SCRIPT_PATH={UDHCPC_SCRIPT_PATH}',
+          sys.executable, str(worker), '--route-priority', mode, str(tmp_path))
+
+../harness/test_wifi_e2e.py:522: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../harness/wifi_e2e.py:33: in run
+    return subprocess.run(command, check=check, capture_output=True, text=True, timeout=30)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = 30, check = True
+popenargs = (['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/tmp/wifi-route-priority-20261016-1620/source/openpilot/system/ui/lib/udhcpc.script', ...],)
+kwargs = {'text': True, 'stdout': -1, 'stderr': -1}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output & stderr attributes if those streams
+        were captured.
+    
+        If timeout (seconds) is given and the process takes too long,
+         a TimeoutExpired exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+>               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/tmp/wifi-route-priority-20261016-1620/source/openpilot/system/ui/lib/udhcpc.script', '/tmp/wifi-route-priority-20261016-1620/source/.venv/bin/python', '/tmp/wifi-route-priority-20261016-1620/harness/wifi_e2e.py', '--route-priority', 'nm', '/tmp/wifi-route-priority-20261016-1620/red-permanent-3/test_route_priority_during_dhc1']' returned non-zero exit status 1.
+
+/home/ubuntu/.local/share/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/subprocess.py:571: CalledProcessError
+----------------------------- Captured stdout call -----------------------------
+subprocess stdout:
+wired-baseline 1792166868.9475346
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3600sec preferred_lft 3600sec\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+ap-address-baseline 1792166868.9548085
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 \n192.168.43.0/24 dev wlan0 proto kernel scope link src 192.168.43.1 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3600sec preferred_lft 3600sec\n74: wlan0    inet 192.168.43.1/24 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-0-deconfig 1792166868.9573302
+cycle-0-deconfig-after 1792166869.0620031
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3600sec preferred_lft 3600sec\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-0-bound 1792166869.064519
+cycle-0-bound-after 1792166869.1831915
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3600sec preferred_lft 3600sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-0-renew 1792166869.1858985
+cycle-0-renew-after 1792166869.301664
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3600sec preferred_lft 3600sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-1-deconfig 1792166869.306525
+cycle-1-deconfig-after 1792166869.4145846
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3600sec preferred_lft 3600sec\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-1-bound 1792166869.4209578
+cycle-1-bound-after 1792166869.5509536
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3600sec preferred_lft 3600sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-1-renew 1792166869.5559778
+cycle-1-renew-after 1792166869.6792452
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3600sec preferred_lft 3600sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-2-deconfig 1792166869.6837072
+cycle-2-deconfig-after 1792166869.793034
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3600sec preferred_lft 3600sec\n", "lookup": "192.168.1.171 from 192.168.1.199 via 192.168.1.1 dev eth0 uid 0 \n    cache \n"}
+cycle-2-bound 1792166869.798266
+cycle-2-bound-after 1792166869.927328
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3600sec preferred_lft 3600sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-2-renew 1792166869.9305477
+cycle-2-renew-after 1792166870.048658
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3599sec preferred_lft 3599sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-3-deconfig 1792166870.051411
+cycle-3-deconfig-after 1792166870.1565156
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3599sec preferred_lft 3599sec\n", "lookup": "192.168.1.171 from 192.168.1.199 via 192.168.1.1 dev eth0 uid 0 \n    cache \n"}
+cycle-3-bound 1792166870.1589868
+cycle-3-bound-after 1792166870.2744043
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3599sec preferred_lft 3599sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-3-renew 1792166870.2774618
+cycle-3-renew-after 1792166870.394508
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3599sec preferred_lft 3599sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-4-deconfig 1792166870.398425
+cycle-4-deconfig-after 1792166870.5096774
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3599sec preferred_lft 3599sec\n", "lookup": "192.168.1.171 from 192.168.1.199 via 192.168.1.1 dev eth0 uid 0 \n    cache \n"}
+cycle-4-bound 1792166870.5146596
+cycle-4-bound-after 1792166870.638437
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3599sec preferred_lft 3599sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-4-renew 1792166870.6427586
+cycle-4-renew-after 1792166870.764947
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3599sec preferred_lft 3599sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-5-deconfig 1792166870.7699516
+cycle-5-deconfig-after 1792166870.8783693
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3599sec preferred_lft 3599sec\n", "lookup": "192.168.1.171 from 192.168.1.199 via 192.168.1.1 dev eth0 uid 0 \n    cache \n"}
+cycle-5-bound 1792166870.8815117
+cycle-5-bound-after 1792166871.0047562
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3598sec preferred_lft 3598sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-5-renew 1792166871.0097768
+cycle-5-renew-after 1792166871.134085
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3598sec preferred_lft 3598sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-6-deconfig 1792166871.1385875
+cycle-6-deconfig-after 1792166871.2514079
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3598sec preferred_lft 3598sec\n", "lookup": "192.168.1.171 from 192.168.1.199 via 192.168.1.1 dev eth0 uid 0 \n    cache \n"}
+cycle-6-bound 1792166871.2591434
+cycle-6-bound-after 1792166871.3906746
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3598sec preferred_lft 3598sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-6-renew 1792166871.3952768
+cycle-6-renew-after 1792166871.518484
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3598sec preferred_lft 3598sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-7-deconfig 1792166871.5237975
+cycle-7-deconfig-after 1792166871.6362405
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3598sec preferred_lft 3598sec\n", "lookup": "192.168.1.171 from 192.168.1.199 via 192.168.1.1 dev eth0 uid 0 \n    cache \n"}
+cycle-7-bound 1792166871.6400125
+cycle-7-bound-after 1792166871.760934
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3598sec preferred_lft 3598sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-7-renew 1792166871.7640631
+cycle-7-renew-after 1792166871.8817587
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3598sec preferred_lft 3598sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-8-deconfig 1792166871.8844879
+cycle-8-deconfig-after 1792166871.9898584
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3597sec preferred_lft 3597sec\n", "lookup": "192.168.1.171 from 192.168.1.199 via 192.168.1.1 dev eth0 uid 0 \n    cache \n"}
+cycle-8-bound 1792166871.9923112
+cycle-8-bound-after 1792166872.112666
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3597sec preferred_lft 3597sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-8-renew 1792166872.1157684
+cycle-8-renew-after 1792166872.2374463
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3597sec preferred_lft 3597sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-9-deconfig 1792166872.2409298
+cycle-9-deconfig-after 1792166872.3519955
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3597sec preferred_lft 3597sec\n", "lookup": "192.168.1.171 from 192.168.1.199 via 192.168.1.1 dev eth0 uid 0 \n    cache \n"}
+cycle-9-bound 1792166872.3565786
+cycle-9-bound-after 1792166872.4827573
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3597sec preferred_lft 3597sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+cycle-9-renew 1792166872.4883046
+cycle-9-renew-after 1792166872.6141863
+{"routes": "default via 192.168.1.1 dev eth0 proto dhcp src 192.168.1.199 metric 100 \ndefault via 192.168.1.1 dev wlan0 metric 600 \n192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 \n203.0.113.0/24 dev wlan0 scope link \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n72: eth0    inet 192.168.1.199/24 brd 192.168.1.255 scope global dynamic noprefixroute eth0\\       valid_lft 3597sec preferred_lft 3597sec\n74: wlan0    inet 192.168.1.108/24 brd 192.168.1.255 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev wlan0 uid 0 \n    cache \n"}
+CLEANUP host_routes_unchanged True
+CLEANUP host_resolver_unchanged True
+NAMESPACES 
+
+subprocess stderr:
+Traceback (most recent call last):
+  File "/tmp/wifi-route-priority-20261016-1620/harness/wifi_e2e.py", line 834, in <module>
+    check_route_priority(sys.argv[2], os.environ['UDHCPC_SCRIPT_PATH'], sys.argv[3])
+  File "/tmp/wifi-route-priority-20261016-1620/harness/wifi_e2e.py", line 710, in check_route_priority
+    assert installed and all('metric 600' in line for line in installed), installed
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ['[2026-10-16T16:07:49.066102] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:49.066800] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:49.068398] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:49.068674] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:49.188374] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:49.190300] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:49.190678] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:49.424271] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:49.425489] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:49.429141] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:49.429805] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:49.560069] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:49.562945] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:49.563508] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:49.801589] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:49.802735] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:49.805649] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:49.806142] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:49.932777] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:49.934417] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:49.934706] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:50.160758] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:50.161445] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:50.163062] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:50.163329] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:50.279944] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:50.282495] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:50.282854] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:50.517464] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:50.518583] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:50.521538] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:50.522049] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:50.646397] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:50.649266] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:50.649761] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:50.884447] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:50.885287] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:50.887780] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:50.888138] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:51.013403] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:51.016364] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:51.016896] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:51.264620] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:51.266716] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:51.270332] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:51.271250] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:51.398768] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:51.401640] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:51.402079] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:51.642387] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:51.643085] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:51.645981] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:51.646426] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:51.766356] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:51.768041] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:51.768303] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:51.993931] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:51.994584] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:51.996261] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:51.996564] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:52.118303] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:52.120315] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:52.120658] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:52.359703] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 ', '[2026-10-16T16:07:52.360992] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:52.364023] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:52.364515] default via 192.168.1.1 dev wlan0 metric 600 ', '[2026-10-16T16:07:52.491973] default via 192.168.1.1 dev wlan0 ', '[2026-10-16T16:07:52.494960] 192.168.1.0/24 dev wlan0 proto kernel scope link src 192.168.1.108 metric 600 ', '[2026-10-16T16:07:52.495489] default via 192.168.1.1 dev wlan0 metric 600 ']
+
+- generated xml file: /tmp/wifi-route-priority-20261016-1620/red-permanent-3.xml -
+=========================== short test summary info ============================
+FAILED ../harness/test_wifi_e2e.py::test_route_priority_during_dhcp[no-nm] - ...
+FAILED ../harness/test_wifi_e2e.py::test_route_priority_during_dhcp[nm] - sub...
+======================= 2 failed, 53 deselected in 9.33s =======================

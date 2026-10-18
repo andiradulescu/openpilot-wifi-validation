@@ -1,0 +1,7 @@
+{
+  "destination": "/Volumes/Stuff/openpilot-extra/openpilot-wifi-validation/results/task9-route-priority-20261016",
+  "files": 65,
+  "bytes": 1241693,
+  "all_readback_hashes_match": true,
+  "inventory_sha256": "b6277a83f054cfc731870bef985deb2139194cad937a29dfc315f906a1d09c04"
+}

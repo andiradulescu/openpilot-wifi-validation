@@ -1,0 +1,145 @@
+{
+  "schema": "wifi-route-priority-validation.v1",
+  "status": "BLOCKED",
+  "decision_key": "udev-runner-scope",
+  "source_branch": "fix/wifi-route-priority",
+  "source_head": "c47761b0b51e8965a067aed71001fd09471579c0",
+  "source_base": "510f9b76b63800756c0258acad794cfa9623d08f",
+  "source_clean": true,
+  "harness_base": "185c5e216d6f53bdc027d30f3db7cde20d906d8b",
+  "harness_committed": false,
+  "harness_files": {
+    "wifi_e2e.py": "d7ed0f3a450fe68b86a31caedb0ef041b16ae68506d4b6943937fce45a510825",
+    "test_wifi_e2e.py": "53f0320d1c30865266c22ecd1be247a3bf03faa4657b9dd2544ab7012c8235d7",
+    "run_wifi_e2e.sh": "a9d88f62b3e266e61508bf09548fcceb40b9e883ba01795b409610e71aa132e8"
+  },
+  "runner_changed": false,
+  "runner_proposal_sha256": "05df4caf84a03c0f9ad68c8d1a6797d81a407914b339f51ad922cb8f23d4587d",
+  "proposal_checks": {
+    "git_apply_check": {
+      "exit": 0,
+      "applied": false
+    },
+    "bash_n_candidate": {
+      "exit": 0,
+      "executed": false
+    }
+  },
+  "results": [
+    {
+      "name": "wifi-unit-final",
+      "passed": 95,
+      "failed": 0,
+      "errors": 0,
+      "skipped": 0,
+      "exit": 0,
+      "log": "evidence/final-source-checks-vm.log"
+    },
+    {
+      "name": "ruff-host-final",
+      "exit": 0,
+      "log": "evidence/final-ruff-host.log"
+    },
+    {
+      "name": "ty-host-final",
+      "exit": 0,
+      "log": "evidence/final-ty-host.log"
+    },
+    {
+      "name": "ruff-and-ty-vm-final",
+      "exit": 0,
+      "log": "evidence/final-source-checks-vm.log"
+    },
+    {
+      "name": "standalone-no-nm",
+      "cycles": 10,
+      "wlan_arp_announce": 0,
+      "exit": 0,
+      "log": "evidence/green-no-nm.log"
+    },
+    {
+      "name": "standalone-nm",
+      "cycles": 10,
+      "wlan_arp_announce": 0,
+      "exit": 0,
+      "log": "evidence/green-nm.log"
+    },
+    {
+      "name": "full-hwsim",
+      "passed": 53,
+      "failed": 2,
+      "exit": 1,
+      "seconds": 418.92,
+      "log": "evidence/full-hwsim-2.log",
+      "junit": "evidence/full-hwsim.xml"
+    },
+    {
+      "name": "focused-route-final",
+      "passed": 1,
+      "failed": 1,
+      "deselected": 53,
+      "exit": 1,
+      "seconds": 6.28,
+      "log": "evidence/route-final.log"
+    },
+    {
+      "name": "nm-readiness-diagnostic",
+      "failed": 1,
+      "deselected": 54,
+      "exit": 1,
+      "log": "evidence/nm-readiness.log"
+    },
+    {
+      "name": "nm-bounded-wait-diagnostic",
+      "failed": 1,
+      "deselected": 54,
+      "exit": 1,
+      "log": "evidence/nm-bounded-wait.log"
+    },
+    {
+      "name": "link-only-udev-probe",
+      "nm_executed": false,
+      "intentional_diagnostic_stop": true,
+      "samples": 50,
+      "log": "evidence/udev-probe.log"
+    }
+  ],
+  "expected_red": [
+    {
+      "name": "unchanged-hook-unit",
+      "failed": 1,
+      "subcase_failures": 3,
+      "exit": 1,
+      "log": "evidence/red-unit-vm-final-test.log"
+    },
+    {
+      "name": "unchanged-hook-no-nm",
+      "metric_zero_installs": 30,
+      "exit": 1,
+      "log": "evidence/red-no-nm.log"
+    },
+    {
+      "name": "unchanged-hook-nm",
+      "metric_zero_installs": 30,
+      "ethernet_prefix_deletions": 1,
+      "exit": 1,
+      "log": "evidence/red-nm.log"
+    },
+    {
+      "name": "permanent-baseline-routing",
+      "failed": 2,
+      "deselected": 53,
+      "exit": 1,
+      "log": "evidence/red-permanent-3.log"
+    }
+  ],
+  "limitations": [
+    "No-NM package absence is simulated with mount masks and no service.",
+    "Current permanent NM fixture is blocked before DHCP behavior by unavailable initialized udev input.",
+    "Full 55-case hwsim is not green.",
+    "No physical validation of the source fix occurred."
+  ],
+  "next_action": "Await explicit scope approval for run_wifi_e2e.sh, then implement the proposed live-udev view and bounded helper barrier, freeze per-run inputs, obtain focused green and final full green.",
+  "device_actions": false,
+  "remote_publication": false
+}

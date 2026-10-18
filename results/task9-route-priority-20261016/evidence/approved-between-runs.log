@@ -1,0 +1,44 @@
+0eda7cab38877039833ff5adec2465b66033eb79c3618785f5238628fb7d910a  ../harness-approved-20261018-1540/run.py
+53f0320d1c30865266c22ecd1be247a3bf03faa4657b9dd2544ab7012c8235d7  ../harness-approved-20261018-1540/test_wifi_e2e.py
+f71e30aab56ddbcecb8ec73af430022fcf990521d60a6fb70a164746e09ebc27  ../harness-approved-20261018-1540/wifi_e2e.py
+98429bd935cf3f927eace0c53175ee531a8f16113dc67422d5827baa84ed4531  ../harness-approved-20261018-1540/run_wifi_e2e.sh
+14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0  openpilot/system/ui/lib/udhcpc.script
+{
+  "mode": "no-nm",
+  "announce": 0,
+  "cycles": 10,
+  "lookups": 30,
+  "edge_cases": [
+    "host-route",
+    "renumber",
+    "new-subnet",
+    "no-router",
+    "file-dns"
+  ],
+  "route_loss": false,
+  "wlan_events": 35,
+  "bad_metrics": [],
+  "eth_deletions": [],
+  "coverage_limit": "NM package absence simulated with non-executable bind masks, isolated /run, no NM service",
+  "hook_sha256": "14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0",
+  "passed": true
+}{
+  "mode": "nm",
+  "announce": 0,
+  "cycles": 10,
+  "lookups": 30,
+  "edge_cases": [
+    "host-route",
+    "renumber",
+    "new-subnet",
+    "no-router",
+    "file-dns"
+  ],
+  "route_loss": false,
+  "wlan_events": 35,
+  "bad_metrics": [],
+  "eth_deletions": [],
+  "coverage_limit": "real NM owns DHCP Ethernet, WLAN unmanaged",
+  "hook_sha256": "14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0",
+  "passed": true
+}

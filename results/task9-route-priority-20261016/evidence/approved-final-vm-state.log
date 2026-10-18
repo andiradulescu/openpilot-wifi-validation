@@ -1,0 +1,129 @@
+Sun Oct 18 15:49:01 UTC 2026
+/tmp/wifi-route-priority-20261016-1620/source
+0eda7cab38877039833ff5adec2465b66033eb79c3618785f5238628fb7d910a  /tmp/wifi-route-priority-20261016-1620/harness-approved-20261018-1540/run.py
+53f0320d1c30865266c22ecd1be247a3bf03faa4657b9dd2544ab7012c8235d7  /tmp/wifi-route-priority-20261016-1620/harness-approved-20261018-1540/test_wifi_e2e.py
+f71e30aab56ddbcecb8ec73af430022fcf990521d60a6fb70a164746e09ebc27  /tmp/wifi-route-priority-20261016-1620/harness-approved-20261018-1540/wifi_e2e.py
+98429bd935cf3f927eace0c53175ee531a8f16113dc67422d5827baa84ed4531  /tmp/wifi-route-priority-20261016-1620/harness-approved-20261018-1540/run_wifi_e2e.sh
+93c4ab5f175d24229e46ec70a8ecaeb6db8b36e3f54d8005808044c060acbc92  /tmp/wifi-route-priority-20261016-1620/harness-approved-20261018-1540/requirements.txt
+14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0  openpilot/system/ui/lib/udhcpc.script
+0d5715aa1f3dc926e444f98204a055a4658844aa7f03b65e358123a82fc67b25  openpilot/system/ui/lib/wifi_manager.py
+f6e1baa051ed57e11ebbcc4e8337d47930bb7882187eba16bb77b798d67fc72b  openpilot/system/ui/lib/tests/test_wifi_manager.py
+ebdf560272a77357195c39e98340b77e18c8a8ce2025ee950e9e0c7b01467ab8  /etc/resolv.conf
+[{"dst":"default","gateway":"10.0.2.2","dev":"enp0s1","protocol":"dhcp","prefsrc":"10.0.2.15","metric":100,"flags":[]},{"dst":"10.0.2.0/24","dev":"enp0s1","protocol":"kernel","scope":"link","prefsrc":"10.0.2.15","metric":100,"flags":[]},{"dst":"10.0.2.2","dev":"enp0s1","protocol":"dhcp","scope":"link","prefsrc":"10.0.2.15","metric":100,"flags":[]},{"dst":"10.0.2.3","dev":"enp0s1","protocol":"dhcp","scope":"link","prefsrc":"10.0.2.15","metric":100,"flags":[]}]
+lo               UNKNOWN        00:00:00:00:00:00 <LOOPBACK,UP,LOWER_UP> 
+enp0s1           UP             52:54:00:12:34:56 <BROADCAST,MULTICAST,UP,LOWER_UP> 
+tar: full/wifi-e2e-znjvmuza/manager.sock: socket ignored
+tar: full/wifi-e2e-znjvmuza/client-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-j6fuvxu3/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-j6fuvxu3/manager.sock: socket ignored
+tar: full/wifi-e2e-rxamy3xb/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-rxamy3xb/manager.sock: socket ignored
+tar: full/wifi-e2e-2wpm_vrf/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-2wpm_vrf/ap1-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-2wpm_vrf/manager.sock: socket ignored
+tar: full/wifi-e2e-d7et5at7/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-d7et5at7/manager.sock: socket ignored
+tar: full/wifi-e2e-f5lssusw/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-f5lssusw/manager.sock: socket ignored
+tar: full/wifi-e2e-66uvy2kd/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-66uvy2kd/manager.sock: socket ignored
+tar: full/wifi-e2e-dosmbqvk/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-dosmbqvk/manager.sock: socket ignored
+tar: full/wifi-e2e-h7ivfv7_/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-h7ivfv7_/manager.sock: socket ignored
+tar: full/wifi-e2e-hj7ffjiw/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-hj7ffjiw/manager.sock: socket ignored
+tar: full/wifi-e2e-hj7ffjiw/client-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-biqibdom/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-biqibdom/manager.sock: socket ignored
+tar: full/wifi-e2e-0gi4l1ex/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-0gi4l1ex/manager.sock: socket ignored
+tar: full/wifi-e2e-wcori4pf/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-wcori4pf/manager.sock: socket ignored
+tar: full/wifi-e2e-nnimb3ft/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-nnimb3ft/manager.sock: socket ignored
+tar: full/wifi-e2e-dwqbkmvr/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-dwqbkmvr/manager.sock: socket ignored
+tar: full/wifi-e2e-6qwtg5_l/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-6qwtg5_l/manager.sock: socket ignored
+tar: full/wifi-e2e-_dkwnh8r/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-_dkwnh8r/manager.sock: socket ignored
+tar: full/wifi-e2e-9k2ctjke/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-9k2ctjke/manager.sock: socket ignored
+tar: full/wifi-e2e-q2q6kdr8/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-q2q6kdr8/manager.sock: socket ignored
+tar: full/wifi-e2e-q2q6kdr8/client-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-y1rrs5ek/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-y1rrs5ek/manager.sock: socket ignored
+tar: full/wifi-e2e-qh_fcvza/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-qh_fcvza/manager.sock: socket ignored
+tar: full/wifi-e2e-51sgb441/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-51sgb441/manager.sock: socket ignored
+tar: full/wifi-e2e-0mb9f4x3/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-0mb9f4x3/ap1-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-0mb9f4x3/manager.sock: socket ignored
+tar: full/wifi-e2e-me_d_yoo/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-me_d_yoo/manager.sock: socket ignored
+tar: full/wifi-e2e-0_oinu5k/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-0_oinu5k/manager.sock: socket ignored
+tar: full/wifi-e2e-bz0ecg4h/manager.sock: socket ignored
+tar: full/wifi-e2e-r6iwachn/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-r6iwachn/manager.sock: socket ignored
+tar: full/wifi-e2e-3_vz3q5e/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-3_vz3q5e/manager.sock: socket ignored
+tar: full/wifi-e2e-_xncnuga/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-_xncnuga/manager.sock: socket ignored
+tar: full/wifi-e2e-nhru6np4/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-nhru6np4/manager.sock: socket ignored
+tar: full/wifi-e2e-5dgz214_/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-5dgz214_/manager.sock: socket ignored
+tar: full/wifi-e2e-t1la2dcu/manager.sock: socket ignored
+tar: full/wifi-e2e-dq9rikf6/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-dq9rikf6/manager.sock: socket ignored
+tar: full/wifi-e2e-dbfrhys8/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-dbfrhys8/manager.sock: socket ignored
+tar: full/wifi-e2e-l8mk6wx9/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-l8mk6wx9/manager.sock: socket ignored
+tar: full/wifi-e2e-xtjjw4kq/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-xtjjw4kq/ap1-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-xtjjw4kq/manager.sock: socket ignored
+tar: full/wifi-e2e-0ka33iqo/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-0ka33iqo/ap1-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-0ka33iqo/manager.sock: socket ignored
+tar: full/wifi-e2e-bzc6l7dv/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-bzc6l7dv/manager.sock: socket ignored
+tar: full/wifi-e2e-bzc6l7dv/client-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-tllrs_xs/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-tllrs_xs/manager.sock: socket ignored
+tar: full/wifi-e2e-ebjotwn2/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-ebjotwn2/ap1-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-ebjotwn2/manager.sock: socket ignored
+tar: full/wifi-e2e-oupsv_tq/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-oupsv_tq/ap1-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-oupsv_tq/manager.sock: socket ignored
+tar: full/wifi-e2e-txszs2zo/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-txszs2zo/ap1-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-txszs2zo/manager.sock: socket ignored
+tar: full/wifi-e2e-a3eqvs65/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-a3eqvs65/manager.sock: socket ignored
+tar: full/wifi-e2e-_o87zikv/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-_o87zikv/manager.sock: socket ignored
+tar: full/wifi-e2e-ca29qnrc/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-ca29qnrc/manager.sock: socket ignored
+tar: full/wifi-e2e-av6hm9r8/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-av6hm9r8/ap1-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-av6hm9r8/manager.sock: socket ignored
+tar: full/wifi-e2e-o9r00a__/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-o9r00a__/manager.sock: socket ignored
+tar: full/wifi-e2e-o9r00a__/client-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-46h579rv/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-46h579rv/manager.sock: socket ignored
+tar: full/wifi-e2e-imyndjuu/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-imyndjuu/manager.sock: socket ignored
+tar: full/wifi-e2e-n4ktlxqn/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-n4ktlxqn/manager.sock: socket ignored
+tar: full/wifi-e2e-sdc8xn_d/manager.sock: socket ignored
+tar: full/wifi-e2e-sdc8xn_d/client-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-1q0pvwew/ap0-ctrl/wlan0: socket ignored
+tar: full/wifi-e2e-1q0pvwew/manager.sock: socket ignored
+bacaaaaa33ace122b2cf097d0d39e97f7ca84a0113ae286ded5d0c3eb4f9710b  /tmp/wifi-route-priority-20261016-1620/approved-hwsim-artifacts.tar.gz

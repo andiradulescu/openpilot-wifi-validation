@@ -1,0 +1,66 @@
+No entry for terminal type "unknown";
+using dumb terminal settings.
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /workspace/openpilot/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace
+collecting ... collected 55 items / 54 deselected / 1 selected
+
+../openpilot-wifi-validation/test_wifi_e2e.py::test_route_priority_during_dhcp[nm] FAILED
+
+=================================== FAILURES ===================================
+_____________________ test_route_priority_during_dhcp[nm] ______________________
+
+mode = 'nm'
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_route_priority_during_dhc0')
+
+    @pytest.mark.parametrize('mode', ['no-nm', 'nm'])
+    def test_route_priority_during_dhcp(mode, tmp_path):
+      assert os.geteuid() == 0 and os.environ.get('WIFI_E2E_VM') == '1' and not Path('/AGNOS').exists()
+      directory = tempfile.mkdtemp(prefix=f'route-{mode}-', dir=os.environ.get('WIFI_E2E_LOG_DIR', str(tmp_path)))
+      worker = Path(__file__).with_name('wifi_e2e.py')
+      result = run('unshare', '-m', '--propagation', 'private', 'env', f'UDHCPC_SCRIPT_PATH={UDHCPC_SCRIPT_PATH}',
+          f"WIFI_E2E_OUTER_MNT={os.readlink('/proc/self/ns/mnt')}",
+                   sys.executable, str(worker), '--route-priority', mode, directory, check=False)
+>     assert result.returncode == 0, f'child stdout:\n{result.stdout}\nchild stderr:\n{result.stderr}'
+E     AssertionError: child stdout:
+E       CLEANUP host_routes_unchanged True
+E       CLEANUP host_resolver_unchanged True
+E       NAMESPACES 
+E       
+E       child stderr:
+E       Traceback (most recent call last):
+E         File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 843, in <module>
+E           check_route_priority(sys.argv[2], os.environ['UDHCPC_SCRIPT_PATH'], sys.argv[3])
+E         File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 622, in check_route_priority
+E           run(['nmcli', '--wait', '10', 'connection', 'up', 'wired-test'], ns=dut, env=env)
+E         File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 481, in run
+E           raise RuntimeError(f'{cmd}: {cp.returncode}: {cp.stderr}')
+E       RuntimeError: ['ip', 'netns', 'exec', 'c4-routed', 'nmcli', '--wait', '10', 'connection', 'up', 'wired-test']: 4: Error: Connection activation failed: No suitable device found for this connection (device lo not available because profile is not compatible with device (connection type is not "loopback")).
+E       
+E       
+E     assert 1 == 0
+E      +  where 1 = CompletedProcess(args=['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/workspace/openpilot/openpilot/system/ui/lib/udhcpc.script', 'WIFI_E2E_OUTER_MNT=mnt:[4026532273]', '/workspace/openpilot/.venv/bin/python', '/workspace/openpilot-wifi-validation/wifi_e2e.py', '--route-priority', 'nm', '/run/wifi-e2e-logs/route-nm-qiandsn1'], returncode=1, stdout='CLEANUP host_routes_unchanged True\nCLEANUP host_resolver_unchanged True\nNAMESPACES \n', stderr='Traceback (most recent call last):\n  File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 843, in <module>\n    check_route_priority(sys.argv[2], os.environ[\'UDHCPC_SCRIPT_PATH\'], sys.argv[3])\n  File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 622, in check_route_priority\n    run([\'nmcli\', \'--wait\', \'10\', \'connection\', \'up\', \'wired-test\'], ns=dut, env=env)\n  File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 481, in run\n    raise RuntimeError(f\'{cmd}: {cp.returncode}: {cp.stderr}\')\nRuntimeError: [\'ip\', \'netns\', \'exec\', \'c4-routed\', \'nmcli\', \'--wait\', \'10\', \'connection\', \'up\', \'wired-test\']: 4: Error: Connection activation failed: No suitable device found for this connection (device lo not available because profile is not compatible with device (connection type is not "loopback")).\n\n').returncode
+
+../openpilot-wifi-validation/test_wifi_e2e.py:527: AssertionError
+- generated xml file: /workspace/openpilot-wifi-validation/task-results/nm-readiness.xml -
+=========================== short test summary info ============================
+FAILED ../openpilot-wifi-validation/test_wifi_e2e.py::test_route_priority_during_dhcp[nm] - AssertionError: child stdout:
+  CLEANUP host_routes_unchanged True
+  CLEANUP host_resolver_unchanged True
+  NAMESPACES 
+  
+  child stderr:
+  Traceback (most recent call last):
+    File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 843, in <module>
+      check_route_priority(sys.argv[2], os.environ['UDHCPC_SCRIPT_PATH'], sys.argv[3])
+    File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 622, in check_route_priority
+      run(['nmcli', '--wait', '10', 'connection', 'up', 'wired-test'], ns=dut, env=env)
+    File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 481, in run
+      raise RuntimeError(f'{cmd}: {cp.returncode}: {cp.stderr}')
+  RuntimeError: ['ip', 'netns', 'exec', 'c4-routed', 'nmcli', '--wait', '10', 'connection', 'up', 'wired-test']: 4: Error: Connection activation failed: No suitable device found for this connection (device lo not available because profile is not compatible with device (connection type is not "loopback")).
+  
+  
+assert 1 == 0
+ +  where 1 = CompletedProcess(args=['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/workspace/openpilot/openpilot/system/ui/lib/udhcpc.script', 'WIFI_E2E_OUTER_MNT=mnt:[4026532273]', '/workspace/openpilot/.venv/bin/python', '/workspace/openpilot-wifi-validation/wifi_e2e.py', '--route-priority', 'nm', '/run/wifi-e2e-logs/route-nm-qiandsn1'], returncode=1, stdout='CLEANUP host_routes_unchanged True\nCLEANUP host_resolver_unchanged True\nNAMESPACES \n', stderr='Traceback (most recent call last):\n  File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 843, in <module>\n    check_route_priority(sys.argv[2], os.environ[\'UDHCPC_SCRIPT_PATH\'], sys.argv[3])\n  File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 622, in check_route_priority\n    run([\'nmcli\', \'--wait\', \'10\', \'connection\', \'up\', \'wired-test\'], ns=dut, env=env)\n  File "/workspace/openpilot-wifi-validation/wifi_e2e.py", line 481, in run\n    raise RuntimeError(f\'{cmd}: {cp.returncode}: {cp.stderr}\')\nRuntimeError: [\'ip\', \'netns\', \'exec\', \'c4-routed\', \'nmcli\', \'--wait\', \'10\', \'connection\', \'up\', \'wired-test\']: 4: Error: Connection activation failed: No suitable device found for this connection (device lo not available because profile is not compatible with device (connection type is not "loopback")).\n\n').returncode
+======================= 1 failed, 54 deselected in 1.29s =======================

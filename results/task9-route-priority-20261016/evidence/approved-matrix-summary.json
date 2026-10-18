@@ -1,0 +1,222 @@
+{
+  "focused/route-no-nm-hfs4pvqg/trial": {
+    "mode": "no-nm",
+    "announce": 0,
+    "cycles": 10,
+    "lookups": 30,
+    "edge_cases": [
+      "host-route",
+      "renumber",
+      "new-subnet",
+      "no-router",
+      "file-dns"
+    ],
+    "route_loss": false,
+    "wlan_events": 35,
+    "bad_metrics": [],
+    "eth_deletions": [],
+    "coverage_limit": "NM package absence simulated with non-executable bind masks, isolated /run, no NM service",
+    "hook_sha256": "14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0",
+    "passed": true,
+    "packets": {
+      "wired_udp": 1309,
+      "wlan_udp": 16,
+      "wlan_wired_udp": 0,
+      "wlan_wired_arp": 0,
+      "wlan_arp": 8
+    },
+    "udev": [
+      {
+        "time": 1792338066.8255599,
+        "udev_source": "/tmp/wifi-e2e-udev/live",
+        "ifindexes": {
+          "c4routee": 455,
+          "c4routeep": 454
+        },
+        "initialized": {
+          "c4routee": true,
+          "c4routeep": true
+        }
+      },
+      {
+        "time": 1792338066.8743029,
+        "udev_source": "/tmp/wifi-e2e-udev/live",
+        "ifindexes": {
+          "c4routew": 457,
+          "c4routewp": 456
+        },
+        "initialized": {
+          "c4routew": true,
+          "c4routewp": true
+        }
+      }
+    ],
+    "deconfig_clean": true,
+    "host_routes_unchanged": true
+  },
+  "focused/route-nm-c6vt569d/trial": {
+    "mode": "nm",
+    "announce": 0,
+    "cycles": 10,
+    "lookups": 30,
+    "edge_cases": [
+      "host-route",
+      "renumber",
+      "new-subnet",
+      "no-router",
+      "file-dns"
+    ],
+    "route_loss": false,
+    "wlan_events": 35,
+    "bad_metrics": [],
+    "eth_deletions": [],
+    "coverage_limit": "real NM owns DHCP Ethernet, WLAN unmanaged",
+    "hook_sha256": "14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0",
+    "passed": true,
+    "packets": {
+      "wired_udp": 1371,
+      "wlan_udp": 18,
+      "wlan_wired_udp": 0,
+      "wlan_wired_arp": 0,
+      "wlan_arp": 9
+    },
+    "udev": [
+      {
+        "time": 1792338071.3226442,
+        "udev_source": "/tmp/wifi-e2e-udev/live",
+        "ifindexes": {
+          "c4routee": 459,
+          "c4routeep": 458
+        },
+        "initialized": {
+          "c4routee": true,
+          "c4routeep": true
+        }
+      },
+      {
+        "time": 1792338071.3619342,
+        "udev_source": "/tmp/wifi-e2e-udev/live",
+        "ifindexes": {
+          "c4routew": 461,
+          "c4routewp": 460
+        },
+        "initialized": {
+          "c4routew": true,
+          "c4routewp": true
+        }
+      }
+    ],
+    "deconfig_clean": true,
+    "host_routes_unchanged": true
+  },
+  "full/route-nm-z5hd85sa/trial": {
+    "mode": "nm",
+    "announce": 0,
+    "cycles": 10,
+    "lookups": 30,
+    "edge_cases": [
+      "host-route",
+      "renumber",
+      "new-subnet",
+      "no-router",
+      "file-dns"
+    ],
+    "route_loss": false,
+    "wlan_events": 35,
+    "bad_metrics": [],
+    "eth_deletions": [],
+    "coverage_limit": "real NM owns DHCP Ethernet, WLAN unmanaged",
+    "hook_sha256": "14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0",
+    "passed": true,
+    "packets": {
+      "wired_udp": 1345,
+      "wlan_udp": 18,
+      "wlan_wired_udp": 0,
+      "wlan_wired_arp": 0,
+      "wlan_arp": 9
+    },
+    "udev": [
+      {
+        "time": 1792338528.6233876,
+        "udev_source": "/tmp/wifi-e2e-udev/live",
+        "ifindexes": {
+          "c4routee": 790,
+          "c4routeep": 789
+        },
+        "initialized": {
+          "c4routee": true,
+          "c4routeep": true
+        }
+      },
+      {
+        "time": 1792338528.674146,
+        "udev_source": "/tmp/wifi-e2e-udev/live",
+        "ifindexes": {
+          "c4routew": 792,
+          "c4routewp": 791
+        },
+        "initialized": {
+          "c4routew": true,
+          "c4routewp": true
+        }
+      }
+    ],
+    "deconfig_clean": true,
+    "host_routes_unchanged": true
+  },
+  "full/route-no-nm-cu0hb6wr/trial": {
+    "mode": "no-nm",
+    "announce": 0,
+    "cycles": 10,
+    "lookups": 30,
+    "edge_cases": [
+      "host-route",
+      "renumber",
+      "new-subnet",
+      "no-router",
+      "file-dns"
+    ],
+    "route_loss": false,
+    "wlan_events": 35,
+    "bad_metrics": [],
+    "eth_deletions": [],
+    "coverage_limit": "NM package absence simulated with non-executable bind masks, isolated /run, no NM service",
+    "hook_sha256": "14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0",
+    "passed": true,
+    "packets": {
+      "wired_udp": 1312,
+      "wlan_udp": 17,
+      "wlan_wired_udp": 0,
+      "wlan_wired_arp": 0,
+      "wlan_arp": 9
+    },
+    "udev": [
+      {
+        "time": 1792338524.1519918,
+        "udev_source": "/tmp/wifi-e2e-udev/live",
+        "ifindexes": {
+          "c4routee": 786,
+          "c4routeep": 785
+        },
+        "initialized": {
+          "c4routee": true,
+          "c4routeep": true
+        }
+      },
+      {
+        "time": 1792338524.206313,
+        "udev_source": "/tmp/wifi-e2e-udev/live",
+        "ifindexes": {
+          "c4routew": 788,
+          "c4routewp": 787
+        },
+        "initialized": {
+          "c4routew": true,
+          "c4routewp": true
+        }
+      }
+    ],
+    "deconfig_clean": true,
+    "host_routes_unchanged": true
+  }
+}

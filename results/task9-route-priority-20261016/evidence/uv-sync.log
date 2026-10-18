@@ -1,0 +1,16 @@
+Using CPython 3.12.13
+Creating virtual environment at: .venv
+   Building openpilot @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot
+   Building opendbc @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/opendbc_repo
+   Building msgq-ipc @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/msgq_repo
+   Building rednose @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/rednose_repo
+   Building teleoprtc @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/teleoprtc_repo
+   Building pandacan @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/panda
+   Building tinygrad @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/tinygrad_repo
+  × Failed to build `opendbc @
+  │ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/opendbc_repo`
+  ╰─▶ /Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/opendbc_repo
+      does not appear to be a Python project, as neither `pyproject.toml` nor
+      `setup.py` are present in the directory
+
+hint: `opendbc` was included because `openpilot[submodules]` (v0.1.0) depends on `opendbc`

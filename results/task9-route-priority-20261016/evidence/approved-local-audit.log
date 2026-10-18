@@ -1,0 +1,13 @@
+Sun Oct 18 15:42:27 UTC 2026
+/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot
+Python 3.12.13
+ruff 0.16.3
+ty 0.0.72 (62ebbecc7 2026-08-14)
+All checks passed!
+syntax passed: wifi_e2e.py
+syntax passed: test_wifi_e2e.py
+primary model deletion and REVIEW.md preserved
+ M run_wifi_e2e.sh
+ M test_wifi_e2e.py
+ M wifi_e2e.py
+?? vm/

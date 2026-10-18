@@ -1,0 +1,17 @@
+{
+  "branch": "wifi-v3",
+  "base": "185c5e216d6f53bdc027d30f3db7cde20d906d8b",
+  "code_commit": "8fbb0f73e2b04772eeb7c3c516a3f232ff446482",
+  "verified_at": "2026-10-18T15:50:45.989021+00:00",
+  "files": {
+    "run_wifi_e2e.sh": "98429bd935cf3f927eace0c53175ee531a8f16113dc67422d5827baa84ed4531",
+    "wifi_e2e.py": "f71e30aab56ddbcecb8ec73af430022fcf990521d60a6fb70a164746e09ebc27",
+    "test_wifi_e2e.py": "53f0320d1c30865266c22ecd1be247a3bf03faa4657b9dd2544ab7012c8235d7",
+    "run.py": "0eda7cab38877039833ff5adec2465b66033eb79c3618785f5238628fb7d910a",
+    "requirements.txt": "93c4ab5f175d24229e46ec70a8ecaeb6db8b36e3f54d8005808044c060acbc92"
+  },
+  "frozen_directory": "/tmp/wifi-route-priority-20261016-1620/harness-approved-20261018-1540",
+  "post_commit_status": "?? vm/",
+  "preexisting_untracked_preserved": "vm/",
+  "evidence_archive_sha256": "bacaaaaa33ace122b2cf097d0d39e97f7ca84a0113ae286ded5d0c3eb4f9710b"
+}

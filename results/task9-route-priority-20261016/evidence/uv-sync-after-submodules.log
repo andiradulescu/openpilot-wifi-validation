@@ -1,0 +1,61 @@
+   Building openpilot @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot
+   Building msgq-ipc @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/msgq_repo
+   Building opendbc @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/opendbc_repo
+   Building pandacan @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/panda
+   Building rednose @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/rednose_repo
+   Building teleoprtc @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/teleoprtc_repo
+   Building tinygrad @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/tinygrad_repo
+      Built teleoprtc @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/teleoprtc_repo
+      Built rednose @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/rednose_repo
+      Built pandacan @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/panda
+      Built tinygrad @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/tinygrad_repo
+      Built opendbc @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/opendbc_repo
+      Built openpilot @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot
+      Built msgq-ipc @ file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/msgq_repo
+Prepared 7 packages in 19.27s
+Installed 45 packages in 271ms
+ + certifi==2026.7.22
+ + cffi==2.1.1
+ + charset-normalizer==3.5.1
+ + comma-deps-acados==0.2.2.post98
+ + comma-deps-capnproto==1.0.1.post98
+ + comma-deps-eigen==3.4.0.post98
+ + comma-deps-ffmpeg==7.1.0.post98
+ + comma-deps-gcc-arm-none-eabi==13.2.1.post98
+ + comma-deps-git-lfs==3.6.1.post98
+ + comma-deps-json11==20170411.0.post98
+ + comma-deps-raylib==6.0.0.1.post101
+ + comma-deps-zeromq==4.3.5.post98
+ + comma-deps-zstd==1.5.6.post98
+ + cryptography==50.0.0
+ + cython==3.2.9
+ + idna==3.18
+ + importlib-resources==7.1.0
+ + inputs==0.5
+ + libdatachannel-py==2026.1.0.dev2
+ + libusb-package==1.0.30.0
+ + libusb1==3.4.0
+ + mpmath==1.3.0
+ + msgq-ipc==1.1 (from file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/msgq_repo)
+ + numpy==2.5.2
+ + opendbc==0.3.1 (from file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/opendbc_repo)
+ + openpilot==0.1.0 (from file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot)
+ + pandacan==0.0.10 (from file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/panda)
+ + pycapnp==2.1.0
+ + pycparser==3.0
+ + pycryptodome==3.23.0
+ + pyjwt==2.13.0
+ + pyzmq==27.1.0
+ + rednose==0.0.1 (from file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/rednose_repo)
+ + requests==2.34.2
+ + scons==4.11.1
+ + setproctitle==1.3.7
+ + setuptools==84.0.0
+ + sounddevice==0.5.5
+ + sympy==1.14.0
+ + teleoprtc==1.0.1 (from file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/teleoprtc_repo)
+ + tinygrad==0.14.0 (from file:///Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/tinygrad_repo)
+ + tqdm==4.70.0
+ + urllib3==2.7.0
+ + websocket-client==1.9.0
+ + zstandard==0.25.0

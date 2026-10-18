@@ -1,0 +1,22 @@
+<trace> [1792167755.1338] platform-linux: event-notification: RTM_NEWLINK, flags multi, seq 1, in-dump: 439: eth0@other-netns <DOWN;broadcast,multicast> mtu 1500 arp 1 veth* not-init addrgenmode eui64 addr 02:11:22:33:44:01 brd FF:FF:FF:FF:FF:FF tx-queue-len 1000 gso-max-size 65536 gso-max-segs 65535 gro-max-size 65536 rx:0,0 tx:0,0
+<debug> [1792167755.1339] platform: (eth0) signal: link   added: 439: eth0@other-netns <DOWN;broadcast,multicast> mtu 1500 arp 1 veth* not-init addrgenmode eui64 addr 02:11:22:33:44:01 brd FF:FF:FF:FF:FF:FF driver veth tx-queue-len 1000 gso-max-size 65536 gso-max-segs 65535 gro-max-size 65536 rx:0,0 tx:0,0
+<debug> [1792167755.4126] device[0eaccd74fe8dc56c] (eth0): unmanaged: flags set to [platform-init,!sleeping=0x4/0x5/unmanaged/unrealized], set-managed [sleeping=0x1])
+<info>  [1792167755.4129] manager: (eth0): new Veth device (/org/freedesktop/NetworkManager/Devices/2)
+<debug> [1792167755.4350] manager: startup complete is waiting for device 'eth0' (link-init)
+<debug> [1792167760.7607] manager: startup complete is waiting for device 'eth0' (link-init)
+<debug> [1792167760.7755] manager: startup complete is waiting for device 'eth0' (link-init)
+{
+  "ifindex": "439",
+  "udev_record_exists": false,
+  "udev_net_records": [
+    "n1",
+    "n2",
+    "n433",
+    "n434",
+    "n435",
+    "n436",
+    "n437"
+  ],
+  "seconds_after_running": 5.0138115882873535,
+  "device_show_eth0": "GENERAL.TYPE:                           ethernet\nGENERAL.NM-TYPE:                        NMDeviceVeth\nGENERAL.DBUS-PATH:                      /org/freedesktop/NetworkManager/Devices/2\nGENERAL.VENDOR:                         --\nGENERAL.PRODUCT:                        --\nGENERAL.DRIVER:                         veth\nGENERAL.DRIVER-VERSION:                 1.0\nGENERAL.FIRMWARE-VERSION:               --\nGENERAL.HWADDR:                         02:11:22:33:44:01\nGENERAL.MTU:                            1500\nGENERAL.STATE:                          10 (unmanaged)\nGENERAL.REASON:                         0 (No reason given)\nGENERAL.IP4-CONNECTIVITY:               0 (unknown)\nGENERAL.IP6-CONNECTIVITY:               0 (unknown)\nGENERAL.UDI:                            /virtual/device/placeholder/1\nGENERAL.PATH:                           --\nGENERAL.IP-IFACE:                       eth0\nGENERAL.IS-SOFTWARE:                    yes\nGENERAL.NM-MANAGED:                     no\nGENERAL.AUTOCONNECT:                    yes\nGENERAL.FIRMWARE-MISSING:               no\nGENERAL.NM-PLUGIN-MISSING:              no\nGENERAL.PHYS-PORT-ID:                   --\nGENERAL.CONNECTION:                     --\nGENERAL.CON-UUID:                       --\nGENERAL.CON-PATH:                       --\nGENERAL.METERED:                        unknown\n\n"
+}

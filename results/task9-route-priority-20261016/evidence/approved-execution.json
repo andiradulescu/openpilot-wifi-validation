@@ -1,0 +1,38 @@
+{
+  "source_cwd": "/tmp/wifi-route-priority-20261016-1620/source",
+  "staged_harness": "/tmp/wifi-route-priority-20261016-1620/harness-approved-20261018-1540",
+  "exposed_source_cwd": "/workspace/openpilot",
+  "focused": {
+    "command": "timeout 180 bash ../full-hwsim-approved.sh focused -k route_priority",
+    "exit": 0,
+    "passed": 2,
+    "deselected": 53,
+    "seconds": 9.845,
+    "log": "evidence/approved-focused.log",
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "full": {
+    "command": "timeout 900 bash ../full-hwsim-approved.sh full",
+    "status": "passed",
+    "log": "evidence/approved-full-hwsim.log",
+    "passed": 55,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "exit": 0,
+    "seconds": 430.341
+  },
+  "wrapper": "full-hwsim-approved.sh",
+  "input_files": {
+    "run_wifi_e2e.sh": "98429bd935cf3f927eace0c53175ee531a8f16113dc67422d5827baa84ed4531",
+    "wifi_e2e.py": "f71e30aab56ddbcecb8ec73af430022fcf990521d60a6fb70a164746e09ebc27",
+    "test_wifi_e2e.py": "53f0320d1c30865266c22ecd1be247a3bf03faa4657b9dd2544ab7012c8235d7",
+    "run.py": "0eda7cab38877039833ff5adec2465b66033eb79c3618785f5238628fb7d910a",
+    "requirements.txt": "93c4ab5f175d24229e46ec70a8ecaeb6db8b36e3f54d8005808044c060acbc92"
+  },
+  "approval": "015.msg at 2026-10-18T15:37:13Z; resolved key udev-runner-scope",
+  "source_head": "c47761b0b51e8965a067aed71001fd09471579c0",
+  "frozen_inputs_edited_during_run": false
+}

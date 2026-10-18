@@ -1,0 +1,64 @@
+No entry for terminal type "unknown";
+using dumb terminal settings.
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /workspace/openpilot/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace
+collecting ... collected 0 items / 1 error
+
+==================================== ERRORS ====================================
+_________ ERROR collecting openpilot-wifi-validation/test_wifi_e2e.py __________
+ImportError while importing test module '/workspace/openpilot-wifi-validation/test_wifi_e2e.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+.venv/lib/python3.12/site-packages/_pytest/python.py:508: in importtestmodule
+    mod = import_path(
+.venv/lib/python3.12/site-packages/_pytest/pathlib.py:596: in import_path
+    importlib.import_module(module_name)
+/home/ubuntu/.local/share/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+<frozen importlib._bootstrap>:1387: in _gcd_import
+    ???
+<frozen importlib._bootstrap>:1360: in _find_and_load
+    ???
+<frozen importlib._bootstrap>:1331: in _find_and_load_unlocked
+    ???
+<frozen importlib._bootstrap>:935: in _load_unlocked
+    ???
+.venv/lib/python3.12/site-packages/_pytest/assertion/rewrite.py:188: in exec_module
+    exec(co, module.__dict__)
+/tmp/wifi-route-priority-20261016-1620/harness/test_wifi_e2e.py:9: in <module>
+    ???
+openpilot/system/ui/lib/wifi_manager.py:19: in <module>
+    from openpilot.common.swaglog import cloudlog
+openpilot/common/swaglog.py:11: in <module>
+    from openpilot.common.hardware.hw import Paths
+openpilot/common/hardware/__init__.py:4: in <module>
+    from openpilot.common.hardware.base import HardwareBase
+openpilot/common/hardware/base.py:5: in <module>
+    from openpilot.cereal import log
+openpilot/cereal/__init__.py:7: in <module>
+    with as_file(files("openpilot.cereal")) as fspath, as_file(files("opendbc")) as opendbc_path:
+                                                               ^^^^^^^^^^^^^^^^
+/home/ubuntu/.local/share/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/importlib/resources/_common.py:46: in wrapper
+    return func(anchor)
+           ^^^^^^^^^^^^
+/home/ubuntu/.local/share/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/importlib/resources/_common.py:56: in files
+    return from_package(resolve(anchor))
+                        ^^^^^^^^^^^^^^^
+/home/ubuntu/.local/share/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/functools.py:912: in wrapper
+    return dispatch(args[0].__class__)(*args, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/ubuntu/.local/share/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/importlib/resources/_common.py:82: in _
+    return importlib.import_module(cand)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/ubuntu/.local/share/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/importlib/__init__.py:90: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ModuleNotFoundError: No module named 'opendbc'
+- generated xml file: /workspace/openpilot-wifi-validation/task-results/full-hwsim.xml -
+=========================== short test summary info ============================
+ERROR ../openpilot-wifi-validation/test_wifi_e2e.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+=============================== 1 error in 0.10s ===============================

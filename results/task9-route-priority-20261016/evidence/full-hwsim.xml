@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="55" time="418.919" timestamp="2026-10-16T16:08:42.096991+00:00" hostname="wifi-e2e"><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_empty_scan" time="1.021" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Open--False]" time="5.910" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Test A-password123-False]" time="5.948" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Hidden-password123-True]" time="5.975" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Hidden open--True]" time="5.905" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Bucure\u0219ti-parol\u0103-123-False]" time="5.834" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS-password123-False]" time="5.938" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Test A-12345678-False]" time="5.884" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Test A-ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp-False]" time="5.847" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Test A-abababababababababababababababababababababababababababababababab-False]" time="5.883" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connect_persist_and_reopen[Test A- pass\\word&quot; -False]" time="5.928" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_wrong_password_then_retry" time="8.750" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_forget_cancels_pending_hidden_connection" time="1.204" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_switch_saved_networks_replaces_lease" time="14.827" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_forget_removes_every_persistent_source[False-keyfile]" time="9.838" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_forget_removes_every_persistent_source[False-shadow]" time="9.901" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_forget_removes_every_persistent_source[False-netplan]" time="10.001" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_forget_removes_every_persistent_source[True-keyfile]" time="9.987" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_forget_removes_every_persistent_source[True-shadow]" time="9.982" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_forget_removes_every_persistent_source[True-netplan]" time="10.053" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_forget_duplicate_profiles_for_one_ui_entry" time="4.754" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_failed_forget_preserves_profile_and_emits_forgotten" time="4.766" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_metering_persists_and_matches_runtime_identity[0]" time="5.865" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_metering_persists_and_matches_runtime_identity[1]" time="5.872" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_metering_persists_and_matches_runtime_identity[2]" time="5.925" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_failed_metering_preserves_saved_policy" time="5.929" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_navigation_does_not_disconnect" time="4.702" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_dhcp_timeout_then_another_selection" time="50.315" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_manager_restart_preserves_working_station[False]" time="5.900" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_manager_restart_preserves_working_station[True]" time="4.811" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_udhcpc_connected_prefix_loses_to_wired_shared_subnet" time="0.601" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_wifi_lte_priority_and_ap_loss" time="8.455" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connected_service_failure_recovers[/run/wpa_supplicant/wlan0.pid]" time="10.941" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_connected_service_failure_recovers[/run/udhcpc.wlan0.pid]" time="5.776" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_station_tethering_station_and_forwarding" time="15.905" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_rejected_tethering_password_completes_ui[zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-False]" time="4.709" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_rejected_tethering_password_completes_ui[zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-True]" time="4.971" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_rejected_tethering_password_completes_ui[\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642-False]" time="4.726" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_rejected_tethering_password_completes_ui[\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642-True]" time="4.852" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_tethering_password_change_and_noop[False]" time="10.168" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_tethering_password_change_and_noop[True]" time="9.546" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_hidden_connection_requested_while_tethering_completes" time="4.957" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_rejected_station_password_completes_ui[zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz]" time="5.164" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_rejected_station_password_completes_ui[\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642]" time="5.093" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_saved_profile_auth_failure_preserves_working_profile" time="12.651" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_password_replacement_forgets_previous_profile_before_auth_failure" time="8.857" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_new_profile_write_failure_leaves_station_connected_without_profile" time="4.683" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_new_selection_supersedes_pending_connection" time="5.265" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_tethering_without_an_active_station[False]" time="5.346" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_tethering_without_an_active_station[True]" time="5.335" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_failed_tethering_password_write_keeps_previous_password[False]" time="5.906" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_failed_tethering_password_write_keeps_previous_password[True]" time="9.240" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_networkmanager_works_before_ui_and_after_explicit_handoff" time="16.497" /><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_route_priority_during_dhcp[no-nm]" time="4.534"><failure message="subprocess.CalledProcessError: Command '['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/workspace/openpilot/openpilot/system/ui/lib/udhcpc.script', '/workspace/openpilot/.venv/bin/python', '/workspace/openpilot-wifi-validation/wifi_e2e.py', '--route-priority', 'no-nm', '/tmp/pytest-of-root/pytest-0/test_route_priority_during_dhc0']' returned non-zero exit status 1.">mode = 'no-nm'
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_route_priority_during_dhc0')
+
+&gt;   ???
+
+/tmp/wifi-route-priority-20261016-1620/harness/test_wifi_e2e.py:522: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../openpilot-wifi-validation/wifi_e2e.py:33: in run
+    return subprocess.run(command, check=check, capture_output=True, text=True, timeout=30)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = 30, check = True
+popenargs = (['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/workspace/openpilot/openpilot/system/ui/lib/udhcpc.script', ...],)
+kwargs = {'text': True, 'stdout': -1, 'stderr': -1}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output &amp; stderr attributes if those streams
+        were captured.
+    
+        If timeout (seconds) is given and the process takes too long,
+         a TimeoutExpired exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+&gt;               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/workspace/openpilot/openpilot/system/ui/lib/udhcpc.script', '/workspace/openpilot/.venv/bin/python', '/workspace/openpilot-wifi-validation/wifi_e2e.py', '--route-priority', 'no-nm', '/tmp/pytest-of-root/pytest-0/test_route_priority_during_dhc0']' returned non-zero exit status 1.
+
+/home/ubuntu/.local/share/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/subprocess.py:571: CalledProcessError</failure></testcase><testcase classname="openpilot-wifi-validation.test_wifi_e2e" name="test_route_priority_during_dhcp[nm]" time="1.136"><failure message="subprocess.CalledProcessError: Command '['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/workspace/openpilot/openpilot/system/ui/lib/udhcpc.script', '/workspace/openpilot/.venv/bin/python', '/workspace/openpilot-wifi-validation/wifi_e2e.py', '--route-priority', 'nm', '/tmp/pytest-of-root/pytest-0/test_route_priority_during_dhc1']' returned non-zero exit status 1.">mode = 'nm'
+tmp_path = PosixPath('/tmp/pytest-of-root/pytest-0/test_route_priority_during_dhc1')
+
+&gt;   ???
+
+/tmp/wifi-route-priority-20261016-1620/harness/test_wifi_e2e.py:522: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+../openpilot-wifi-validation/wifi_e2e.py:33: in run
+    return subprocess.run(command, check=check, capture_output=True, text=True, timeout=30)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+input = None, capture_output = True, timeout = 30, check = True
+popenargs = (['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/workspace/openpilot/openpilot/system/ui/lib/udhcpc.script', ...],)
+kwargs = {'text': True, 'stdout': -1, 'stderr': -1}
+
+    def run(*popenargs,
+            input=None, capture_output=False, timeout=None, check=False, **kwargs):
+        """Run command with arguments and return a CompletedProcess instance.
+    
+        The returned instance will have attributes args, returncode, stdout and
+        stderr. By default, stdout and stderr are not captured, and those attributes
+        will be None. Pass stdout=PIPE and/or stderr=PIPE in order to capture them,
+        or pass capture_output=True to capture both.
+    
+        If check is True and the exit code was non-zero, it raises a
+        CalledProcessError. The CalledProcessError object will have the return code
+        in the returncode attribute, and output &amp; stderr attributes if those streams
+        were captured.
+    
+        If timeout (seconds) is given and the process takes too long,
+         a TimeoutExpired exception will be raised.
+    
+        There is an optional argument "input", allowing you to
+        pass bytes or a string to the subprocess's stdin.  If you use this argument
+        you may not also use the Popen constructor's "stdin" argument, as
+        it will be used internally.
+    
+        By default, all communication is in bytes, and therefore any "input" should
+        be bytes, and the stdout and stderr will be bytes. If in text mode, any
+        "input" should be a string, and stdout and stderr will be strings decoded
+        according to locale encoding, or by "encoding" if set. Text mode is
+        triggered by setting any of text, encoding, errors or universal_newlines.
+    
+        The other arguments are the same as for the Popen constructor.
+        """
+        if input is not None:
+            if kwargs.get('stdin') is not None:
+                raise ValueError('stdin and input arguments may not both be used.')
+            kwargs['stdin'] = PIPE
+    
+        if capture_output:
+            if kwargs.get('stdout') is not None or kwargs.get('stderr') is not None:
+                raise ValueError('stdout and stderr arguments may not be used '
+                                 'with capture_output.')
+            kwargs['stdout'] = PIPE
+            kwargs['stderr'] = PIPE
+    
+        with Popen(*popenargs, **kwargs) as process:
+            try:
+                stdout, stderr = process.communicate(input, timeout=timeout)
+            except TimeoutExpired as exc:
+                process.kill()
+                if _mswindows:
+                    # Windows accumulates the output in a single blocking
+                    # read() call run on child threads, with the timeout
+                    # being done in a join() on those threads.  communicate()
+                    # _after_ kill() is required to collect that and add it
+                    # to the exception.
+                    exc.stdout, exc.stderr = process.communicate()
+                else:
+                    # POSIX _communicate already populated the output so
+                    # far into the TimeoutExpired exception.
+                    process.wait()
+                raise
+            except:  # Including KeyboardInterrupt, communicate handled that.
+                process.kill()
+                # We don't call process.wait() as .__exit__ does that for us.
+                raise
+            retcode = process.poll()
+            if check and retcode:
+&gt;               raise CalledProcessError(retcode, process.args,
+                                         output=stdout, stderr=stderr)
+E               subprocess.CalledProcessError: Command '['unshare', '-m', '--propagation', 'private', 'env', 'UDHCPC_SCRIPT_PATH=/workspace/openpilot/openpilot/system/ui/lib/udhcpc.script', '/workspace/openpilot/.venv/bin/python', '/workspace/openpilot-wifi-validation/wifi_e2e.py', '--route-priority', 'nm', '/tmp/pytest-of-root/pytest-0/test_route_priority_during_dhc1']' returned non-zero exit status 1.
+
+/home/ubuntu/.local/share/uv/python/cpython-3.12.13-linux-aarch64-gnu/lib/python3.12/subprocess.py:571: CalledProcessError</failure></testcase></testsuite></testsuites>

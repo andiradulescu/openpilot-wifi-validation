@@ -1,0 +1,13 @@
+wired-baseline 1792166405.5836236
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n40: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+ap-address-baseline 1792166405.58911
+{"routes": "default via 192.168.1.1 dev eth0 metric 100 \n192.168.1.0/24 dev eth0 scope link src 192.168.1.199 metric 100 \n192.168.43.0/24 dev wlan0 proto kernel scope link src 192.168.43.1 \n", "address": "1: lo    inet 127.0.0.1/8 scope host lo\\       valid_lft forever preferred_lft forever\n40: eth0    inet 192.168.1.199/24 scope global noprefixroute eth0\\       valid_lft forever preferred_lft forever\n42: wlan0    inet 192.168.43.1/24 scope global wlan0\\       valid_lft forever preferred_lft forever\n", "lookup": "192.168.1.171 from 192.168.1.199 dev eth0 uid 0 \n    cache \n"}
+cycle-0-deconfig 1792166405.5915084
+CLEANUP host_routes_unchanged True
+CLEANUP host_resolver_unchanged True
+NAMESPACES 
+Traceback (most recent call last):
+  File "/tmp/wifi-route-priority-20261016-1620/source/../lab-extended.py", line 130, in <module>
+    assert json.loads(run(['ip','-j','-4','addr','show','dev','wlan0'],ns=dut).stdout)[0]['addr_info']==[]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range

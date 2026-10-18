@@ -1,0 +1,28 @@
+collected 1 test in 0.10s • 1 worker
+F openpilot.system.ui.lib.tests.test_wifi_manager.TestShippedFiles.test_udhcpc_script_installs_routes_at_wifi_metric 0.03s
+
+ FAILED openpilot.system.ui.lib.tests.test_wifi_manager.TestShippedFiles.test_udhcpc_script_installs_routes_at_wifi_metric 
+test_udhcpc_script_installs_routes_at_wifi_metric (openpilot.system.ui.lib.tests.test_wifi_manager.TestShippedFiles.test_udhcpc_script_installs_routes_at_wifi_metric) (action='bound', subnet='255.255.255.0')
+Traceback (most recent call last):
+  File "/tmp/wifi-route-priority-20261016-1620/source/openpilot/system/ui/lib/tests/test_wifi_manager.py", line 2380, in test_udhcpc_script_installs_routes_at_wifi_metric
+    self.assertIn("noprefixroute", address)
+AssertionError: 'noprefixroute' not found in ''
+
+
+test_udhcpc_script_installs_routes_at_wifi_metric (openpilot.system.ui.lib.tests.test_wifi_manager.TestShippedFiles.test_udhcpc_script_installs_routes_at_wifi_metric) (action='renew', subnet='255.255.255.0')
+Traceback (most recent call last):
+  File "/tmp/wifi-route-priority-20261016-1620/source/openpilot/system/ui/lib/tests/test_wifi_manager.py", line 2380, in test_udhcpc_script_installs_routes_at_wifi_metric
+    self.assertIn("noprefixroute", address)
+AssertionError: 'noprefixroute' not found in ''
+
+
+test_udhcpc_script_installs_routes_at_wifi_metric (openpilot.system.ui.lib.tests.test_wifi_manager.TestShippedFiles.test_udhcpc_script_installs_routes_at_wifi_metric) (action='renew', subnet='255.255.255.255')
+Traceback (most recent call last):
+  File "/tmp/wifi-route-priority-20261016-1620/source/openpilot/system/ui/lib/tests/test_wifi_manager.py", line 2380, in test_udhcpc_script_installs_routes_at_wifi_metric
+    self.assertIn("noprefixroute", address)
+AssertionError: 'noprefixroute' not found in ''
+
+slowest tests
+    0.03s  openpilot.system.ui.lib.tests.test_wifi_manager.TestShippedFiles.test_udhcpc_script_installs_routes_at_wifi_metric
+
+1 failed in 0.13s

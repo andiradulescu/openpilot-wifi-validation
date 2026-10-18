@@ -1,0 +1,2 @@
+<trace> [1792166234.0678] platform-linux: udev-add[eth0,36]: device added
+<debug> [1792166234.3305] device[7093604689363694] (eth0): unmanaged: flags set to [user-udev,!platform-init,!user-settings=0x80/0x94/manageable/unrealized], set-managed [platform-init=0x4])

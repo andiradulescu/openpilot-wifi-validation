@@ -1,0 +1,25 @@
+{
+  "worktree": "/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot",
+  "base": "510f9b76b63800756c0258acad794cfa9623d08f",
+  "head": "c47761b0b51e8965a067aed71001fd09471579c0",
+  "branch": "fix/wifi-route-priority",
+  "files": {
+    "openpilot/system/ui/lib/udhcpc.script": {
+      "sha256": "14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0",
+      "mode": "0o755"
+    },
+    "openpilot/system/ui/lib/wifi_manager.py": {
+      "sha256": "0d5715aa1f3dc926e444f98204a055a4658844aa7f03b65e358123a82fc67b25",
+      "mode": "0o644"
+    },
+    "openpilot/system/ui/lib/tests/test_wifi_manager.py": {
+      "sha256": "f6e1baa051ed57e11ebbcc4e8337d47930bb7882187eba16bb77b798d67fc72b",
+      "mode": "0o644"
+    }
+  },
+  "host": "macOS-27.0.1-arm64-arm-64bit",
+  "python": "3.12.13",
+  "vm_root": "/tmp/wifi-route-priority-20261016-1620/source",
+  "native_library_sha256": "b7951ba2752bdfa11b611bcefd02e918516711edddea00be3edae48019c81f3d",
+  "bundle_sha256": "011c32dc2ff08d4a0a65c6bb18a0baf48751dd065a7fde497f2bc0e52f277f11"
+}

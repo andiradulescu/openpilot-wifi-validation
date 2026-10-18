@@ -1,0 +1,12 @@
+{
+  "ifindex": "448",
+  "pid1": "bash /workspace/openpilot-wifi-validation/run_wifi_e2e.sh --isolated --junitxml=/workspace/openpilot-wifi-validation/task-results/full-hwsim.xml -k route_priority_during_dhcp and not no-nm --junitxml=/workspace/openpilot-wifi-validation/task-results/udev-probe.xml ",
+  "samples": 50,
+  "unique_views": [
+    {
+      "/run/udev/data": false,
+      "/proc/1/root/run/udev/data": false
+    }
+  ]
+}
+removed own probe veth ifindex 448 and its peer

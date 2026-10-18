@@ -1,0 +1,26 @@
+collected 0 tests in 1.59s • 0 workers
+
+======== COLLECTION ERROR 1 ========
+Failed to collect openpilot.system.ui.lib.tests.test_wifi_manager
+Traceback (most recent call last):
+  File "/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/tools/test_runner.py", line 164, in collect
+    suite = loader.loadTestsFromName(name)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/andiradulescu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/loader.py", line 137, in loadTestsFromName
+    module = __import__(module_name)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/openpilot/system/ui/lib/tests/test_wifi_manager.py", line 15, in <module>
+    from openpilot.common.test import OpenpilotTestCase, Mocker
+  File "/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/openpilot/common/test.py", line 10, in <module>
+    from openpilot.common.prefix import OpenpilotPrefix
+  File "/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/openpilot/common/prefix.py", line 7, in <module>
+    from openpilot.common.params import Params
+  File "/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/openpilot/common/params.py", line 34, in <module>
+    lib = ctypes.CDLL(Path(__file__).with_name(f"libparams_c{_suffix}"))
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/andiradulescu/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/ctypes/__init__.py", line 379, in __init__
+    self._handle = _dlopen(self._name, mode)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: dlopen(/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/openpilot/common/libparams_c.dylib, 0x0006): tried: '/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/openpilot/common/libparams_c.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/openpilot/common/libparams_c.dylib' (no such file), '/Users/andiradulescu/.treehouse/openpilot-c4d26a/2/openpilot/openpilot/common/libparams_c.dylib' (no such file)
+
+1 collection error in 1.59s

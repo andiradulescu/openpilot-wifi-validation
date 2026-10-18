@@ -1,0 +1,66 @@
+No entry for terminal type "unknown";
+using dumb terminal settings.
+============================= test session starts ==============================
+platform linux -- Python 3.12.13, pytest-9.1.1, pluggy-1.6.0 -- /workspace/openpilot/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /workspace
+collecting ... collected 55 items
+
+../openpilot-wifi-validation/test_wifi_e2e.py::test_empty_scan PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Open--False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Test A-password123-False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Hidden-password123-True] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Hidden open--True] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Bucure\u0219ti-parol\u0103-123-False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS-password123-False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Test A-12345678-False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Test A-ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp-False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Test A-abababababababababababababababababababababababababababababababab-False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connect_persist_and_reopen[Test A- pass\\word" -False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_wrong_password_then_retry PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_forget_cancels_pending_hidden_connection PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_switch_saved_networks_replaces_lease PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_forget_removes_every_persistent_source[False-keyfile] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_forget_removes_every_persistent_source[False-shadow] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_forget_removes_every_persistent_source[False-netplan] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_forget_removes_every_persistent_source[True-keyfile] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_forget_removes_every_persistent_source[True-shadow] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_forget_removes_every_persistent_source[True-netplan] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_forget_duplicate_profiles_for_one_ui_entry PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_failed_forget_preserves_profile_and_emits_forgotten PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_metering_persists_and_matches_runtime_identity[0] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_metering_persists_and_matches_runtime_identity[1] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_metering_persists_and_matches_runtime_identity[2] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_failed_metering_preserves_saved_policy PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_navigation_does_not_disconnect PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_dhcp_timeout_then_another_selection PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_manager_restart_preserves_working_station[False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_manager_restart_preserves_working_station[True] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_udhcpc_connected_prefix_loses_to_wired_shared_subnet PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_wifi_lte_priority_and_ap_loss PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connected_service_failure_recovers[/run/wpa_supplicant/wlan0.pid] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_connected_service_failure_recovers[/run/udhcpc.wlan0.pid] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_station_tethering_station_and_forwarding PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_rejected_tethering_password_completes_ui[zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_rejected_tethering_password_completes_ui[zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz-True] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_rejected_tethering_password_completes_ui[\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642-False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_rejected_tethering_password_completes_ui[\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642-True] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_tethering_password_change_and_noop[False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_tethering_password_change_and_noop[True] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_hidden_connection_requested_while_tethering_completes PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_rejected_station_password_completes_ui[zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_rejected_station_password_completes_ui[\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642\U0001f642] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_saved_profile_auth_failure_preserves_working_profile PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_password_replacement_forgets_previous_profile_before_auth_failure PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_new_profile_write_failure_leaves_station_connected_without_profile PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_new_selection_supersedes_pending_connection PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_tethering_without_an_active_station[False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_tethering_without_an_active_station[True] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_failed_tethering_password_write_keeps_previous_password[False] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_failed_tethering_password_write_keeps_previous_password[True] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_networkmanager_works_before_ui_and_after_explicit_handoff PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_route_priority_during_dhcp[no-nm] PASSED
+../openpilot-wifi-validation/test_wifi_e2e.py::test_route_priority_during_dhcp[nm] PASSED
+
+- generated xml file: /workspace/openpilot-wifi-validation/task-results/full/junit.xml -
+======================== 55 passed in 430.34s (0:07:10) ========================

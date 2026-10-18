@@ -1,0 +1,17 @@
+Sun Oct 18 15:40:55 UTC 2026
+/tmp/wifi-route-priority-20261016-1620/source
+Python 3.12.13
+pytest 9.1.1
+ruff 0.16.3
+ty 0.0.72
+1.46.0
+[{"dst":"default","gateway":"10.0.2.2","dev":"enp0s1","protocol":"dhcp","prefsrc":"10.0.2.15","metric":100,"flags":[]},{"dst":"10.0.2.0/24","dev":"enp0s1","protocol":"kernel","scope":"link","prefsrc":"10.0.2.15","metric":100,"flags":[]},{"dst":"10.0.2.2","dev":"enp0s1","protocol":"dhcp","scope":"link","prefsrc":"10.0.2.15","metric":100,"flags":[]},{"dst":"10.0.2.3","dev":"enp0s1","protocol":"dhcp","scope":"link","prefsrc":"10.0.2.15","metric":100,"flags":[]}]
+ebdf560272a77357195c39e98340b77e18c8a8ce2025ee950e9e0c7b01467ab8  /etc/resolv.conf
+14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0  openpilot/system/ui/lib/udhcpc.script
+0d5715aa1f3dc926e444f98204a055a4658844aa7f03b65e358123a82fc67b25  openpilot/system/ui/lib/wifi_manager.py
+f6e1baa051ed57e11ebbcc4e8337d47930bb7882187eba16bb77b798d67fc72b  openpilot/system/ui/lib/tests/test_wifi_manager.py
+0eda7cab38877039833ff5adec2465b66033eb79c3618785f5238628fb7d910a  ../harness-approved-20261018-1540/run.py
+53f0320d1c30865266c22ecd1be247a3bf03faa4657b9dd2544ab7012c8235d7  ../harness-approved-20261018-1540/test_wifi_e2e.py
+f71e30aab56ddbcecb8ec73af430022fcf990521d60a6fb70a164746e09ebc27  ../harness-approved-20261018-1540/wifi_e2e.py
+98429bd935cf3f927eace0c53175ee531a8f16113dc67422d5827baa84ed4531  ../harness-approved-20261018-1540/run_wifi_e2e.sh
+93c4ab5f175d24229e46ec70a8ecaeb6db8b36e3f54d8005808044c060acbc92  ../harness-approved-20261018-1540/requirements.txt

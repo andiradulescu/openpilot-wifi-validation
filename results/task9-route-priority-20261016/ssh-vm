@@ -1,0 +1,2 @@
+#!/bin/sh
+exec ssh -p 2222 -o BatchMode=yes -o ConnectTimeout=5 -o UserKnownHostsFile=/private/tmp/wifi-e2e-20260926-known-hosts -o StrictHostKeyChecking=yes ubuntu@127.0.0.1 "$@"

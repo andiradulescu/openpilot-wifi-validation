@@ -1,0 +1,9 @@
+All checks passed!
+All checks passed!
+14bb8751186ddc501656e21877fff149ba52b6e3e55fb994ca7b46a948667ae0  openpilot/system/ui/lib/udhcpc.script
+0d5715aa1f3dc926e444f98204a055a4658844aa7f03b65e358123a82fc67b25  openpilot/system/ui/lib/wifi_manager.py
+01e27c54512d5abef45f6c63607272dd796defb521192a410fe4c0a548b8d64c  openpilot/system/ui/lib/tests/test_wifi_manager.py
+b7951ba2752bdfa11b611bcefd02e918516711edddea00be3edae48019c81f3d  openpilot/common/libparams_c.so
+Python 3.12.13
+ruff 0.16.3
+ty 0.0.72
