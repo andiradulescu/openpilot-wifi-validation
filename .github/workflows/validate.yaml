@@ -48,9 +48,6 @@ jobs:
       - name: Prepare openpilot environment
         working-directory: openpilot
         run: ./tools/op.sh setup
-      - name: Build openpilot
-        working-directory: openpilot
-        run: scons -j"$(nproc)"
       - name: Install virtual Wi-Fi prerequisites
         if: inputs.suite == 'hwsim'
         run: |
@@ -59,8 +56,28 @@ jobs:
           if ! modinfo mac80211_hwsim >/dev/null 2>&1; then
             sudo apt-get install -y "linux-modules-extra-$(uname -r)"
           fi
+          if ! modinfo mac80211_hwsim >/dev/null 2>&1; then
+            sudo apt-get install -y "linux-headers-$(uname -r)"
+            kernel_version=$(uname -r | cut -d. -f1,2)
+            module_dir="$RUNNER_TEMP/mac80211-hwsim"
+            mkdir -p "$module_dir"
+            for extension in c h; do
+              curl -fsSL "https://raw.githubusercontent.com/torvalds/linux/v$kernel_version/drivers/net/wireless/virtual/mac80211_hwsim.$extension" \
+                -o "$module_dir/mac80211_hwsim.$extension"
+            done
+            printf 'obj-m := mac80211_hwsim.o\n' > "$module_dir/Makefile"
+            make -C "/lib/modules/$(uname -r)/build" M="$module_dir" modules
+            sudo make -C "/lib/modules/$(uname -r)/build" M="$module_dir" modules_install
+            sudo depmod -a
+          fi
+          modinfo mac80211_hwsim
+          sudo modprobe mac80211_hwsim radios=0
+          sudo modprobe -r mac80211_hwsim
           getent group netdev || sudo groupadd netdev
           uv pip install --python openpilot/.venv/bin/python -r validation/requirements.txt
+      - name: Build openpilot
+        working-directory: openpilot
+        run: scons -j"$(nproc)"
       - name: Run validation
         run: |
           args=(--checkout "$PWD/openpilot" --sha "$TARGET_SHA" --suite "$SUITE" --results "$PWD/results")
