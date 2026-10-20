@@ -18,7 +18,7 @@ This uses openpilot's `tools/test_runner.py`, not pytest, and requires no virtua
 
 **Use a disposable Linux VM, never a comma device or a workstation with Wi-Fi radios.** The hwsim runner loads a kernel module and isolates runtime files, profiles, resolver state, and network namespaces. It requires root, `CAP_SYS_MODULE`, and `mac80211_hwsim` for the running kernel.
 
-On Ubuntu, install `iproute2 iw kmod util-linux hostapd wpasupplicant udhcpc dnsmasq-base network-manager netplan.io dbus iptables curl`. Also install the matching kernel modules package when `modinfo mac80211_hwsim` fails. `/etc/udhcpc/default.script` and the `netdev` group must exist.
+On Ubuntu, install `iproute2 iw kmod util-linux hostapd wpasupplicant udhcpc dnsmasq-base network-manager netplan.io dbus iptables curl tcpdump strace`. Also install the matching kernel modules package when `modinfo mac80211_hwsim` fails. `/etc/udhcpc/default.script` and the `netdev` group must exist. For an Apple Silicon macOS host, see the [QEMU VM setup](vm/README.md).
 
 Install the external runner's dependency into the test environment without changing openpilot's dependency files:
 
@@ -32,7 +32,7 @@ Remove `--filter forget` for the full matrix. The checkout and this repository m
 
 The lab uses real `wpa_supplicant`, `hostapd`, DHCP, DNS, firewall rules, NetworkManager profile reading, and HTTP probes. A veth link represents the alternate cellular route; it is not a modem test. It calls `WifiManager` through a separate process rather than clicking on the graphical UI. See the [kernel's hwsim documentation](https://wireless.docs.kernel.org/en/latest/en/users/drivers/mac80211_hwsim.html).
 
-The hwsim suite is still a prototype. It has been collected and its prerequisite guards exercised, but it has not completed a virtual-radio run. The current Sprite lacks `mac80211_hwsim`; a blocked run is not a passing suite.
+The full hwsim matrix completed on 18 October 2026: 55 passed, with no failures or skips, using openpilot `c47761b0b51e8965a067aed71001fd09471579c0` and harness `8fbb0f73e2b04772eeb7c3c516a3f232ff446482`. The [JUnit results](results/task9-route-priority-20261016/evidence/approved-full-hwsim.xml) and [validation manifest](results/task9-route-priority-20261016/validation-manifest.json) record the tested revisions and environment.
 
 ## Results
 

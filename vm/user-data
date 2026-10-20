@@ -1,0 +1,15 @@
+#cloud-config
+users:
+  - name: ubuntu
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    groups: [netdev]
+    ssh_authorized_keys:
+      - __SSH_PUBLIC_KEY__
+package_update: true
+packages: [iproute2, iw, kmod, util-linux, hostapd, wpasupplicant, udhcpc, dnsmasq-base, network-manager, netplan.io, dbus, iptables, curl, tcpdump, strace, git, git-lfs, python3-venv, build-essential, pkg-config, libzmq3-dev, ocl-icd-opencl-dev, libssl-dev, clang]
+runcmd:
+  - apt-get install -y linux-modules-extra-$(uname -r)
+  - modprobe mac80211_hwsim radios=0 && rmmod mac80211_hwsim
+  - curl -LsSf https://astral.sh/uv/install.sh | sudo -u ubuntu sh
+  - systemctl unmask hostapd
