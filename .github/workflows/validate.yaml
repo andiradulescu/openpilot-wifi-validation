@@ -87,6 +87,12 @@ jobs:
           else
             python3 validation/run.py "${args[@]}"
           fi
+      - name: Restore result ownership
+        if: always() && inputs.suite == 'hwsim'
+        run: |
+          if [ -d "$GITHUB_WORKSPACE/results" ]; then
+            sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE/results"
+          fi
       - uses: actions/upload-artifact@v7
         if: always()
         with:
