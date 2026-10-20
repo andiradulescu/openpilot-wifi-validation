@@ -40,6 +40,8 @@ The full hwsim matrix completed on 18 October 2026: 55 passed, with no failures 
 
 Each run writes `results/<run>/manifest.json` and `run.log`. The manifest records the openpilot SHA and dirty state, harness SHA and source hashes, tool versions, command, and exit status. hwsim also writes JUnit and per-service logs. A prerequisite failure is `blocked`, never `passed`.
 
+GitHub Actions artifacts contain `wifi-results.tar.gz`, preserving Linux filenames and permissions in the captured results.
+
 Keep results with both revisions; a PR number alone does not identify the tested code. Logs use synthetic lab profiles. Do not attach real device credentials or private logs.
 
 ## Acceptance boundaries

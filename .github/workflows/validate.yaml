@@ -87,14 +87,15 @@ jobs:
           else
             python3 validation/run.py "${args[@]}"
           fi
-      - name: Restore result ownership
-        if: always() && inputs.suite == 'hwsim'
+      - name: Package validation results
+        if: always()
         run: |
           if [ -d "$GITHUB_WORKSPACE/results" ]; then
-            sudo chown -R "$(id -u):$(id -g)" "$GITHUB_WORKSPACE/results"
+            sudo tar -czf "$GITHUB_WORKSPACE/wifi-results.tar.gz" -C "$GITHUB_WORKSPACE/results" .
+            sudo chown "$(id -u):$(id -g)" "$GITHUB_WORKSPACE/wifi-results.tar.gz"
           fi
       - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: wifi-${{ inputs.suite }}-${{ env.TARGET_SHA }}
-          path: results/
+          path: wifi-results.tar.gz
