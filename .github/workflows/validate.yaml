@@ -3,9 +3,10 @@ name: Wi-Fi validation
 on:
   workflow_dispatch:
     inputs:
-      openpilot_sha:
-        description: Full commit SHA in andiradulescu/openpilot
+      openpilot_branch:
+        description: Branch in andiradulescu/openpilot
         required: true
+        default: wifi-wpa-supplicant
         type: string
       suite:
         description: Validation tier
@@ -26,7 +27,6 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
-      TARGET_SHA: ${{ inputs.openpilot_sha }}
       SUITE: ${{ inputs.suite }}
       TEST_FILTER: ${{ inputs.filter }}
     steps:
@@ -34,17 +34,23 @@ jobs:
         with:
           persist-credentials: false
           path: validation
-      - name: Validate revision
-        run: '[[ "$TARGET_SHA" =~ ^[0-9a-f]{40}$ ]]'
       - uses: actions/checkout@v7
         with:
           repository: andiradulescu/openpilot
-          ref: ${{ inputs.openpilot_sha }}
+          ref: refs/heads/${{ inputs.openpilot_branch }}
           persist-credentials: false
           path: openpilot
+      - name: Record openpilot revision
+        working-directory: openpilot
+        run: |
+          echo "TARGET_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+          git log -1 --format='%H %s'
       - name: Prepare openpilot environment
         working-directory: openpilot
         run: ./tools/op.sh setup
+      - name: Build openpilot
+        working-directory: openpilot
+        run: scons -j"$(nproc)"
       - name: Install virtual Wi-Fi prerequisites
         if: inputs.suite == 'hwsim'
         run: |
@@ -67,5 +73,5 @@ jobs:
       - uses: actions/upload-artifact@v7
         if: always()
         with:
-          name: wifi-${{ inputs.suite }}-${{ inputs.openpilot_sha }}
+          name: wifi-${{ inputs.suite }}-${{ env.TARGET_SHA }}
           path: results/

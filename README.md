@@ -4,6 +4,8 @@ External qualification for the `wifi-wpa-supplicant` branch of `andiradulescu/op
 
 The runner takes an existing checkout and a full SHA. It does not checkout, patch, commit, or push openpilot. Dirty checkouts are rejected unless `--allow-dirty` is explicitly supplied; those results are development evidence, not a clean-commit signoff.
 
+The GitHub Actions workflow accepts an `openpilot_branch` in `andiradulescu/openpilot`, defaulting to `wifi-wpa-supplicant`. It checks out the branch head, records its exact commit SHA, prepares and builds openpilot, then runs the selected `unit` or `hwsim` suite. Each run uploads its logs and manifest as an artifact named with the tested SHA.
+
 ## Run the in-tree tests
 
 Prepare openpilot's normal Python environment, then run:
